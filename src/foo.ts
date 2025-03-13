@@ -11,7 +11,7 @@ const document = gql`
 async function main() {
   try {
     console.log('Initializing SubsquidClient...');
-    const client = new SubsquidClient();
+    const client = new SubsquidClient('https://rail-squid.squids.live/squid-railgun-ethereum-v2/graphql');
     console.log('Sending request...');
     const data = await client.request(document);
     console.log('Response:', data);
