@@ -1,18 +1,26 @@
-
 import { GraphQLClient } from 'graphql-request';
 import { gql } from 'graphql-tag';
-import { ETHEREUM_URL } from './networks.js';
+import { VALID_SUBSQUID_URLS } from './networks.js';
 
 export { gql }; // CHANGE THIS
 
+export const isValidSubsquidURL = (url: string): boolean => {
+  return VALID_SUBSQUID_URLS.includes(url);
+};
 export class SubsquidClient {
-    private client: GraphQLClient;
+  private client: GraphQLClient;
 
-    constructor() {
-        this.client = new GraphQLClient(ETHEREUM_URL);
+  constructor(url: string) {
+    if (!url || !isValidSubsquidURL(url)) {
+      throw new Error(
+        `Invalid Subsquid URL. Please use one of the predefined URLs from networks.ts: ${VALID_SUBSQUID_URLS.join(', ')}`,
+      );
     }
-    
-    request = async (document: string | any): Promise<any> => {
-        return this.client.request(document);
-    }
+
+    this.client = new GraphQLClient(url);
+  }
+
+  request = async (document: string | any): Promise<any> => {
+    return this.client.request(document);
+  };
 }

@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "@railgun-reloaded/tsconfig/tsconfig"
-  ],
+  "extends": ["@railgun-reloaded/tsconfig/tsconfig"],
   "compilerOptions": {
     "outDir": "dist",
     "declaration": true,
