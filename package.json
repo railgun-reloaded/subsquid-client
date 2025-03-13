@@ -2,8 +2,10 @@
   "name": "@railgun-reloaded/subsquid-client",
   "version": "1.0.0",
   "description": "A lightweight wrapper around Subsquid",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "type": "module",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -20,9 +22,9 @@
     "@types/node": "^22.13.10"
   },
   "dependencies": {
-    "graffle": "^0.0.0",
     "graphql": "^16.10.0",
-    "graphql-request": "^7.1.2"
-  },
-  "type": "module"
+    "graphql-request": "^7.1.2",
+    "graphql-tag": "^2.12.6",
+    "typescript": "^5.8.2"
+  }
 }

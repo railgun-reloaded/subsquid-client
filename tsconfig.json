@@ -3,6 +3,11 @@
     "@railgun-reloaded/tsconfig/tsconfig"
   ],
   "compilerOptions": {
-    "moduleResolution" : "nodenext"
-  }
+    "outDir": "dist",
+    "declaration": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
