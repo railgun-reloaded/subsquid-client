@@ -16,7 +16,8 @@
   "author": "Railgun Project Contributors",
   "license": "MIT",
   "devDependencies": {
-    "@railgun-reloaded/tsconfig": "^1.0.0"
+    "@railgun-reloaded/tsconfig": "^1.0.0",
+    "@types/node": "^22.13.10"
   },
   "dependencies": {
     "graffle": "^0.0.0",
