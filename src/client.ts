@@ -1,24 +1,18 @@
-// @ts-ignore
-import {gql,GraphQLClient} from 'graffle'
-import {ETHEREUM_URL} from './networks.js'
 
-const document =  gql`
- {
-  shieldCommitments(limit: 10) {
-    blockNumber
-  }
-}
-`
-const client = new GraphQLClient(ETHEREUM_URL);
-// export const result = await client.request(document);
+import { GraphQLClient } from 'graphql-request';
+import { gql } from 'graphql-tag';
+import { ETHEREUM_URL } from './networks.js';
+
+export { gql }; // CHANGE THIS
 
 export class SubsquidClient {
     private client: GraphQLClient;
 
-    constructor(){
+    constructor() {
         this.client = new GraphQLClient(ETHEREUM_URL);
     }
-    request = async (document:string):Promise<any> =>{
+    
+    request = async (document: string | any): Promise<any> => {
         return this.client.request(document);
     }
-  }
+}
