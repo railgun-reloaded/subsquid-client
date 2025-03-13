@@ -56,6 +56,13 @@ export type Transaction = {
   [key: string]: any;
 };
 
+export type CommitmentPreimage = {
+  id: string;
+  npk: string;
+  token: Token;
+  value: string;
+};
+
 export const isNetworkValid = (url: string): boolean => {
   return VALID_SUBSQUID_URLS.includes(url);
 };
@@ -74,333 +81,64 @@ export class SubsquidClient {
   }
 
   /**
-   * Generic request method for GraphQL queries
+   * Generic request method for GraphQL queries with type safety
    */
-  request = async (document: string | any, variables?: any): Promise<any> => {
-    return this.client.request(document, variables);
+  request = async <T>(document: string | any, variables?: any): Promise<T> => {
+    return this.client.request<T>(document, variables);
   };
 
-  /**
-   * Fetch nullifiers from the specified block number
-   * @param blockNumber The starting block number (inclusive)
-   * @param limit Maximum number of nullifiers to return
-   */
-  async getNullifiers(blockNumber: number = 0, limit: number = 1000): Promise<Nullifier[]> {
-    const query = gql`
-      query GetNullifiers($blockNumber: BigInt!, $limit: Int!) {
-        nullifiers(
-          orderBy: [blockNumber_ASC, nullifier_DESC]
-          where: { blockNumber_gte: $blockNumber }
-          limit: $limit
-        ) {
-          id
-          blockNumber
-          nullifier
-          transactionHash
-          blockTimestamp
-          treeNumber
+  // Add a generic query method that can handle any entity type
+  async query<T>(
+    entity: string,
+    fields: string[],
+    where?: Record<string, any>,
+    orderBy?: string[],
+    limit: number = 1000,
+    offset?: number,
+  ): Promise<T[]> {
+    // Construct the where, orderBy, limit, and offset arguments
+    const whereArg = where ? `where: ${JSON.stringify(where).replace(/"([^"]+)":/g, '$1:')}` : '';
+    const orderByArg = orderBy?.length ? `orderBy: [${orderBy.join(', ')}]` : '';
+    const limitArg = `limit: ${limit}`;
+    const offsetArg = offset !== undefined ? `offset: ${offset}` : '';
+
+    // Combine all arguments
+    const args = [whereArg, orderByArg, limitArg, offsetArg].filter(Boolean).join(', ');
+
+    // Build the query
+    const queryString = `
+      query Get${entity}(${where ? '$where: JSON' : ''}) {
+        ${entity}(${args}) {
+          ${fields.join('\n          ')}
         }
       }
     `;
 
-    const response = await this.request(query, { 
-      blockNumber: blockNumber.toString(),
-      limit
-    });
-    
-    return response.nullifiers;
+    const query = gql`
+      ${queryString}
+    `;
+
+    // Execute the query
+    const response = await this.request<Record<string, T[]>>(
+      query,
+      where ? { where: JSON.stringify(where) } : undefined,
+    );
+
+    return response[entity];
   }
 
-  /**
-   * Fetch unshields from the specified block number
-   * @param blockNumber The starting block number (inclusive)
-   * @param limit Maximum number of unshields to return
-   */
-  async getUnshields(blockNumber: number = 0, limit: number = 1000): Promise<Unshield[]> {
-    const query = gql`
-      query GetUnshields($blockNumber: BigInt!, $limit: Int!) {
-        unshields(
-          orderBy: [blockNumber_ASC, eventLogIndex_ASC]
-          where: { blockNumber_gte: $blockNumber }
-          limit: $limit
-        ) {
-          id
-          blockNumber
-          to
-          transactionHash
-          fee
-          blockTimestamp
-          amount
-          eventLogIndex
-          token {
-            id
-            tokenType
-            tokenSubID
-            tokenAddress
-          }
-        }
-      }
-    `;
-
-    const response = await this.request(query, { 
-      blockNumber: blockNumber.toString(),
-      limit
-    });
-    
-    return response.unshields;
-  }
-
-  /**
-   * Fetch basic commitments from the specified block number
-   * @param blockNumber The starting block number (inclusive)
-   * @param limit Maximum number of commitments to return
-   */
-  async getCommitments(blockNumber: number = 0, limit: number = 1000): Promise<Commitment[]> {
-    const query = gql`
-      query GetCommitments($blockNumber: BigInt!, $limit: Int!) {
-        commitments(
-          orderBy: [blockNumber_ASC, treePosition_ASC]
-          where: { blockNumber_gte: $blockNumber }
-          limit: $limit
-        ) {
-          id
-          treeNumber
-          batchStartTreePosition
-          treePosition
-          blockNumber
-          transactionHash
-          blockTimestamp
-          commitmentType
-          hash
-        }
-      }
-    `;
-
-    const response = await this.request(query, { 
-      blockNumber: blockNumber.toString(),
-      limit
-    });
-    
-    return response.commitments;
-  }
-  
-  /**
-   * Fetch detailed commitments with all type-specific fields
-   * @param blockNumber The starting block number (inclusive)
-   * @param limit Maximum number of commitments to return
-   */
-  async getDetailedCommitments(blockNumber: number = 0, limit: number = 1000): Promise<Commitment[]> {
-    const query = gql`
-      query GetDetailedCommitments($blockNumber: BigInt!, $limit: Int!) {
-        commitments(
-          orderBy: [blockNumber_ASC, treePosition_ASC]
-          where: { blockNumber_gte: $blockNumber }
-          limit: $limit
-        ) {
-          id
-          treeNumber
-          batchStartTreePosition
-          treePosition
-          blockNumber
-          transactionHash
-          blockTimestamp
-          commitmentType
-          hash
-          ... on LegacyGeneratedCommitment {
-            encryptedRandom
-            preimage {
-              id
-              npk
-              value
-              token {
-                id
-                tokenType
-                tokenSubID
-                tokenAddress
-              }
-            }
-          }
-          ... on LegacyEncryptedCommitment {
-            legacyCiphertext: ciphertext {
-              id
-              ciphertext {
-                id
-                iv
-                tag
-                data
-              }
-              ephemeralKeys
-              memo
-            }
-          }
-          ... on ShieldCommitment {
-            shieldKey
-            fee
-            encryptedBundle
-            preimage {
-              id
-              npk
-              value
-              token {
-                id
-                tokenType
-                tokenSubID
-                tokenAddress
-              }
-            }
-          }
-          ... on TransactCommitment {
-            ciphertext {
-              id
-              ciphertext {
-                id
-                iv
-                tag
-                data
-              }
-              blindedSenderViewingKey
-              blindedReceiverViewingKey
-              annotationData
-              memo
-            }
-          }
-        }
-      }
-    `;
-
-    const response = await this.request(query, { 
-      blockNumber: blockNumber.toString(),
-      limit
-    });
-    
-    return response.commitments;
-  }
-  
-  /**
-   * Fetch shield commitments from the specified block number
-   * @param blockNumber The starting block number (inclusive)
-   * @param limit Maximum number of shield commitments to return
-   */
-  async getShieldCommitments(blockNumber: number = 0, limit: number = 1000): Promise<Commitment[]> {
-    const query = gql`
-      query GetShieldCommitments($blockNumber: BigInt!, $limit: Int!) {
-        shieldCommitments(
-          orderBy: [blockNumber_ASC, treePosition_ASC]
-          where: { blockNumber_gte: $blockNumber }
-          limit: $limit
-        ) {
-          id
-          treeNumber
-          batchStartTreePosition
-          treePosition
-          blockNumber
-          transactionHash
-          blockTimestamp
-          commitmentType
-          hash
-          shieldKey
-          fee
-          encryptedBundle
-          preimage {
-            id
-            npk
-            value
-            token {
-              id
-              tokenType
-              tokenSubID
-              tokenAddress
-            }
-          }
-        }
-      }
-    `;
-
-    const response = await this.request(query, { 
-      blockNumber: blockNumber.toString(),
-      limit
-    });
-    
-    return response.shieldCommitments;
-  }
-  
-  /**
-   * Fetch transact commitments from the specified block number
-   * @param blockNumber The starting block number (inclusive)
-   * @param limit Maximum number of transact commitments to return
-   */
-  async getTransactCommitments(blockNumber: number = 0, limit: number = 1000): Promise<Commitment[]> {
-    const query = gql`
-      query GetTransactCommitments($blockNumber: BigInt!, $limit: Int!) {
-        transactCommitments(
-          orderBy: [blockNumber_ASC, treePosition_ASC]
-          where: { blockNumber_gte: $blockNumber }
-          limit: $limit
-        ) {
-          id
-          treeNumber
-          batchStartTreePosition
-          treePosition
-          blockNumber
-          transactionHash
-          blockTimestamp
-          commitmentType
-          hash
-          ciphertext {
-            id
-            ciphertext {
-              id
-              iv
-              tag
-              data
-            }
-            blindedSenderViewingKey
-            blindedReceiverViewingKey
-            annotationData
-            memo
-          }
-        }
-      }
-    `;
-
-    const response = await this.request(query, { 
-      blockNumber: blockNumber.toString(),
-      limit
-    });
-    
-    return response.transactCommitments;
-  }
-
-  /**
-   * Fetch transactions from the specified block number
-   * @param blockNumber The starting block number (inclusive)
-   * @param limit Maximum number of transactions to return
-   */
-  async getTransactions(blockNumber: number = 0, limit: number = 1000): Promise<Transaction[]> {
-    const query = gql`
-      query GetTransactions($blockNumber: BigInt!, $limit: Int!) {
-        transactions(
-          orderBy: [blockNumber_ASC]
-          where: { blockNumber_gte: $blockNumber }
-          limit: $limit
-        ) {
-          id
-          blockNumber
-          transactionHash
-          blockTimestamp
-          merkleRoot
-          hasUnshield
-          utxoTreeIn
-          utxoTreeOut
-        }
-      }
-    `;
-
-    const response = await this.request(query, { 
-      blockNumber: blockNumber.toString(),
-      limit
-    });
-    
-    return response.transactions;
+  // Example method for commitment preimages
+  async getCommitmentPreimages(
+    limit: number = 10,
+    where?: any,
+    orderBy?: string[],
+  ): Promise<CommitmentPreimage[]> {
+    return this.query<CommitmentPreimage>(
+      'commitmentPreimages',
+      ['id', 'npk', 'value', 'token { id tokenType tokenAddress tokenSubID }'],
+      where,
+      orderBy,
+      limit,
+    );
   }
 }
