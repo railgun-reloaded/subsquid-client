@@ -1,5 +1,3 @@
-/* eslint-disable */
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -7,8 +5,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -17,9 +13,9 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   /** Big number integer */
-  BigInt: { input: any; output: any; }
+  BigInt: { input: string; output: string; }
   /** Binary data encoded as a hex string always prefixed with 0x */
-  Bytes: { input: any; output: any; }
+  Bytes: { input: string; output: string; }
 };
 
 export type Ciphertext = {
@@ -36,19 +32,20 @@ export type CiphertextEdge = {
   node: Ciphertext;
 };
 
-export type CiphertextOrderByInput =
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'iv_ASC'
-  | 'iv_ASC_NULLS_FIRST'
-  | 'iv_DESC'
-  | 'iv_DESC_NULLS_LAST'
-  | 'tag_ASC'
-  | 'tag_ASC_NULLS_FIRST'
-  | 'tag_DESC'
-  | 'tag_DESC_NULLS_LAST';
+export enum CiphertextOrderByInput {
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IvAsc = 'iv_ASC',
+  IvAscNullsFirst = 'iv_ASC_NULLS_FIRST',
+  IvDesc = 'iv_DESC',
+  IvDescNullsLast = 'iv_DESC_NULLS_LAST',
+  TagAsc = 'tag_ASC',
+  TagAscNullsFirst = 'tag_ASC_NULLS_FIRST',
+  TagDesc = 'tag_DESC',
+  TagDescNullsLast = 'tag_DESC_NULLS_LAST'
+}
 
 export type CiphertextWhereInput = {
   AND?: InputMaybe<Array<CiphertextWhereInput>>;
@@ -114,19 +111,20 @@ export type CommitmentBatchEventNewEdge = {
   node: CommitmentBatchEventNew;
 };
 
-export type CommitmentBatchEventNewOrderByInput =
-  | 'batchStartTreePosition_ASC'
-  | 'batchStartTreePosition_ASC_NULLS_FIRST'
-  | 'batchStartTreePosition_DESC'
-  | 'batchStartTreePosition_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'treeNumber_ASC'
-  | 'treeNumber_ASC_NULLS_FIRST'
-  | 'treeNumber_DESC'
-  | 'treeNumber_DESC_NULLS_LAST';
+export enum CommitmentBatchEventNewOrderByInput {
+  BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
+  BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
+  BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
+  BatchStartTreePositionDescNullsLast = 'batchStartTreePosition_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  TreeNumberAsc = 'treeNumber_ASC',
+  TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
+  TreeNumberDesc = 'treeNumber_DESC',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST'
+}
 
 export type CommitmentBatchEventNewWhereInput = {
   AND?: InputMaybe<Array<CommitmentBatchEventNewWhereInput>>;
@@ -191,39 +189,40 @@ export type CommitmentCiphertextEdge = {
   node: CommitmentCiphertext;
 };
 
-export type CommitmentCiphertextOrderByInput =
-  | 'annotationData_ASC'
-  | 'annotationData_ASC_NULLS_FIRST'
-  | 'annotationData_DESC'
-  | 'annotationData_DESC_NULLS_LAST'
-  | 'blindedReceiverViewingKey_ASC'
-  | 'blindedReceiverViewingKey_ASC_NULLS_FIRST'
-  | 'blindedReceiverViewingKey_DESC'
-  | 'blindedReceiverViewingKey_DESC_NULLS_LAST'
-  | 'blindedSenderViewingKey_ASC'
-  | 'blindedSenderViewingKey_ASC_NULLS_FIRST'
-  | 'blindedSenderViewingKey_DESC'
-  | 'blindedSenderViewingKey_DESC_NULLS_LAST'
-  | 'ciphertext_id_ASC'
-  | 'ciphertext_id_ASC_NULLS_FIRST'
-  | 'ciphertext_id_DESC'
-  | 'ciphertext_id_DESC_NULLS_LAST'
-  | 'ciphertext_iv_ASC'
-  | 'ciphertext_iv_ASC_NULLS_FIRST'
-  | 'ciphertext_iv_DESC'
-  | 'ciphertext_iv_DESC_NULLS_LAST'
-  | 'ciphertext_tag_ASC'
-  | 'ciphertext_tag_ASC_NULLS_FIRST'
-  | 'ciphertext_tag_DESC'
-  | 'ciphertext_tag_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'memo_ASC'
-  | 'memo_ASC_NULLS_FIRST'
-  | 'memo_DESC'
-  | 'memo_DESC_NULLS_LAST';
+export enum CommitmentCiphertextOrderByInput {
+  AnnotationDataAsc = 'annotationData_ASC',
+  AnnotationDataAscNullsFirst = 'annotationData_ASC_NULLS_FIRST',
+  AnnotationDataDesc = 'annotationData_DESC',
+  AnnotationDataDescNullsLast = 'annotationData_DESC_NULLS_LAST',
+  BlindedReceiverViewingKeyAsc = 'blindedReceiverViewingKey_ASC',
+  BlindedReceiverViewingKeyAscNullsFirst = 'blindedReceiverViewingKey_ASC_NULLS_FIRST',
+  BlindedReceiverViewingKeyDesc = 'blindedReceiverViewingKey_DESC',
+  BlindedReceiverViewingKeyDescNullsLast = 'blindedReceiverViewingKey_DESC_NULLS_LAST',
+  BlindedSenderViewingKeyAsc = 'blindedSenderViewingKey_ASC',
+  BlindedSenderViewingKeyAscNullsFirst = 'blindedSenderViewingKey_ASC_NULLS_FIRST',
+  BlindedSenderViewingKeyDesc = 'blindedSenderViewingKey_DESC',
+  BlindedSenderViewingKeyDescNullsLast = 'blindedSenderViewingKey_DESC_NULLS_LAST',
+  CiphertextIdAsc = 'ciphertext_id_ASC',
+  CiphertextIdAscNullsFirst = 'ciphertext_id_ASC_NULLS_FIRST',
+  CiphertextIdDesc = 'ciphertext_id_DESC',
+  CiphertextIdDescNullsLast = 'ciphertext_id_DESC_NULLS_LAST',
+  CiphertextIvAsc = 'ciphertext_iv_ASC',
+  CiphertextIvAscNullsFirst = 'ciphertext_iv_ASC_NULLS_FIRST',
+  CiphertextIvDesc = 'ciphertext_iv_DESC',
+  CiphertextIvDescNullsLast = 'ciphertext_iv_DESC_NULLS_LAST',
+  CiphertextTagAsc = 'ciphertext_tag_ASC',
+  CiphertextTagAscNullsFirst = 'ciphertext_tag_ASC_NULLS_FIRST',
+  CiphertextTagDesc = 'ciphertext_tag_DESC',
+  CiphertextTagDescNullsLast = 'ciphertext_tag_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  MemoAsc = 'memo_ASC',
+  MemoAscNullsFirst = 'memo_ASC_NULLS_FIRST',
+  MemoDesc = 'memo_DESC',
+  MemoDescNullsLast = 'memo_DESC_NULLS_LAST'
+}
 
 export type CommitmentCiphertextWhereInput = {
   AND?: InputMaybe<Array<CommitmentCiphertextWhereInput>>;
@@ -274,45 +273,46 @@ export type CommitmentEdge = {
   node: Commitment;
 };
 
-export type CommitmentOrderByInput =
-  | '_type_ASC'
-  | '_type_DESC'
-  | 'batchStartTreePosition_ASC'
-  | 'batchStartTreePosition_ASC_NULLS_FIRST'
-  | 'batchStartTreePosition_DESC'
-  | 'batchStartTreePosition_DESC_NULLS_LAST'
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'commitmentType_ASC'
-  | 'commitmentType_ASC_NULLS_FIRST'
-  | 'commitmentType_DESC'
-  | 'commitmentType_DESC_NULLS_LAST'
-  | 'hash_ASC'
-  | 'hash_ASC_NULLS_FIRST'
-  | 'hash_DESC'
-  | 'hash_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST'
-  | 'treeNumber_ASC'
-  | 'treeNumber_ASC_NULLS_FIRST'
-  | 'treeNumber_DESC'
-  | 'treeNumber_DESC_NULLS_LAST'
-  | 'treePosition_ASC'
-  | 'treePosition_ASC_NULLS_FIRST'
-  | 'treePosition_DESC'
-  | 'treePosition_DESC_NULLS_LAST';
+export enum CommitmentOrderByInput {
+  TypeAsc = '_type_ASC',
+  TypeDesc = '_type_DESC',
+  BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
+  BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
+  BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
+  BatchStartTreePositionDescNullsLast = 'batchStartTreePosition_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  CommitmentTypeAsc = 'commitmentType_ASC',
+  CommitmentTypeAscNullsFirst = 'commitmentType_ASC_NULLS_FIRST',
+  CommitmentTypeDesc = 'commitmentType_DESC',
+  CommitmentTypeDescNullsLast = 'commitmentType_DESC_NULLS_LAST',
+  HashAsc = 'hash_ASC',
+  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
+  HashDesc = 'hash_DESC',
+  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  TreeNumberAsc = 'treeNumber_ASC',
+  TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
+  TreeNumberDesc = 'treeNumber_DESC',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST',
+  TreePositionAsc = 'treePosition_ASC',
+  TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
+  TreePositionDesc = 'treePosition_DESC',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
+}
 
 export type CommitmentPreimage = {
   __typename?: 'CommitmentPreimage';
@@ -328,35 +328,36 @@ export type CommitmentPreimageEdge = {
   node: CommitmentPreimage;
 };
 
-export type CommitmentPreimageOrderByInput =
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'npk_ASC'
-  | 'npk_ASC_NULLS_FIRST'
-  | 'npk_DESC'
-  | 'npk_DESC_NULLS_LAST'
-  | 'token_id_ASC'
-  | 'token_id_ASC_NULLS_FIRST'
-  | 'token_id_DESC'
-  | 'token_id_DESC_NULLS_LAST'
-  | 'token_tokenAddress_ASC'
-  | 'token_tokenAddress_ASC_NULLS_FIRST'
-  | 'token_tokenAddress_DESC'
-  | 'token_tokenAddress_DESC_NULLS_LAST'
-  | 'token_tokenSubID_ASC'
-  | 'token_tokenSubID_ASC_NULLS_FIRST'
-  | 'token_tokenSubID_DESC'
-  | 'token_tokenSubID_DESC_NULLS_LAST'
-  | 'token_tokenType_ASC'
-  | 'token_tokenType_ASC_NULLS_FIRST'
-  | 'token_tokenType_DESC'
-  | 'token_tokenType_DESC_NULLS_LAST'
-  | 'value_ASC'
-  | 'value_ASC_NULLS_FIRST'
-  | 'value_DESC'
-  | 'value_DESC_NULLS_LAST';
+export enum CommitmentPreimageOrderByInput {
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  NpkAsc = 'npk_ASC',
+  NpkAscNullsFirst = 'npk_ASC_NULLS_FIRST',
+  NpkDesc = 'npk_DESC',
+  NpkDescNullsLast = 'npk_DESC_NULLS_LAST',
+  TokenIdAsc = 'token_id_ASC',
+  TokenIdAscNullsFirst = 'token_id_ASC_NULLS_FIRST',
+  TokenIdDesc = 'token_id_DESC',
+  TokenIdDescNullsLast = 'token_id_DESC_NULLS_LAST',
+  TokenTokenAddressAsc = 'token_tokenAddress_ASC',
+  TokenTokenAddressAscNullsFirst = 'token_tokenAddress_ASC_NULLS_FIRST',
+  TokenTokenAddressDesc = 'token_tokenAddress_DESC',
+  TokenTokenAddressDescNullsLast = 'token_tokenAddress_DESC_NULLS_LAST',
+  TokenTokenSubIdAsc = 'token_tokenSubID_ASC',
+  TokenTokenSubIdAscNullsFirst = 'token_tokenSubID_ASC_NULLS_FIRST',
+  TokenTokenSubIdDesc = 'token_tokenSubID_DESC',
+  TokenTokenSubIdDescNullsLast = 'token_tokenSubID_DESC_NULLS_LAST',
+  TokenTokenTypeAsc = 'token_tokenType_ASC',
+  TokenTokenTypeAscNullsFirst = 'token_tokenType_ASC_NULLS_FIRST',
+  TokenTokenTypeDesc = 'token_tokenType_DESC',
+  TokenTokenTypeDescNullsLast = 'token_tokenType_DESC_NULLS_LAST',
+  ValueAsc = 'value_ASC',
+  ValueAscNullsFirst = 'value_ASC_NULLS_FIRST',
+  ValueDesc = 'value_DESC',
+  ValueDescNullsLast = 'value_DESC_NULLS_LAST'
+}
 
 export type CommitmentPreimageWhereInput = {
   AND?: InputMaybe<Array<CommitmentPreimageWhereInput>>;
@@ -401,11 +402,12 @@ export type CommitmentPreimagesConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
-export type CommitmentType =
-  | 'LegacyEncryptedCommitment'
-  | 'LegacyGeneratedCommitment'
-  | 'ShieldCommitment'
-  | 'TransactCommitment';
+export enum CommitmentType {
+  LegacyEncryptedCommitment = 'LegacyEncryptedCommitment',
+  LegacyGeneratedCommitment = 'LegacyGeneratedCommitment',
+  ShieldCommitment = 'ShieldCommitment',
+  TransactCommitment = 'TransactCommitment'
+}
 
 export type CommitmentWhereInput = {
   AND?: InputMaybe<Array<CommitmentWhereInput>>;
@@ -512,23 +514,24 @@ export type LegacyCommitmentCiphertextEdge = {
   node: LegacyCommitmentCiphertext;
 };
 
-export type LegacyCommitmentCiphertextOrderByInput =
-  | 'ciphertext_id_ASC'
-  | 'ciphertext_id_ASC_NULLS_FIRST'
-  | 'ciphertext_id_DESC'
-  | 'ciphertext_id_DESC_NULLS_LAST'
-  | 'ciphertext_iv_ASC'
-  | 'ciphertext_iv_ASC_NULLS_FIRST'
-  | 'ciphertext_iv_DESC'
-  | 'ciphertext_iv_DESC_NULLS_LAST'
-  | 'ciphertext_tag_ASC'
-  | 'ciphertext_tag_ASC_NULLS_FIRST'
-  | 'ciphertext_tag_DESC'
-  | 'ciphertext_tag_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST';
+export enum LegacyCommitmentCiphertextOrderByInput {
+  CiphertextIdAsc = 'ciphertext_id_ASC',
+  CiphertextIdAscNullsFirst = 'ciphertext_id_ASC_NULLS_FIRST',
+  CiphertextIdDesc = 'ciphertext_id_DESC',
+  CiphertextIdDescNullsLast = 'ciphertext_id_DESC_NULLS_LAST',
+  CiphertextIvAsc = 'ciphertext_iv_ASC',
+  CiphertextIvAscNullsFirst = 'ciphertext_iv_ASC_NULLS_FIRST',
+  CiphertextIvDesc = 'ciphertext_iv_DESC',
+  CiphertextIvDescNullsLast = 'ciphertext_iv_DESC_NULLS_LAST',
+  CiphertextTagAsc = 'ciphertext_tag_ASC',
+  CiphertextTagAscNullsFirst = 'ciphertext_tag_ASC_NULLS_FIRST',
+  CiphertextTagDesc = 'ciphertext_tag_DESC',
+  CiphertextTagDescNullsLast = 'ciphertext_tag_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST'
+}
 
 export type LegacyCommitmentCiphertextWhereInput = {
   AND?: InputMaybe<Array<LegacyCommitmentCiphertextWhereInput>>;
@@ -589,47 +592,48 @@ export type LegacyEncryptedCommitmentEdge = {
   node: LegacyEncryptedCommitment;
 };
 
-export type LegacyEncryptedCommitmentOrderByInput =
-  | 'batchStartTreePosition_ASC'
-  | 'batchStartTreePosition_ASC_NULLS_FIRST'
-  | 'batchStartTreePosition_DESC'
-  | 'batchStartTreePosition_DESC_NULLS_LAST'
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'ciphertext_id_ASC'
-  | 'ciphertext_id_ASC_NULLS_FIRST'
-  | 'ciphertext_id_DESC'
-  | 'ciphertext_id_DESC_NULLS_LAST'
-  | 'commitmentType_ASC'
-  | 'commitmentType_ASC_NULLS_FIRST'
-  | 'commitmentType_DESC'
-  | 'commitmentType_DESC_NULLS_LAST'
-  | 'hash_ASC'
-  | 'hash_ASC_NULLS_FIRST'
-  | 'hash_DESC'
-  | 'hash_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST'
-  | 'treeNumber_ASC'
-  | 'treeNumber_ASC_NULLS_FIRST'
-  | 'treeNumber_DESC'
-  | 'treeNumber_DESC_NULLS_LAST'
-  | 'treePosition_ASC'
-  | 'treePosition_ASC_NULLS_FIRST'
-  | 'treePosition_DESC'
-  | 'treePosition_DESC_NULLS_LAST';
+export enum LegacyEncryptedCommitmentOrderByInput {
+  BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
+  BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
+  BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
+  BatchStartTreePositionDescNullsLast = 'batchStartTreePosition_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  CiphertextIdAsc = 'ciphertext_id_ASC',
+  CiphertextIdAscNullsFirst = 'ciphertext_id_ASC_NULLS_FIRST',
+  CiphertextIdDesc = 'ciphertext_id_DESC',
+  CiphertextIdDescNullsLast = 'ciphertext_id_DESC_NULLS_LAST',
+  CommitmentTypeAsc = 'commitmentType_ASC',
+  CommitmentTypeAscNullsFirst = 'commitmentType_ASC_NULLS_FIRST',
+  CommitmentTypeDesc = 'commitmentType_DESC',
+  CommitmentTypeDescNullsLast = 'commitmentType_DESC_NULLS_LAST',
+  HashAsc = 'hash_ASC',
+  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
+  HashDesc = 'hash_DESC',
+  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  TreeNumberAsc = 'treeNumber_ASC',
+  TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
+  TreeNumberDesc = 'treeNumber_DESC',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST',
+  TreePositionAsc = 'treePosition_ASC',
+  TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
+  TreePositionDesc = 'treePosition_DESC',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
+}
 
 export type LegacyEncryptedCommitmentWhereInput = {
   AND?: InputMaybe<Array<LegacyEncryptedCommitmentWhereInput>>;
@@ -745,55 +749,56 @@ export type LegacyGeneratedCommitmentEdge = {
   node: LegacyGeneratedCommitment;
 };
 
-export type LegacyGeneratedCommitmentOrderByInput =
-  | 'batchStartTreePosition_ASC'
-  | 'batchStartTreePosition_ASC_NULLS_FIRST'
-  | 'batchStartTreePosition_DESC'
-  | 'batchStartTreePosition_DESC_NULLS_LAST'
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'commitmentType_ASC'
-  | 'commitmentType_ASC_NULLS_FIRST'
-  | 'commitmentType_DESC'
-  | 'commitmentType_DESC_NULLS_LAST'
-  | 'hash_ASC'
-  | 'hash_ASC_NULLS_FIRST'
-  | 'hash_DESC'
-  | 'hash_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'preimage_id_ASC'
-  | 'preimage_id_ASC_NULLS_FIRST'
-  | 'preimage_id_DESC'
-  | 'preimage_id_DESC_NULLS_LAST'
-  | 'preimage_npk_ASC'
-  | 'preimage_npk_ASC_NULLS_FIRST'
-  | 'preimage_npk_DESC'
-  | 'preimage_npk_DESC_NULLS_LAST'
-  | 'preimage_value_ASC'
-  | 'preimage_value_ASC_NULLS_FIRST'
-  | 'preimage_value_DESC'
-  | 'preimage_value_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST'
-  | 'treeNumber_ASC'
-  | 'treeNumber_ASC_NULLS_FIRST'
-  | 'treeNumber_DESC'
-  | 'treeNumber_DESC_NULLS_LAST'
-  | 'treePosition_ASC'
-  | 'treePosition_ASC_NULLS_FIRST'
-  | 'treePosition_DESC'
-  | 'treePosition_DESC_NULLS_LAST';
+export enum LegacyGeneratedCommitmentOrderByInput {
+  BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
+  BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
+  BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
+  BatchStartTreePositionDescNullsLast = 'batchStartTreePosition_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  CommitmentTypeAsc = 'commitmentType_ASC',
+  CommitmentTypeAscNullsFirst = 'commitmentType_ASC_NULLS_FIRST',
+  CommitmentTypeDesc = 'commitmentType_DESC',
+  CommitmentTypeDescNullsLast = 'commitmentType_DESC_NULLS_LAST',
+  HashAsc = 'hash_ASC',
+  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
+  HashDesc = 'hash_DESC',
+  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  PreimageIdAsc = 'preimage_id_ASC',
+  PreimageIdAscNullsFirst = 'preimage_id_ASC_NULLS_FIRST',
+  PreimageIdDesc = 'preimage_id_DESC',
+  PreimageIdDescNullsLast = 'preimage_id_DESC_NULLS_LAST',
+  PreimageNpkAsc = 'preimage_npk_ASC',
+  PreimageNpkAscNullsFirst = 'preimage_npk_ASC_NULLS_FIRST',
+  PreimageNpkDesc = 'preimage_npk_DESC',
+  PreimageNpkDescNullsLast = 'preimage_npk_DESC_NULLS_LAST',
+  PreimageValueAsc = 'preimage_value_ASC',
+  PreimageValueAscNullsFirst = 'preimage_value_ASC_NULLS_FIRST',
+  PreimageValueDesc = 'preimage_value_DESC',
+  PreimageValueDescNullsLast = 'preimage_value_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  TreeNumberAsc = 'treeNumber_ASC',
+  TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
+  TreeNumberDesc = 'treeNumber_DESC',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST',
+  TreePositionAsc = 'treePosition_ASC',
+  TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
+  TreePositionDesc = 'treePosition_DESC',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
+}
 
 export type LegacyGeneratedCommitmentWhereInput = {
   AND?: InputMaybe<Array<LegacyGeneratedCommitmentWhereInput>>;
@@ -908,31 +913,32 @@ export type NullifierEdge = {
   node: Nullifier;
 };
 
-export type NullifierOrderByInput =
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'nullifier_ASC'
-  | 'nullifier_ASC_NULLS_FIRST'
-  | 'nullifier_DESC'
-  | 'nullifier_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST'
-  | 'treeNumber_ASC'
-  | 'treeNumber_ASC_NULLS_FIRST'
-  | 'treeNumber_DESC'
-  | 'treeNumber_DESC_NULLS_LAST';
+export enum NullifierOrderByInput {
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  NullifierAsc = 'nullifier_ASC',
+  NullifierAscNullsFirst = 'nullifier_ASC_NULLS_FIRST',
+  NullifierDesc = 'nullifier_DESC',
+  NullifierDescNullsLast = 'nullifier_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  TreeNumberAsc = 'treeNumber_ASC',
+  TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
+  TreeNumberDesc = 'treeNumber_DESC',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST'
+}
 
 export type NullifierWhereInput = {
   AND?: InputMaybe<Array<NullifierWhereInput>>;
@@ -1484,63 +1490,64 @@ export type ShieldCommitmentEdge = {
   node: ShieldCommitment;
 };
 
-export type ShieldCommitmentOrderByInput =
-  | 'batchStartTreePosition_ASC'
-  | 'batchStartTreePosition_ASC_NULLS_FIRST'
-  | 'batchStartTreePosition_DESC'
-  | 'batchStartTreePosition_DESC_NULLS_LAST'
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'commitmentType_ASC'
-  | 'commitmentType_ASC_NULLS_FIRST'
-  | 'commitmentType_DESC'
-  | 'commitmentType_DESC_NULLS_LAST'
-  | 'fee_ASC'
-  | 'fee_ASC_NULLS_FIRST'
-  | 'fee_DESC'
-  | 'fee_DESC_NULLS_LAST'
-  | 'hash_ASC'
-  | 'hash_ASC_NULLS_FIRST'
-  | 'hash_DESC'
-  | 'hash_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'preimage_id_ASC'
-  | 'preimage_id_ASC_NULLS_FIRST'
-  | 'preimage_id_DESC'
-  | 'preimage_id_DESC_NULLS_LAST'
-  | 'preimage_npk_ASC'
-  | 'preimage_npk_ASC_NULLS_FIRST'
-  | 'preimage_npk_DESC'
-  | 'preimage_npk_DESC_NULLS_LAST'
-  | 'preimage_value_ASC'
-  | 'preimage_value_ASC_NULLS_FIRST'
-  | 'preimage_value_DESC'
-  | 'preimage_value_DESC_NULLS_LAST'
-  | 'shieldKey_ASC'
-  | 'shieldKey_ASC_NULLS_FIRST'
-  | 'shieldKey_DESC'
-  | 'shieldKey_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST'
-  | 'treeNumber_ASC'
-  | 'treeNumber_ASC_NULLS_FIRST'
-  | 'treeNumber_DESC'
-  | 'treeNumber_DESC_NULLS_LAST'
-  | 'treePosition_ASC'
-  | 'treePosition_ASC_NULLS_FIRST'
-  | 'treePosition_DESC'
-  | 'treePosition_DESC_NULLS_LAST';
+export enum ShieldCommitmentOrderByInput {
+  BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
+  BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
+  BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
+  BatchStartTreePositionDescNullsLast = 'batchStartTreePosition_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  CommitmentTypeAsc = 'commitmentType_ASC',
+  CommitmentTypeAscNullsFirst = 'commitmentType_ASC_NULLS_FIRST',
+  CommitmentTypeDesc = 'commitmentType_DESC',
+  CommitmentTypeDescNullsLast = 'commitmentType_DESC_NULLS_LAST',
+  FeeAsc = 'fee_ASC',
+  FeeAscNullsFirst = 'fee_ASC_NULLS_FIRST',
+  FeeDesc = 'fee_DESC',
+  FeeDescNullsLast = 'fee_DESC_NULLS_LAST',
+  HashAsc = 'hash_ASC',
+  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
+  HashDesc = 'hash_DESC',
+  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  PreimageIdAsc = 'preimage_id_ASC',
+  PreimageIdAscNullsFirst = 'preimage_id_ASC_NULLS_FIRST',
+  PreimageIdDesc = 'preimage_id_DESC',
+  PreimageIdDescNullsLast = 'preimage_id_DESC_NULLS_LAST',
+  PreimageNpkAsc = 'preimage_npk_ASC',
+  PreimageNpkAscNullsFirst = 'preimage_npk_ASC_NULLS_FIRST',
+  PreimageNpkDesc = 'preimage_npk_DESC',
+  PreimageNpkDescNullsLast = 'preimage_npk_DESC_NULLS_LAST',
+  PreimageValueAsc = 'preimage_value_ASC',
+  PreimageValueAscNullsFirst = 'preimage_value_ASC_NULLS_FIRST',
+  PreimageValueDesc = 'preimage_value_DESC',
+  PreimageValueDescNullsLast = 'preimage_value_DESC_NULLS_LAST',
+  ShieldKeyAsc = 'shieldKey_ASC',
+  ShieldKeyAscNullsFirst = 'shieldKey_ASC_NULLS_FIRST',
+  ShieldKeyDesc = 'shieldKey_DESC',
+  ShieldKeyDescNullsLast = 'shieldKey_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  TreeNumberAsc = 'treeNumber_ASC',
+  TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
+  TreeNumberDesc = 'treeNumber_DESC',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST',
+  TreePositionAsc = 'treePosition_ASC',
+  TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
+  TreePositionDesc = 'treePosition_DESC',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
+}
 
 export type ShieldCommitmentWhereInput = {
   AND?: InputMaybe<Array<ShieldCommitmentWhereInput>>;
@@ -1671,28 +1678,30 @@ export type TokenEdge = {
   node: Token;
 };
 
-export type TokenOrderByInput =
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'tokenAddress_ASC'
-  | 'tokenAddress_ASC_NULLS_FIRST'
-  | 'tokenAddress_DESC'
-  | 'tokenAddress_DESC_NULLS_LAST'
-  | 'tokenSubID_ASC'
-  | 'tokenSubID_ASC_NULLS_FIRST'
-  | 'tokenSubID_DESC'
-  | 'tokenSubID_DESC_NULLS_LAST'
-  | 'tokenType_ASC'
-  | 'tokenType_ASC_NULLS_FIRST'
-  | 'tokenType_DESC'
-  | 'tokenType_DESC_NULLS_LAST';
+export enum TokenOrderByInput {
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  TokenAddressAsc = 'tokenAddress_ASC',
+  TokenAddressAscNullsFirst = 'tokenAddress_ASC_NULLS_FIRST',
+  TokenAddressDesc = 'tokenAddress_DESC',
+  TokenAddressDescNullsLast = 'tokenAddress_DESC_NULLS_LAST',
+  TokenSubIdAsc = 'tokenSubID_ASC',
+  TokenSubIdAscNullsFirst = 'tokenSubID_ASC_NULLS_FIRST',
+  TokenSubIdDesc = 'tokenSubID_DESC',
+  TokenSubIdDescNullsLast = 'tokenSubID_DESC_NULLS_LAST',
+  TokenTypeAsc = 'tokenType_ASC',
+  TokenTypeAscNullsFirst = 'tokenType_ASC_NULLS_FIRST',
+  TokenTypeDesc = 'tokenType_DESC',
+  TokenTypeDescNullsLast = 'tokenType_DESC_NULLS_LAST'
+}
 
-export type TokenType =
-  | 'ERC20'
-  | 'ERC721'
-  | 'ERC1155';
+export enum TokenType {
+  Erc20 = 'ERC20',
+  Erc721 = 'ERC721',
+  Erc1155 = 'ERC1155'
+}
 
 export type TokenWhereInput = {
   AND?: InputMaybe<Array<TokenWhereInput>>;
@@ -1768,63 +1777,64 @@ export type TransactCommitmentEdge = {
   node: TransactCommitment;
 };
 
-export type TransactCommitmentOrderByInput =
-  | 'batchStartTreePosition_ASC'
-  | 'batchStartTreePosition_ASC_NULLS_FIRST'
-  | 'batchStartTreePosition_DESC'
-  | 'batchStartTreePosition_DESC_NULLS_LAST'
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'ciphertext_annotationData_ASC'
-  | 'ciphertext_annotationData_ASC_NULLS_FIRST'
-  | 'ciphertext_annotationData_DESC'
-  | 'ciphertext_annotationData_DESC_NULLS_LAST'
-  | 'ciphertext_blindedReceiverViewingKey_ASC'
-  | 'ciphertext_blindedReceiverViewingKey_ASC_NULLS_FIRST'
-  | 'ciphertext_blindedReceiverViewingKey_DESC'
-  | 'ciphertext_blindedReceiverViewingKey_DESC_NULLS_LAST'
-  | 'ciphertext_blindedSenderViewingKey_ASC'
-  | 'ciphertext_blindedSenderViewingKey_ASC_NULLS_FIRST'
-  | 'ciphertext_blindedSenderViewingKey_DESC'
-  | 'ciphertext_blindedSenderViewingKey_DESC_NULLS_LAST'
-  | 'ciphertext_id_ASC'
-  | 'ciphertext_id_ASC_NULLS_FIRST'
-  | 'ciphertext_id_DESC'
-  | 'ciphertext_id_DESC_NULLS_LAST'
-  | 'ciphertext_memo_ASC'
-  | 'ciphertext_memo_ASC_NULLS_FIRST'
-  | 'ciphertext_memo_DESC'
-  | 'ciphertext_memo_DESC_NULLS_LAST'
-  | 'commitmentType_ASC'
-  | 'commitmentType_ASC_NULLS_FIRST'
-  | 'commitmentType_DESC'
-  | 'commitmentType_DESC_NULLS_LAST'
-  | 'hash_ASC'
-  | 'hash_ASC_NULLS_FIRST'
-  | 'hash_DESC'
-  | 'hash_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST'
-  | 'treeNumber_ASC'
-  | 'treeNumber_ASC_NULLS_FIRST'
-  | 'treeNumber_DESC'
-  | 'treeNumber_DESC_NULLS_LAST'
-  | 'treePosition_ASC'
-  | 'treePosition_ASC_NULLS_FIRST'
-  | 'treePosition_DESC'
-  | 'treePosition_DESC_NULLS_LAST';
+export enum TransactCommitmentOrderByInput {
+  BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
+  BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
+  BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
+  BatchStartTreePositionDescNullsLast = 'batchStartTreePosition_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  CiphertextAnnotationDataAsc = 'ciphertext_annotationData_ASC',
+  CiphertextAnnotationDataAscNullsFirst = 'ciphertext_annotationData_ASC_NULLS_FIRST',
+  CiphertextAnnotationDataDesc = 'ciphertext_annotationData_DESC',
+  CiphertextAnnotationDataDescNullsLast = 'ciphertext_annotationData_DESC_NULLS_LAST',
+  CiphertextBlindedReceiverViewingKeyAsc = 'ciphertext_blindedReceiverViewingKey_ASC',
+  CiphertextBlindedReceiverViewingKeyAscNullsFirst = 'ciphertext_blindedReceiverViewingKey_ASC_NULLS_FIRST',
+  CiphertextBlindedReceiverViewingKeyDesc = 'ciphertext_blindedReceiverViewingKey_DESC',
+  CiphertextBlindedReceiverViewingKeyDescNullsLast = 'ciphertext_blindedReceiverViewingKey_DESC_NULLS_LAST',
+  CiphertextBlindedSenderViewingKeyAsc = 'ciphertext_blindedSenderViewingKey_ASC',
+  CiphertextBlindedSenderViewingKeyAscNullsFirst = 'ciphertext_blindedSenderViewingKey_ASC_NULLS_FIRST',
+  CiphertextBlindedSenderViewingKeyDesc = 'ciphertext_blindedSenderViewingKey_DESC',
+  CiphertextBlindedSenderViewingKeyDescNullsLast = 'ciphertext_blindedSenderViewingKey_DESC_NULLS_LAST',
+  CiphertextIdAsc = 'ciphertext_id_ASC',
+  CiphertextIdAscNullsFirst = 'ciphertext_id_ASC_NULLS_FIRST',
+  CiphertextIdDesc = 'ciphertext_id_DESC',
+  CiphertextIdDescNullsLast = 'ciphertext_id_DESC_NULLS_LAST',
+  CiphertextMemoAsc = 'ciphertext_memo_ASC',
+  CiphertextMemoAscNullsFirst = 'ciphertext_memo_ASC_NULLS_FIRST',
+  CiphertextMemoDesc = 'ciphertext_memo_DESC',
+  CiphertextMemoDescNullsLast = 'ciphertext_memo_DESC_NULLS_LAST',
+  CommitmentTypeAsc = 'commitmentType_ASC',
+  CommitmentTypeAscNullsFirst = 'commitmentType_ASC_NULLS_FIRST',
+  CommitmentTypeDesc = 'commitmentType_DESC',
+  CommitmentTypeDescNullsLast = 'commitmentType_DESC_NULLS_LAST',
+  HashAsc = 'hash_ASC',
+  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
+  HashDesc = 'hash_DESC',
+  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  TreeNumberAsc = 'treeNumber_ASC',
+  TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
+  TreeNumberDesc = 'treeNumber_DESC',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST',
+  TreePositionAsc = 'treePosition_ASC',
+  TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
+  TreePositionDesc = 'treePosition_DESC',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
+}
 
 export type TransactCommitmentWhereInput = {
   AND?: InputMaybe<Array<TransactCommitmentWhereInput>>;
@@ -1964,75 +1974,76 @@ export type TransactionInterface = {
   verificationHash: Scalars['Bytes']['output'];
 };
 
-export type TransactionOrderByInput =
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'boundParamsHash_ASC'
-  | 'boundParamsHash_ASC_NULLS_FIRST'
-  | 'boundParamsHash_DESC'
-  | 'boundParamsHash_DESC_NULLS_LAST'
-  | 'hasUnshield_ASC'
-  | 'hasUnshield_ASC_NULLS_FIRST'
-  | 'hasUnshield_DESC'
-  | 'hasUnshield_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'merkleRoot_ASC'
-  | 'merkleRoot_ASC_NULLS_FIRST'
-  | 'merkleRoot_DESC'
-  | 'merkleRoot_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST'
-  | 'unshieldToAddress_ASC'
-  | 'unshieldToAddress_ASC_NULLS_FIRST'
-  | 'unshieldToAddress_DESC'
-  | 'unshieldToAddress_DESC_NULLS_LAST'
-  | 'unshieldToken_id_ASC'
-  | 'unshieldToken_id_ASC_NULLS_FIRST'
-  | 'unshieldToken_id_DESC'
-  | 'unshieldToken_id_DESC_NULLS_LAST'
-  | 'unshieldToken_tokenAddress_ASC'
-  | 'unshieldToken_tokenAddress_ASC_NULLS_FIRST'
-  | 'unshieldToken_tokenAddress_DESC'
-  | 'unshieldToken_tokenAddress_DESC_NULLS_LAST'
-  | 'unshieldToken_tokenSubID_ASC'
-  | 'unshieldToken_tokenSubID_ASC_NULLS_FIRST'
-  | 'unshieldToken_tokenSubID_DESC'
-  | 'unshieldToken_tokenSubID_DESC_NULLS_LAST'
-  | 'unshieldToken_tokenType_ASC'
-  | 'unshieldToken_tokenType_ASC_NULLS_FIRST'
-  | 'unshieldToken_tokenType_DESC'
-  | 'unshieldToken_tokenType_DESC_NULLS_LAST'
-  | 'unshieldValue_ASC'
-  | 'unshieldValue_ASC_NULLS_FIRST'
-  | 'unshieldValue_DESC'
-  | 'unshieldValue_DESC_NULLS_LAST'
-  | 'utxoBatchStartPositionOut_ASC'
-  | 'utxoBatchStartPositionOut_ASC_NULLS_FIRST'
-  | 'utxoBatchStartPositionOut_DESC'
-  | 'utxoBatchStartPositionOut_DESC_NULLS_LAST'
-  | 'utxoTreeIn_ASC'
-  | 'utxoTreeIn_ASC_NULLS_FIRST'
-  | 'utxoTreeIn_DESC'
-  | 'utxoTreeIn_DESC_NULLS_LAST'
-  | 'utxoTreeOut_ASC'
-  | 'utxoTreeOut_ASC_NULLS_FIRST'
-  | 'utxoTreeOut_DESC'
-  | 'utxoTreeOut_DESC_NULLS_LAST'
-  | 'verificationHash_ASC'
-  | 'verificationHash_ASC_NULLS_FIRST'
-  | 'verificationHash_DESC'
-  | 'verificationHash_DESC_NULLS_LAST';
+export enum TransactionOrderByInput {
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  BoundParamsHashAsc = 'boundParamsHash_ASC',
+  BoundParamsHashAscNullsFirst = 'boundParamsHash_ASC_NULLS_FIRST',
+  BoundParamsHashDesc = 'boundParamsHash_DESC',
+  BoundParamsHashDescNullsLast = 'boundParamsHash_DESC_NULLS_LAST',
+  HasUnshieldAsc = 'hasUnshield_ASC',
+  HasUnshieldAscNullsFirst = 'hasUnshield_ASC_NULLS_FIRST',
+  HasUnshieldDesc = 'hasUnshield_DESC',
+  HasUnshieldDescNullsLast = 'hasUnshield_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  MerkleRootAsc = 'merkleRoot_ASC',
+  MerkleRootAscNullsFirst = 'merkleRoot_ASC_NULLS_FIRST',
+  MerkleRootDesc = 'merkleRoot_DESC',
+  MerkleRootDescNullsLast = 'merkleRoot_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  UnshieldToAddressAsc = 'unshieldToAddress_ASC',
+  UnshieldToAddressAscNullsFirst = 'unshieldToAddress_ASC_NULLS_FIRST',
+  UnshieldToAddressDesc = 'unshieldToAddress_DESC',
+  UnshieldToAddressDescNullsLast = 'unshieldToAddress_DESC_NULLS_LAST',
+  UnshieldTokenIdAsc = 'unshieldToken_id_ASC',
+  UnshieldTokenIdAscNullsFirst = 'unshieldToken_id_ASC_NULLS_FIRST',
+  UnshieldTokenIdDesc = 'unshieldToken_id_DESC',
+  UnshieldTokenIdDescNullsLast = 'unshieldToken_id_DESC_NULLS_LAST',
+  UnshieldTokenTokenAddressAsc = 'unshieldToken_tokenAddress_ASC',
+  UnshieldTokenTokenAddressAscNullsFirst = 'unshieldToken_tokenAddress_ASC_NULLS_FIRST',
+  UnshieldTokenTokenAddressDesc = 'unshieldToken_tokenAddress_DESC',
+  UnshieldTokenTokenAddressDescNullsLast = 'unshieldToken_tokenAddress_DESC_NULLS_LAST',
+  UnshieldTokenTokenSubIdAsc = 'unshieldToken_tokenSubID_ASC',
+  UnshieldTokenTokenSubIdAscNullsFirst = 'unshieldToken_tokenSubID_ASC_NULLS_FIRST',
+  UnshieldTokenTokenSubIdDesc = 'unshieldToken_tokenSubID_DESC',
+  UnshieldTokenTokenSubIdDescNullsLast = 'unshieldToken_tokenSubID_DESC_NULLS_LAST',
+  UnshieldTokenTokenTypeAsc = 'unshieldToken_tokenType_ASC',
+  UnshieldTokenTokenTypeAscNullsFirst = 'unshieldToken_tokenType_ASC_NULLS_FIRST',
+  UnshieldTokenTokenTypeDesc = 'unshieldToken_tokenType_DESC',
+  UnshieldTokenTokenTypeDescNullsLast = 'unshieldToken_tokenType_DESC_NULLS_LAST',
+  UnshieldValueAsc = 'unshieldValue_ASC',
+  UnshieldValueAscNullsFirst = 'unshieldValue_ASC_NULLS_FIRST',
+  UnshieldValueDesc = 'unshieldValue_DESC',
+  UnshieldValueDescNullsLast = 'unshieldValue_DESC_NULLS_LAST',
+  UtxoBatchStartPositionOutAsc = 'utxoBatchStartPositionOut_ASC',
+  UtxoBatchStartPositionOutAscNullsFirst = 'utxoBatchStartPositionOut_ASC_NULLS_FIRST',
+  UtxoBatchStartPositionOutDesc = 'utxoBatchStartPositionOut_DESC',
+  UtxoBatchStartPositionOutDescNullsLast = 'utxoBatchStartPositionOut_DESC_NULLS_LAST',
+  UtxoTreeInAsc = 'utxoTreeIn_ASC',
+  UtxoTreeInAscNullsFirst = 'utxoTreeIn_ASC_NULLS_FIRST',
+  UtxoTreeInDesc = 'utxoTreeIn_DESC',
+  UtxoTreeInDescNullsLast = 'utxoTreeIn_DESC_NULLS_LAST',
+  UtxoTreeOutAsc = 'utxoTreeOut_ASC',
+  UtxoTreeOutAscNullsFirst = 'utxoTreeOut_ASC_NULLS_FIRST',
+  UtxoTreeOutDesc = 'utxoTreeOut_DESC',
+  UtxoTreeOutDescNullsLast = 'utxoTreeOut_DESC_NULLS_LAST',
+  VerificationHashAsc = 'verificationHash_ASC',
+  VerificationHashAscNullsFirst = 'verificationHash_ASC_NULLS_FIRST',
+  VerificationHashDesc = 'verificationHash_DESC',
+  VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST'
+}
 
 export type TransactionWhereInput = {
   AND?: InputMaybe<Array<TransactionWhereInput>>;
@@ -2164,55 +2175,56 @@ export type UnshieldEdge = {
   node: Unshield;
 };
 
-export type UnshieldOrderByInput =
-  | 'amount_ASC'
-  | 'amount_ASC_NULLS_FIRST'
-  | 'amount_DESC'
-  | 'amount_DESC_NULLS_LAST'
-  | 'blockNumber_ASC'
-  | 'blockNumber_ASC_NULLS_FIRST'
-  | 'blockNumber_DESC'
-  | 'blockNumber_DESC_NULLS_LAST'
-  | 'blockTimestamp_ASC'
-  | 'blockTimestamp_ASC_NULLS_FIRST'
-  | 'blockTimestamp_DESC'
-  | 'blockTimestamp_DESC_NULLS_LAST'
-  | 'eventLogIndex_ASC'
-  | 'eventLogIndex_ASC_NULLS_FIRST'
-  | 'eventLogIndex_DESC'
-  | 'eventLogIndex_DESC_NULLS_LAST'
-  | 'fee_ASC'
-  | 'fee_ASC_NULLS_FIRST'
-  | 'fee_DESC'
-  | 'fee_DESC_NULLS_LAST'
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'to_ASC'
-  | 'to_ASC_NULLS_FIRST'
-  | 'to_DESC'
-  | 'to_DESC_NULLS_LAST'
-  | 'token_id_ASC'
-  | 'token_id_ASC_NULLS_FIRST'
-  | 'token_id_DESC'
-  | 'token_id_DESC_NULLS_LAST'
-  | 'token_tokenAddress_ASC'
-  | 'token_tokenAddress_ASC_NULLS_FIRST'
-  | 'token_tokenAddress_DESC'
-  | 'token_tokenAddress_DESC_NULLS_LAST'
-  | 'token_tokenSubID_ASC'
-  | 'token_tokenSubID_ASC_NULLS_FIRST'
-  | 'token_tokenSubID_DESC'
-  | 'token_tokenSubID_DESC_NULLS_LAST'
-  | 'token_tokenType_ASC'
-  | 'token_tokenType_ASC_NULLS_FIRST'
-  | 'token_tokenType_DESC'
-  | 'token_tokenType_DESC_NULLS_LAST'
-  | 'transactionHash_ASC'
-  | 'transactionHash_ASC_NULLS_FIRST'
-  | 'transactionHash_DESC'
-  | 'transactionHash_DESC_NULLS_LAST';
+export enum UnshieldOrderByInput {
+  AmountAsc = 'amount_ASC',
+  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
+  AmountDesc = 'amount_DESC',
+  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
+  BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'blockTimestamp_ASC',
+  BlockTimestampAscNullsFirst = 'blockTimestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'blockTimestamp_DESC',
+  BlockTimestampDescNullsLast = 'blockTimestamp_DESC_NULLS_LAST',
+  EventLogIndexAsc = 'eventLogIndex_ASC',
+  EventLogIndexAscNullsFirst = 'eventLogIndex_ASC_NULLS_FIRST',
+  EventLogIndexDesc = 'eventLogIndex_DESC',
+  EventLogIndexDescNullsLast = 'eventLogIndex_DESC_NULLS_LAST',
+  FeeAsc = 'fee_ASC',
+  FeeAscNullsFirst = 'fee_ASC_NULLS_FIRST',
+  FeeDesc = 'fee_DESC',
+  FeeDescNullsLast = 'fee_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  ToAsc = 'to_ASC',
+  ToAscNullsFirst = 'to_ASC_NULLS_FIRST',
+  ToDesc = 'to_DESC',
+  ToDescNullsLast = 'to_DESC_NULLS_LAST',
+  TokenIdAsc = 'token_id_ASC',
+  TokenIdAscNullsFirst = 'token_id_ASC_NULLS_FIRST',
+  TokenIdDesc = 'token_id_DESC',
+  TokenIdDescNullsLast = 'token_id_DESC_NULLS_LAST',
+  TokenTokenAddressAsc = 'token_tokenAddress_ASC',
+  TokenTokenAddressAscNullsFirst = 'token_tokenAddress_ASC_NULLS_FIRST',
+  TokenTokenAddressDesc = 'token_tokenAddress_DESC',
+  TokenTokenAddressDescNullsLast = 'token_tokenAddress_DESC_NULLS_LAST',
+  TokenTokenSubIdAsc = 'token_tokenSubID_ASC',
+  TokenTokenSubIdAscNullsFirst = 'token_tokenSubID_ASC_NULLS_FIRST',
+  TokenTokenSubIdDesc = 'token_tokenSubID_DESC',
+  TokenTokenSubIdDescNullsLast = 'token_tokenSubID_DESC_NULLS_LAST',
+  TokenTokenTypeAsc = 'token_tokenType_ASC',
+  TokenTokenTypeAscNullsFirst = 'token_tokenType_ASC_NULLS_FIRST',
+  TokenTokenTypeDesc = 'token_tokenType_DESC',
+  TokenTokenTypeDescNullsLast = 'token_tokenType_DESC_NULLS_LAST',
+  TransactionHashAsc = 'transactionHash_ASC',
+  TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
+  TransactionHashDesc = 'transactionHash_DESC',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST'
+}
 
 export type UnshieldWhereInput = {
   AND?: InputMaybe<Array<UnshieldWhereInput>>;
@@ -2308,15 +2320,16 @@ export type VerificationHashEdge = {
   node: VerificationHash;
 };
 
-export type VerificationHashOrderByInput =
-  | 'id_ASC'
-  | 'id_ASC_NULLS_FIRST'
-  | 'id_DESC'
-  | 'id_DESC_NULLS_LAST'
-  | 'verificationHash_ASC'
-  | 'verificationHash_ASC_NULLS_FIRST'
-  | 'verificationHash_DESC'
-  | 'verificationHash_DESC_NULLS_LAST';
+export enum VerificationHashOrderByInput {
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  VerificationHashAsc = 'verificationHash_ASC',
+  VerificationHashAscNullsFirst = 'verificationHash_ASC_NULLS_FIRST',
+  VerificationHashDesc = 'verificationHash_DESC',
+  VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST'
+}
 
 export type VerificationHashWhereInput = {
   AND?: InputMaybe<Array<VerificationHashWhereInput>>;
@@ -2353,769 +2366,3 @@ export type VerificationHashesConnection = {
 export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
-
-
-
-export type ResolverTypeWrapper<T> = Promise<T> | T;
-
-
-export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
-  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
-};
-export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> = ResolverFn<TResult, TParent, TContext, TArgs> | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
-
-export type ResolverFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Promise<TResult> | TResult;
-
-export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => AsyncIterable<TResult> | Promise<AsyncIterable<TResult>>;
-
-export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
-}
-
-export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<any, TParent, TContext, TArgs>;
-  resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
-}
-
-export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
-  | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
-  | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
-
-export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
-  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
-  | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
-
-export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
-  parent: TParent,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
-
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
-
-export type NextResolverFn<T> = () => Promise<T>;
-
-export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
-  next: NextResolverFn<TResult>,
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-
-/** Mapping of interface types */
-export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = {
-  Commitment: ( LegacyEncryptedCommitment ) | ( LegacyGeneratedCommitment ) | ( ShieldCommitment ) | ( TransactCommitment );
-  TransactionInterface: ( Transaction );
-};
-
-/** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
-  BigInt: ResolverTypeWrapper<Scalars['BigInt']['output']>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  Bytes: ResolverTypeWrapper<Scalars['Bytes']['output']>;
-  Ciphertext: ResolverTypeWrapper<Ciphertext>;
-  CiphertextEdge: ResolverTypeWrapper<CiphertextEdge>;
-  CiphertextOrderByInput: CiphertextOrderByInput;
-  CiphertextWhereInput: CiphertextWhereInput;
-  CiphertextsConnection: ResolverTypeWrapper<CiphertextsConnection>;
-  Commitment: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Commitment']>;
-  CommitmentBatchEventNew: ResolverTypeWrapper<CommitmentBatchEventNew>;
-  CommitmentBatchEventNewEdge: ResolverTypeWrapper<CommitmentBatchEventNewEdge>;
-  CommitmentBatchEventNewOrderByInput: CommitmentBatchEventNewOrderByInput;
-  CommitmentBatchEventNewWhereInput: CommitmentBatchEventNewWhereInput;
-  CommitmentBatchEventNewsConnection: ResolverTypeWrapper<CommitmentBatchEventNewsConnection>;
-  CommitmentCiphertext: ResolverTypeWrapper<CommitmentCiphertext>;
-  CommitmentCiphertextEdge: ResolverTypeWrapper<CommitmentCiphertextEdge>;
-  CommitmentCiphertextOrderByInput: CommitmentCiphertextOrderByInput;
-  CommitmentCiphertextWhereInput: CommitmentCiphertextWhereInput;
-  CommitmentCiphertextsConnection: ResolverTypeWrapper<CommitmentCiphertextsConnection>;
-  CommitmentEdge: ResolverTypeWrapper<Omit<CommitmentEdge, 'node'> & { node: ResolversTypes['Commitment'] }>;
-  CommitmentOrderByInput: CommitmentOrderByInput;
-  CommitmentPreimage: ResolverTypeWrapper<CommitmentPreimage>;
-  CommitmentPreimageEdge: ResolverTypeWrapper<CommitmentPreimageEdge>;
-  CommitmentPreimageOrderByInput: CommitmentPreimageOrderByInput;
-  CommitmentPreimageWhereInput: CommitmentPreimageWhereInput;
-  CommitmentPreimagesConnection: ResolverTypeWrapper<CommitmentPreimagesConnection>;
-  CommitmentType: CommitmentType;
-  CommitmentWhereInput: CommitmentWhereInput;
-  CommitmentsConnection: ResolverTypeWrapper<Omit<CommitmentsConnection, 'edges'> & { edges: Array<ResolversTypes['CommitmentEdge']> }>;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
-  LegacyCommitmentCiphertext: ResolverTypeWrapper<LegacyCommitmentCiphertext>;
-  LegacyCommitmentCiphertextEdge: ResolverTypeWrapper<LegacyCommitmentCiphertextEdge>;
-  LegacyCommitmentCiphertextOrderByInput: LegacyCommitmentCiphertextOrderByInput;
-  LegacyCommitmentCiphertextWhereInput: LegacyCommitmentCiphertextWhereInput;
-  LegacyCommitmentCiphertextsConnection: ResolverTypeWrapper<LegacyCommitmentCiphertextsConnection>;
-  LegacyEncryptedCommitment: ResolverTypeWrapper<LegacyEncryptedCommitment>;
-  LegacyEncryptedCommitmentEdge: ResolverTypeWrapper<LegacyEncryptedCommitmentEdge>;
-  LegacyEncryptedCommitmentOrderByInput: LegacyEncryptedCommitmentOrderByInput;
-  LegacyEncryptedCommitmentWhereInput: LegacyEncryptedCommitmentWhereInput;
-  LegacyEncryptedCommitmentsConnection: ResolverTypeWrapper<LegacyEncryptedCommitmentsConnection>;
-  LegacyGeneratedCommitment: ResolverTypeWrapper<LegacyGeneratedCommitment>;
-  LegacyGeneratedCommitmentEdge: ResolverTypeWrapper<LegacyGeneratedCommitmentEdge>;
-  LegacyGeneratedCommitmentOrderByInput: LegacyGeneratedCommitmentOrderByInput;
-  LegacyGeneratedCommitmentWhereInput: LegacyGeneratedCommitmentWhereInput;
-  LegacyGeneratedCommitmentsConnection: ResolverTypeWrapper<LegacyGeneratedCommitmentsConnection>;
-  Nullifier: ResolverTypeWrapper<Nullifier>;
-  NullifierEdge: ResolverTypeWrapper<NullifierEdge>;
-  NullifierOrderByInput: NullifierOrderByInput;
-  NullifierWhereInput: NullifierWhereInput;
-  NullifiersConnection: ResolverTypeWrapper<NullifiersConnection>;
-  PageInfo: ResolverTypeWrapper<PageInfo>;
-  Query: ResolverTypeWrapper<{}>;
-  ShieldCommitment: ResolverTypeWrapper<ShieldCommitment>;
-  ShieldCommitmentEdge: ResolverTypeWrapper<ShieldCommitmentEdge>;
-  ShieldCommitmentOrderByInput: ShieldCommitmentOrderByInput;
-  ShieldCommitmentWhereInput: ShieldCommitmentWhereInput;
-  ShieldCommitmentsConnection: ResolverTypeWrapper<ShieldCommitmentsConnection>;
-  SquidStatus: ResolverTypeWrapper<SquidStatus>;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Token: ResolverTypeWrapper<Token>;
-  TokenEdge: ResolverTypeWrapper<TokenEdge>;
-  TokenOrderByInput: TokenOrderByInput;
-  TokenType: TokenType;
-  TokenWhereInput: TokenWhereInput;
-  TokensConnection: ResolverTypeWrapper<TokensConnection>;
-  TransactCommitment: ResolverTypeWrapper<TransactCommitment>;
-  TransactCommitmentEdge: ResolverTypeWrapper<TransactCommitmentEdge>;
-  TransactCommitmentOrderByInput: TransactCommitmentOrderByInput;
-  TransactCommitmentWhereInput: TransactCommitmentWhereInput;
-  TransactCommitmentsConnection: ResolverTypeWrapper<TransactCommitmentsConnection>;
-  Transaction: ResolverTypeWrapper<Transaction>;
-  TransactionEdge: ResolverTypeWrapper<TransactionEdge>;
-  TransactionInterface: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['TransactionInterface']>;
-  TransactionOrderByInput: TransactionOrderByInput;
-  TransactionWhereInput: TransactionWhereInput;
-  TransactionsConnection: ResolverTypeWrapper<TransactionsConnection>;
-  Unshield: ResolverTypeWrapper<Unshield>;
-  UnshieldEdge: ResolverTypeWrapper<UnshieldEdge>;
-  UnshieldOrderByInput: UnshieldOrderByInput;
-  UnshieldWhereInput: UnshieldWhereInput;
-  UnshieldsConnection: ResolverTypeWrapper<UnshieldsConnection>;
-  VerificationHash: ResolverTypeWrapper<VerificationHash>;
-  VerificationHashEdge: ResolverTypeWrapper<VerificationHashEdge>;
-  VerificationHashOrderByInput: VerificationHashOrderByInput;
-  VerificationHashWhereInput: VerificationHashWhereInput;
-  VerificationHashesConnection: ResolverTypeWrapper<VerificationHashesConnection>;
-  WhereIdInput: WhereIdInput;
-};
-
-/** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
-  BigInt: Scalars['BigInt']['output'];
-  Boolean: Scalars['Boolean']['output'];
-  Bytes: Scalars['Bytes']['output'];
-  Ciphertext: Ciphertext;
-  CiphertextEdge: CiphertextEdge;
-  CiphertextWhereInput: CiphertextWhereInput;
-  CiphertextsConnection: CiphertextsConnection;
-  Commitment: ResolversInterfaceTypes<ResolversParentTypes>['Commitment'];
-  CommitmentBatchEventNew: CommitmentBatchEventNew;
-  CommitmentBatchEventNewEdge: CommitmentBatchEventNewEdge;
-  CommitmentBatchEventNewWhereInput: CommitmentBatchEventNewWhereInput;
-  CommitmentBatchEventNewsConnection: CommitmentBatchEventNewsConnection;
-  CommitmentCiphertext: CommitmentCiphertext;
-  CommitmentCiphertextEdge: CommitmentCiphertextEdge;
-  CommitmentCiphertextWhereInput: CommitmentCiphertextWhereInput;
-  CommitmentCiphertextsConnection: CommitmentCiphertextsConnection;
-  CommitmentEdge: Omit<CommitmentEdge, 'node'> & { node: ResolversParentTypes['Commitment'] };
-  CommitmentPreimage: CommitmentPreimage;
-  CommitmentPreimageEdge: CommitmentPreimageEdge;
-  CommitmentPreimageWhereInput: CommitmentPreimageWhereInput;
-  CommitmentPreimagesConnection: CommitmentPreimagesConnection;
-  CommitmentWhereInput: CommitmentWhereInput;
-  CommitmentsConnection: Omit<CommitmentsConnection, 'edges'> & { edges: Array<ResolversParentTypes['CommitmentEdge']> };
-  Int: Scalars['Int']['output'];
-  LegacyCommitmentCiphertext: LegacyCommitmentCiphertext;
-  LegacyCommitmentCiphertextEdge: LegacyCommitmentCiphertextEdge;
-  LegacyCommitmentCiphertextWhereInput: LegacyCommitmentCiphertextWhereInput;
-  LegacyCommitmentCiphertextsConnection: LegacyCommitmentCiphertextsConnection;
-  LegacyEncryptedCommitment: LegacyEncryptedCommitment;
-  LegacyEncryptedCommitmentEdge: LegacyEncryptedCommitmentEdge;
-  LegacyEncryptedCommitmentWhereInput: LegacyEncryptedCommitmentWhereInput;
-  LegacyEncryptedCommitmentsConnection: LegacyEncryptedCommitmentsConnection;
-  LegacyGeneratedCommitment: LegacyGeneratedCommitment;
-  LegacyGeneratedCommitmentEdge: LegacyGeneratedCommitmentEdge;
-  LegacyGeneratedCommitmentWhereInput: LegacyGeneratedCommitmentWhereInput;
-  LegacyGeneratedCommitmentsConnection: LegacyGeneratedCommitmentsConnection;
-  Nullifier: Nullifier;
-  NullifierEdge: NullifierEdge;
-  NullifierWhereInput: NullifierWhereInput;
-  NullifiersConnection: NullifiersConnection;
-  PageInfo: PageInfo;
-  Query: {};
-  ShieldCommitment: ShieldCommitment;
-  ShieldCommitmentEdge: ShieldCommitmentEdge;
-  ShieldCommitmentWhereInput: ShieldCommitmentWhereInput;
-  ShieldCommitmentsConnection: ShieldCommitmentsConnection;
-  SquidStatus: SquidStatus;
-  String: Scalars['String']['output'];
-  Token: Token;
-  TokenEdge: TokenEdge;
-  TokenWhereInput: TokenWhereInput;
-  TokensConnection: TokensConnection;
-  TransactCommitment: TransactCommitment;
-  TransactCommitmentEdge: TransactCommitmentEdge;
-  TransactCommitmentWhereInput: TransactCommitmentWhereInput;
-  TransactCommitmentsConnection: TransactCommitmentsConnection;
-  Transaction: Transaction;
-  TransactionEdge: TransactionEdge;
-  TransactionInterface: ResolversInterfaceTypes<ResolversParentTypes>['TransactionInterface'];
-  TransactionWhereInput: TransactionWhereInput;
-  TransactionsConnection: TransactionsConnection;
-  Unshield: Unshield;
-  UnshieldEdge: UnshieldEdge;
-  UnshieldWhereInput: UnshieldWhereInput;
-  UnshieldsConnection: UnshieldsConnection;
-  VerificationHash: VerificationHash;
-  VerificationHashEdge: VerificationHashEdge;
-  VerificationHashWhereInput: VerificationHashWhereInput;
-  VerificationHashesConnection: VerificationHashesConnection;
-  WhereIdInput: WhereIdInput;
-};
-
-export interface BigIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BigInt'], any> {
-  name: 'BigInt';
-}
-
-export interface BytesScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Bytes'], any> {
-  name: 'Bytes';
-}
-
-export type CiphertextResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ciphertext'] = ResolversParentTypes['Ciphertext']> = {
-  data?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  iv?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  tag?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CiphertextEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CiphertextEdge'] = ResolversParentTypes['CiphertextEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Ciphertext'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CiphertextsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CiphertextsConnection'] = ResolversParentTypes['CiphertextsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['CiphertextEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Commitment'] = ResolversParentTypes['Commitment']> = {
-  __resolveType: TypeResolveFn<'LegacyEncryptedCommitment' | 'LegacyGeneratedCommitment' | 'ShieldCommitment' | 'TransactCommitment', ParentType, ContextType>;
-  batchStartTreePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  commitmentType?: Resolver<ResolversTypes['CommitmentType'], ParentType, ContextType>;
-  hash?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  treeNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  treePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-};
-
-export type CommitmentBatchEventNewResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentBatchEventNew'] = ResolversParentTypes['CommitmentBatchEventNew']> = {
-  batchStartTreePosition?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  treeNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentBatchEventNewEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentBatchEventNewEdge'] = ResolversParentTypes['CommitmentBatchEventNewEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['CommitmentBatchEventNew'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentBatchEventNewsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentBatchEventNewsConnection'] = ResolversParentTypes['CommitmentBatchEventNewsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['CommitmentBatchEventNewEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentCiphertextResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentCiphertext'] = ResolversParentTypes['CommitmentCiphertext']> = {
-  annotationData?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  blindedReceiverViewingKey?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  blindedSenderViewingKey?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  ciphertext?: Resolver<ResolversTypes['Ciphertext'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  memo?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentCiphertextEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentCiphertextEdge'] = ResolversParentTypes['CommitmentCiphertextEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['CommitmentCiphertext'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentCiphertextsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentCiphertextsConnection'] = ResolversParentTypes['CommitmentCiphertextsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['CommitmentCiphertextEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentEdge'] = ResolversParentTypes['CommitmentEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Commitment'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentPreimageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentPreimage'] = ResolversParentTypes['CommitmentPreimage']> = {
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  npk?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  token?: Resolver<ResolversTypes['Token'], ParentType, ContextType>;
-  value?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentPreimageEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentPreimageEdge'] = ResolversParentTypes['CommitmentPreimageEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['CommitmentPreimage'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentPreimagesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentPreimagesConnection'] = ResolversParentTypes['CommitmentPreimagesConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['CommitmentPreimageEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CommitmentsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitmentsConnection'] = ResolversParentTypes['CommitmentsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['CommitmentEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyCommitmentCiphertextResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyCommitmentCiphertext'] = ResolversParentTypes['LegacyCommitmentCiphertext']> = {
-  ciphertext?: Resolver<ResolversTypes['Ciphertext'], ParentType, ContextType>;
-  ephemeralKeys?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  memo?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyCommitmentCiphertextEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyCommitmentCiphertextEdge'] = ResolversParentTypes['LegacyCommitmentCiphertextEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['LegacyCommitmentCiphertext'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyCommitmentCiphertextsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyCommitmentCiphertextsConnection'] = ResolversParentTypes['LegacyCommitmentCiphertextsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['LegacyCommitmentCiphertextEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyEncryptedCommitmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyEncryptedCommitment'] = ResolversParentTypes['LegacyEncryptedCommitment']> = {
-  batchStartTreePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  ciphertext?: Resolver<ResolversTypes['LegacyCommitmentCiphertext'], ParentType, ContextType>;
-  commitmentType?: Resolver<ResolversTypes['CommitmentType'], ParentType, ContextType>;
-  hash?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  treeNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  treePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyEncryptedCommitmentEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyEncryptedCommitmentEdge'] = ResolversParentTypes['LegacyEncryptedCommitmentEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['LegacyEncryptedCommitment'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyEncryptedCommitmentsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyEncryptedCommitmentsConnection'] = ResolversParentTypes['LegacyEncryptedCommitmentsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['LegacyEncryptedCommitmentEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyGeneratedCommitmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyGeneratedCommitment'] = ResolversParentTypes['LegacyGeneratedCommitment']> = {
-  batchStartTreePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  commitmentType?: Resolver<ResolversTypes['CommitmentType'], ParentType, ContextType>;
-  encryptedRandom?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  hash?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  preimage?: Resolver<ResolversTypes['CommitmentPreimage'], ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  treeNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  treePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyGeneratedCommitmentEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyGeneratedCommitmentEdge'] = ResolversParentTypes['LegacyGeneratedCommitmentEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['LegacyGeneratedCommitment'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LegacyGeneratedCommitmentsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LegacyGeneratedCommitmentsConnection'] = ResolversParentTypes['LegacyGeneratedCommitmentsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['LegacyGeneratedCommitmentEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type NullifierResolvers<ContextType = any, ParentType extends ResolversParentTypes['Nullifier'] = ResolversParentTypes['Nullifier']> = {
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  nullifier?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  treeNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type NullifierEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['NullifierEdge'] = ResolversParentTypes['NullifierEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Nullifier'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type NullifiersConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['NullifiersConnection'] = ResolversParentTypes['NullifiersConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['NullifierEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
-  endCursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  startCursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  ciphertextById?: Resolver<Maybe<ResolversTypes['Ciphertext']>, ParentType, ContextType, RequireFields<QueryCiphertextByIdArgs, 'id'>>;
-  ciphertextByUniqueInput?: Resolver<Maybe<ResolversTypes['Ciphertext']>, ParentType, ContextType, RequireFields<QueryCiphertextByUniqueInputArgs, 'where'>>;
-  ciphertexts?: Resolver<Array<ResolversTypes['Ciphertext']>, ParentType, ContextType, Partial<QueryCiphertextsArgs>>;
-  ciphertextsConnection?: Resolver<ResolversTypes['CiphertextsConnection'], ParentType, ContextType, RequireFields<QueryCiphertextsConnectionArgs, 'orderBy'>>;
-  commitmentBatchEventNewById?: Resolver<Maybe<ResolversTypes['CommitmentBatchEventNew']>, ParentType, ContextType, RequireFields<QueryCommitmentBatchEventNewByIdArgs, 'id'>>;
-  commitmentBatchEventNewByUniqueInput?: Resolver<Maybe<ResolversTypes['CommitmentBatchEventNew']>, ParentType, ContextType, RequireFields<QueryCommitmentBatchEventNewByUniqueInputArgs, 'where'>>;
-  commitmentBatchEventNews?: Resolver<Array<ResolversTypes['CommitmentBatchEventNew']>, ParentType, ContextType, Partial<QueryCommitmentBatchEventNewsArgs>>;
-  commitmentBatchEventNewsConnection?: Resolver<ResolversTypes['CommitmentBatchEventNewsConnection'], ParentType, ContextType, RequireFields<QueryCommitmentBatchEventNewsConnectionArgs, 'orderBy'>>;
-  commitmentCiphertextById?: Resolver<Maybe<ResolversTypes['CommitmentCiphertext']>, ParentType, ContextType, RequireFields<QueryCommitmentCiphertextByIdArgs, 'id'>>;
-  commitmentCiphertextByUniqueInput?: Resolver<Maybe<ResolversTypes['CommitmentCiphertext']>, ParentType, ContextType, RequireFields<QueryCommitmentCiphertextByUniqueInputArgs, 'where'>>;
-  commitmentCiphertexts?: Resolver<Array<ResolversTypes['CommitmentCiphertext']>, ParentType, ContextType, Partial<QueryCommitmentCiphertextsArgs>>;
-  commitmentCiphertextsConnection?: Resolver<ResolversTypes['CommitmentCiphertextsConnection'], ParentType, ContextType, RequireFields<QueryCommitmentCiphertextsConnectionArgs, 'orderBy'>>;
-  commitmentPreimageById?: Resolver<Maybe<ResolversTypes['CommitmentPreimage']>, ParentType, ContextType, RequireFields<QueryCommitmentPreimageByIdArgs, 'id'>>;
-  commitmentPreimageByUniqueInput?: Resolver<Maybe<ResolversTypes['CommitmentPreimage']>, ParentType, ContextType, RequireFields<QueryCommitmentPreimageByUniqueInputArgs, 'where'>>;
-  commitmentPreimages?: Resolver<Array<ResolversTypes['CommitmentPreimage']>, ParentType, ContextType, Partial<QueryCommitmentPreimagesArgs>>;
-  commitmentPreimagesConnection?: Resolver<ResolversTypes['CommitmentPreimagesConnection'], ParentType, ContextType, RequireFields<QueryCommitmentPreimagesConnectionArgs, 'orderBy'>>;
-  commitments?: Resolver<Array<ResolversTypes['Commitment']>, ParentType, ContextType, Partial<QueryCommitmentsArgs>>;
-  commitmentsConnection?: Resolver<ResolversTypes['CommitmentsConnection'], ParentType, ContextType, RequireFields<QueryCommitmentsConnectionArgs, 'orderBy'>>;
-  legacyCommitmentCiphertextById?: Resolver<Maybe<ResolversTypes['LegacyCommitmentCiphertext']>, ParentType, ContextType, RequireFields<QueryLegacyCommitmentCiphertextByIdArgs, 'id'>>;
-  legacyCommitmentCiphertextByUniqueInput?: Resolver<Maybe<ResolversTypes['LegacyCommitmentCiphertext']>, ParentType, ContextType, RequireFields<QueryLegacyCommitmentCiphertextByUniqueInputArgs, 'where'>>;
-  legacyCommitmentCiphertexts?: Resolver<Array<ResolversTypes['LegacyCommitmentCiphertext']>, ParentType, ContextType, Partial<QueryLegacyCommitmentCiphertextsArgs>>;
-  legacyCommitmentCiphertextsConnection?: Resolver<ResolversTypes['LegacyCommitmentCiphertextsConnection'], ParentType, ContextType, RequireFields<QueryLegacyCommitmentCiphertextsConnectionArgs, 'orderBy'>>;
-  legacyEncryptedCommitmentById?: Resolver<Maybe<ResolversTypes['LegacyEncryptedCommitment']>, ParentType, ContextType, RequireFields<QueryLegacyEncryptedCommitmentByIdArgs, 'id'>>;
-  legacyEncryptedCommitmentByUniqueInput?: Resolver<Maybe<ResolversTypes['LegacyEncryptedCommitment']>, ParentType, ContextType, RequireFields<QueryLegacyEncryptedCommitmentByUniqueInputArgs, 'where'>>;
-  legacyEncryptedCommitments?: Resolver<Array<ResolversTypes['LegacyEncryptedCommitment']>, ParentType, ContextType, Partial<QueryLegacyEncryptedCommitmentsArgs>>;
-  legacyEncryptedCommitmentsConnection?: Resolver<ResolversTypes['LegacyEncryptedCommitmentsConnection'], ParentType, ContextType, RequireFields<QueryLegacyEncryptedCommitmentsConnectionArgs, 'orderBy'>>;
-  legacyGeneratedCommitmentById?: Resolver<Maybe<ResolversTypes['LegacyGeneratedCommitment']>, ParentType, ContextType, RequireFields<QueryLegacyGeneratedCommitmentByIdArgs, 'id'>>;
-  legacyGeneratedCommitmentByUniqueInput?: Resolver<Maybe<ResolversTypes['LegacyGeneratedCommitment']>, ParentType, ContextType, RequireFields<QueryLegacyGeneratedCommitmentByUniqueInputArgs, 'where'>>;
-  legacyGeneratedCommitments?: Resolver<Array<ResolversTypes['LegacyGeneratedCommitment']>, ParentType, ContextType, Partial<QueryLegacyGeneratedCommitmentsArgs>>;
-  legacyGeneratedCommitmentsConnection?: Resolver<ResolversTypes['LegacyGeneratedCommitmentsConnection'], ParentType, ContextType, RequireFields<QueryLegacyGeneratedCommitmentsConnectionArgs, 'orderBy'>>;
-  nullifierById?: Resolver<Maybe<ResolversTypes['Nullifier']>, ParentType, ContextType, RequireFields<QueryNullifierByIdArgs, 'id'>>;
-  nullifierByUniqueInput?: Resolver<Maybe<ResolversTypes['Nullifier']>, ParentType, ContextType, RequireFields<QueryNullifierByUniqueInputArgs, 'where'>>;
-  nullifiers?: Resolver<Array<ResolversTypes['Nullifier']>, ParentType, ContextType, Partial<QueryNullifiersArgs>>;
-  nullifiersConnection?: Resolver<ResolversTypes['NullifiersConnection'], ParentType, ContextType, RequireFields<QueryNullifiersConnectionArgs, 'orderBy'>>;
-  shieldCommitmentById?: Resolver<Maybe<ResolversTypes['ShieldCommitment']>, ParentType, ContextType, RequireFields<QueryShieldCommitmentByIdArgs, 'id'>>;
-  shieldCommitmentByUniqueInput?: Resolver<Maybe<ResolversTypes['ShieldCommitment']>, ParentType, ContextType, RequireFields<QueryShieldCommitmentByUniqueInputArgs, 'where'>>;
-  shieldCommitments?: Resolver<Array<ResolversTypes['ShieldCommitment']>, ParentType, ContextType, Partial<QueryShieldCommitmentsArgs>>;
-  shieldCommitmentsConnection?: Resolver<ResolversTypes['ShieldCommitmentsConnection'], ParentType, ContextType, RequireFields<QueryShieldCommitmentsConnectionArgs, 'orderBy'>>;
-  squidStatus?: Resolver<Maybe<ResolversTypes['SquidStatus']>, ParentType, ContextType>;
-  tokenById?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, RequireFields<QueryTokenByIdArgs, 'id'>>;
-  tokenByUniqueInput?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, RequireFields<QueryTokenByUniqueInputArgs, 'where'>>;
-  tokens?: Resolver<Array<ResolversTypes['Token']>, ParentType, ContextType, Partial<QueryTokensArgs>>;
-  tokensConnection?: Resolver<ResolversTypes['TokensConnection'], ParentType, ContextType, RequireFields<QueryTokensConnectionArgs, 'orderBy'>>;
-  transactCommitmentById?: Resolver<Maybe<ResolversTypes['TransactCommitment']>, ParentType, ContextType, RequireFields<QueryTransactCommitmentByIdArgs, 'id'>>;
-  transactCommitmentByUniqueInput?: Resolver<Maybe<ResolversTypes['TransactCommitment']>, ParentType, ContextType, RequireFields<QueryTransactCommitmentByUniqueInputArgs, 'where'>>;
-  transactCommitments?: Resolver<Array<ResolversTypes['TransactCommitment']>, ParentType, ContextType, Partial<QueryTransactCommitmentsArgs>>;
-  transactCommitmentsConnection?: Resolver<ResolversTypes['TransactCommitmentsConnection'], ParentType, ContextType, RequireFields<QueryTransactCommitmentsConnectionArgs, 'orderBy'>>;
-  transactionById?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionByIdArgs, 'id'>>;
-  transactionByUniqueInput?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionByUniqueInputArgs, 'where'>>;
-  transactions?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType, Partial<QueryTransactionsArgs>>;
-  transactionsConnection?: Resolver<ResolversTypes['TransactionsConnection'], ParentType, ContextType, RequireFields<QueryTransactionsConnectionArgs, 'orderBy'>>;
-  unshieldById?: Resolver<Maybe<ResolversTypes['Unshield']>, ParentType, ContextType, RequireFields<QueryUnshieldByIdArgs, 'id'>>;
-  unshieldByUniqueInput?: Resolver<Maybe<ResolversTypes['Unshield']>, ParentType, ContextType, RequireFields<QueryUnshieldByUniqueInputArgs, 'where'>>;
-  unshields?: Resolver<Array<ResolversTypes['Unshield']>, ParentType, ContextType, Partial<QueryUnshieldsArgs>>;
-  unshieldsConnection?: Resolver<ResolversTypes['UnshieldsConnection'], ParentType, ContextType, RequireFields<QueryUnshieldsConnectionArgs, 'orderBy'>>;
-  verificationHashById?: Resolver<Maybe<ResolversTypes['VerificationHash']>, ParentType, ContextType, RequireFields<QueryVerificationHashByIdArgs, 'id'>>;
-  verificationHashByUniqueInput?: Resolver<Maybe<ResolversTypes['VerificationHash']>, ParentType, ContextType, RequireFields<QueryVerificationHashByUniqueInputArgs, 'where'>>;
-  verificationHashes?: Resolver<Array<ResolversTypes['VerificationHash']>, ParentType, ContextType, Partial<QueryVerificationHashesArgs>>;
-  verificationHashesConnection?: Resolver<ResolversTypes['VerificationHashesConnection'], ParentType, ContextType, RequireFields<QueryVerificationHashesConnectionArgs, 'orderBy'>>;
-};
-
-export type ShieldCommitmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShieldCommitment'] = ResolversParentTypes['ShieldCommitment']> = {
-  batchStartTreePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  commitmentType?: Resolver<ResolversTypes['CommitmentType'], ParentType, ContextType>;
-  encryptedBundle?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  fee?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  hash?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  preimage?: Resolver<ResolversTypes['CommitmentPreimage'], ParentType, ContextType>;
-  shieldKey?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  treeNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  treePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ShieldCommitmentEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShieldCommitmentEdge'] = ResolversParentTypes['ShieldCommitmentEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['ShieldCommitment'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ShieldCommitmentsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShieldCommitmentsConnection'] = ResolversParentTypes['ShieldCommitmentsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['ShieldCommitmentEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type SquidStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['SquidStatus'] = ResolversParentTypes['SquidStatus']> = {
-  height?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  tokenAddress?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  tokenSubID?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  tokenType?: Resolver<ResolversTypes['TokenType'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TokenEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TokenEdge'] = ResolversParentTypes['TokenEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Token'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TokensConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TokensConnection'] = ResolversParentTypes['TokensConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['TokenEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TransactCommitmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactCommitment'] = ResolversParentTypes['TransactCommitment']> = {
-  batchStartTreePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  ciphertext?: Resolver<ResolversTypes['CommitmentCiphertext'], ParentType, ContextType>;
-  commitmentType?: Resolver<ResolversTypes['CommitmentType'], ParentType, ContextType>;
-  hash?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  treeNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  treePosition?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TransactCommitmentEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactCommitmentEdge'] = ResolversParentTypes['TransactCommitmentEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['TransactCommitment'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TransactCommitmentsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactCommitmentsConnection'] = ResolversParentTypes['TransactCommitmentsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['TransactCommitmentEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TransactionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']> = {
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  boundParamsHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  commitments?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  hasUnshield?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  merkleRoot?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  nullifiers?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  unshieldToAddress?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  unshieldToken?: Resolver<ResolversTypes['Token'], ParentType, ContextType>;
-  unshieldValue?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  utxoBatchStartPositionOut?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  utxoTreeIn?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  utxoTreeOut?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  verificationHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TransactionEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactionEdge'] = ResolversParentTypes['TransactionEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TransactionInterfaceResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactionInterface'] = ResolversParentTypes['TransactionInterface']> = {
-  __resolveType: TypeResolveFn<'Transaction', ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  boundParamsHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  commitments?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  hasUnshield?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  merkleRoot?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  nullifiers?: Resolver<Array<ResolversTypes['Bytes']>, ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  unshieldToAddress?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  unshieldToken?: Resolver<ResolversTypes['Token'], ParentType, ContextType>;
-  unshieldValue?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  utxoBatchStartPositionOut?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  utxoTreeIn?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  utxoTreeOut?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  verificationHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-};
-
-export type TransactionsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactionsConnection'] = ResolversParentTypes['TransactionsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['TransactionEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type UnshieldResolvers<ContextType = any, ParentType extends ResolversParentTypes['Unshield'] = ResolversParentTypes['Unshield']> = {
-  amount?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  blockTimestamp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  eventLogIndex?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  fee?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  to?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  token?: Resolver<ResolversTypes['Token'], ParentType, ContextType>;
-  transactionHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type UnshieldEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnshieldEdge'] = ResolversParentTypes['UnshieldEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Unshield'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type UnshieldsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnshieldsConnection'] = ResolversParentTypes['UnshieldsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['UnshieldEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type VerificationHashResolvers<ContextType = any, ParentType extends ResolversParentTypes['VerificationHash'] = ResolversParentTypes['VerificationHash']> = {
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  verificationHash?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type VerificationHashEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['VerificationHashEdge'] = ResolversParentTypes['VerificationHashEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['VerificationHash'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type VerificationHashesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['VerificationHashesConnection'] = ResolversParentTypes['VerificationHashesConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['VerificationHashEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type Resolvers<ContextType = any> = {
-  BigInt?: GraphQLScalarType;
-  Bytes?: GraphQLScalarType;
-  Ciphertext?: CiphertextResolvers<ContextType>;
-  CiphertextEdge?: CiphertextEdgeResolvers<ContextType>;
-  CiphertextsConnection?: CiphertextsConnectionResolvers<ContextType>;
-  Commitment?: CommitmentResolvers<ContextType>;
-  CommitmentBatchEventNew?: CommitmentBatchEventNewResolvers<ContextType>;
-  CommitmentBatchEventNewEdge?: CommitmentBatchEventNewEdgeResolvers<ContextType>;
-  CommitmentBatchEventNewsConnection?: CommitmentBatchEventNewsConnectionResolvers<ContextType>;
-  CommitmentCiphertext?: CommitmentCiphertextResolvers<ContextType>;
-  CommitmentCiphertextEdge?: CommitmentCiphertextEdgeResolvers<ContextType>;
-  CommitmentCiphertextsConnection?: CommitmentCiphertextsConnectionResolvers<ContextType>;
-  CommitmentEdge?: CommitmentEdgeResolvers<ContextType>;
-  CommitmentPreimage?: CommitmentPreimageResolvers<ContextType>;
-  CommitmentPreimageEdge?: CommitmentPreimageEdgeResolvers<ContextType>;
-  CommitmentPreimagesConnection?: CommitmentPreimagesConnectionResolvers<ContextType>;
-  CommitmentsConnection?: CommitmentsConnectionResolvers<ContextType>;
-  LegacyCommitmentCiphertext?: LegacyCommitmentCiphertextResolvers<ContextType>;
-  LegacyCommitmentCiphertextEdge?: LegacyCommitmentCiphertextEdgeResolvers<ContextType>;
-  LegacyCommitmentCiphertextsConnection?: LegacyCommitmentCiphertextsConnectionResolvers<ContextType>;
-  LegacyEncryptedCommitment?: LegacyEncryptedCommitmentResolvers<ContextType>;
-  LegacyEncryptedCommitmentEdge?: LegacyEncryptedCommitmentEdgeResolvers<ContextType>;
-  LegacyEncryptedCommitmentsConnection?: LegacyEncryptedCommitmentsConnectionResolvers<ContextType>;
-  LegacyGeneratedCommitment?: LegacyGeneratedCommitmentResolvers<ContextType>;
-  LegacyGeneratedCommitmentEdge?: LegacyGeneratedCommitmentEdgeResolvers<ContextType>;
-  LegacyGeneratedCommitmentsConnection?: LegacyGeneratedCommitmentsConnectionResolvers<ContextType>;
-  Nullifier?: NullifierResolvers<ContextType>;
-  NullifierEdge?: NullifierEdgeResolvers<ContextType>;
-  NullifiersConnection?: NullifiersConnectionResolvers<ContextType>;
-  PageInfo?: PageInfoResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
-  ShieldCommitment?: ShieldCommitmentResolvers<ContextType>;
-  ShieldCommitmentEdge?: ShieldCommitmentEdgeResolvers<ContextType>;
-  ShieldCommitmentsConnection?: ShieldCommitmentsConnectionResolvers<ContextType>;
-  SquidStatus?: SquidStatusResolvers<ContextType>;
-  Token?: TokenResolvers<ContextType>;
-  TokenEdge?: TokenEdgeResolvers<ContextType>;
-  TokensConnection?: TokensConnectionResolvers<ContextType>;
-  TransactCommitment?: TransactCommitmentResolvers<ContextType>;
-  TransactCommitmentEdge?: TransactCommitmentEdgeResolvers<ContextType>;
-  TransactCommitmentsConnection?: TransactCommitmentsConnectionResolvers<ContextType>;
-  Transaction?: TransactionResolvers<ContextType>;
-  TransactionEdge?: TransactionEdgeResolvers<ContextType>;
-  TransactionInterface?: TransactionInterfaceResolvers<ContextType>;
-  TransactionsConnection?: TransactionsConnectionResolvers<ContextType>;
-  Unshield?: UnshieldResolvers<ContextType>;
-  UnshieldEdge?: UnshieldEdgeResolvers<ContextType>;
-  UnshieldsConnection?: UnshieldsConnectionResolvers<ContextType>;
-  VerificationHash?: VerificationHashResolvers<ContextType>;
-  VerificationHashEdge?: VerificationHashEdgeResolvers<ContextType>;
-  VerificationHashesConnection?: VerificationHashesConnectionResolvers<ContextType>;
-};
-
-
-export type BigInt = Scalars["BigInt"];
-export type Bytes = Scalars["Bytes"];
