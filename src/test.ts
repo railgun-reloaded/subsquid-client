@@ -10,9 +10,12 @@ const document =  gql`
   }
 }
 `
+async function main () {
 
-const client = new SubsquidClient();
-const data = client.request(document);
+    console.log("here");
+    const client = new SubsquidClient();
+    const data = await client.request(document);
+    console.log(data);  
+};
 
-
-console.log(data);
+main();

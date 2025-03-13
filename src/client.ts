@@ -18,7 +18,7 @@ export class SubsquidClient {
     constructor(){
         this.client = new GraphQLClient(ETHEREUM_URL);
     }
-    request = (document:string):Promise<any>{
+    request = async (document:string):Promise<any> =>{
         return this.client.request(document);
     }
   }
