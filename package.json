@@ -17,5 +17,11 @@
   "license": "MIT",
   "devDependencies": {
     "@railgun-reloaded/tsconfig": "^1.0.0"
-  }
+  },
+  "dependencies": {
+    "graffle": "^0.0.0",
+    "graphql": "^16.10.0",
+    "graphql-request": "^7.1.2"
+  },
+  "type": "module"
 }
