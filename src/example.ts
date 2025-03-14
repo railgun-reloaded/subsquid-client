@@ -1,29 +1,35 @@
 import { SubsquidClient } from './client.js';
-import { Token } from './generated/types.js';
 import { ETHEREUM_URL } from './networks.js';
 
 // Initialize the client with a valid Subsquid URL
-// Replace this with an actual URL from networks.ts
 const client = new SubsquidClient(ETHEREUM_URL);
 
-async function customTokenQuery() {
+// Custom query testing different variations
+async function testTokenQueryVariations() {
+  console.log('===== TESTING TOKEN QUERY VARIATIONS =====');
+
   try {
-    // Use the generic query method for a custom query
+    // Try using the query builder
     const tokens = await client.query(
       'tokens',
       ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
-      { tokenType_eq: 'ERC20' },
-      ['tokenAddress_ASC'],
+      undefined,
+      undefined,
       5,
     );
+    console.log('tokens; ', tokens);
 
-    console.log(`Found ${tokens.length} ERC20 tokens:`);
-    tokens.forEach((token: Token) => {
-      console.log(`  ${token.tokenAddress}`);
-    });
   } catch (error) {
-    console.error('Error running custom query:', error);
+    console.error('Error in test variations:', error);
   }
 }
 
-export { customTokenQuery };
+// Run the tests
+async function runTests() {
+  console.log('\n===== RUNNING TOKEN QUERY =====');
+  await testTokenQueryVariations();
+}
+
+runTests().catch(console.error);
+
+export { testTokenQueryVariations };
