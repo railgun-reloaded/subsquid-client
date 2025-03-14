@@ -1,3 +1,4 @@
+// @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert';
 import { SubsquidClient } from '../src/client.js';
@@ -37,6 +38,7 @@ test('Subsquid Client', async (t) => {
     assert.ok(tokens.length <= 5, 'Result should respect the limit');
 
     if (tokens.length > 0) {
+      // @ts-ignore - We know the array has elements
       assert.ok('id' in tokens[0], 'Result items should have id field');
       assert.ok('tokenType' in tokens[0], 'Result items should have tokenType field');
       assert.ok('tokenAddress' in tokens[0], 'Result items should have tokenAddress field');

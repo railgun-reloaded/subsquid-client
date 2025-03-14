@@ -3,5 +3,10 @@ node_modules
 src/**/*.js
 test/**/*.js
 
+
+
 # Build files
 tsconfig.tsbuildinfo
+**/*.js
+
+**/*.d.ts
