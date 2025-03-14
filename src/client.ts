@@ -30,6 +30,50 @@ export class SubsquidClient {
   };
 
   /**
+   * Converts a JSON object to a GraphQL arguments string
+   * Handles enum values correctly (removes quotes from values that appear to be enums)
+   */
+  private jsonToGraphQLArgs(obj: any): string {
+    if (!obj) return '';
+
+    // Replace with a completely new implementation
+    const processObj = (obj: any): string => {
+      if (obj === null || obj === undefined) {
+        return 'null';
+      }
+
+      if (typeof obj === 'string') {
+        // Check if this is likely an enum (all uppercase with underscores and numbers)
+        if (/^[A-Z0-9_]+$/.test(obj)) {
+          return obj; // Return enum without quotes
+        } else {
+          return JSON.stringify(obj); // Return string with quotes
+        }
+      }
+
+      if (typeof obj === 'number' || typeof obj === 'boolean') {
+        return String(obj);
+      }
+
+      if (Array.isArray(obj)) {
+        const items = obj.map((item) => processObj(item)).join(', ');
+        return `[${items}]`;
+      }
+
+      if (typeof obj === 'object') {
+        const pairs = Object.entries(obj)
+          .map(([key, value]) => `${key}: ${processObj(value)}`)
+          .join(', ');
+        return `{${pairs}}`;
+      }
+
+      return String(obj);
+    };
+
+    return processObj(obj);
+  }
+
+  /**
    * Generic query method that can handle any entity type with proper type safety
    */
   async query<K extends keyof Query>(
@@ -41,9 +85,7 @@ export class SubsquidClient {
     offset?: number,
   ): Promise<Query[K]> {
     try {
-      const whereClauseStr = where
-        ? `where: ${JSON.stringify(where).replace(/"([^"]+)":/g, '$1:')}`
-        : '';
+      const whereClauseStr = where ? `where: ${this.jsonToGraphQLArgs(where)}` : '';
 
       const orderByClauseStr = orderBy?.length
         ? `orderBy: [${orderBy.map((order) => order.replace(/["']/g, '')).join(', ')}]`
