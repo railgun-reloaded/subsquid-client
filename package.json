@@ -1,19 +1,17 @@
 {
   "name": "@railgun-reloaded/subsquid-client",
   "version": "1.0.0",
-  "description": "A lightweight wrapper around Subsquid",
-  "main": "dist/index.js",
+  "description": "TypeScript client for interacting with Railgun Subsquid GraphQL APIs with enhanced type safety and filtering capabilities.",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test",
     "clean": "rm -rf dist",
-    "rebuild": "npm run clean && npm run build",
     "lint": "eslint --ext .ts,.js src/ *.js",
     "lint:fix": "eslint --ext .ts,.js src/ *.js --fix",
     "format": "prettier --write \"src/**/*.{ts,js}\" \"*.{js,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js}\" \"*.{js,json}\"",
-    "fix": "npm run format && npm run lint:fix",
     "generate": "graphql-codegen"
   },
   "keywords": [
@@ -42,9 +40,8 @@
   },
   "dependencies": {
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
-    "glob": "^11.0.1",
     "graphql": "^16.10.0",
-    "graphql-request": "^7.1.2",
+    "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
     "typescript": "^5.8.2"
   }
