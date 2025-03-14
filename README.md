@@ -1,6 +1,6 @@
-# Subsquid Client
+# `@railgun-reloaded/subsquid-client`
 
-TypeScript client for interacting with Railgun Subsquid GraphQL APIs with enhanced type safety and filtering capabilities.
+> TypeScript client for interacting with Railgun Subsquid GraphQL APIs with enhanced type safety and filtering capabilities.
 
 ## Install
 
