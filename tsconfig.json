@@ -2,7 +2,9 @@
   "extends": ["@railgun-reloaded/tsconfig/tsconfig"],
   "compilerOptions": {
     "esModuleInterop": true,
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "outDir": "./dist"
   },
-  "exclude": ["src/generated/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/generated/**/*", "dist", "node_modules"]
 }
