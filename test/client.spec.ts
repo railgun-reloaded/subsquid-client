@@ -2,16 +2,14 @@
 import test from 'node:test';
 import assert from 'node:assert';
 import { SubsquidClient } from '../src/client.js';
-import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL } from '../src/networks.js';
+import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks.js';
 import { gql } from 'graphql-tag';
 
 test('Subsquid Client', async (t) => {
   // Client initialization tests
   await t.test('Should initialize with valid URL', () => {
-    // Take the first valid URL from the list
-    const validURL = ETHEREUM_SEPOLIA_URL;
     // This should not throw an error
-    const client = new SubsquidClient(validURL);
+    const client = new SubsquidClient(NetworkName.Ethereum);
     // Check that client was created successfully
     assert.ok(client instanceof SubsquidClient);
   });
@@ -21,8 +19,18 @@ test('Subsquid Client', async (t) => {
     assert.throws(() => new SubsquidClient(invalidURL), Error);
   });
 
+  await t.test('Should check for supported networks', () => {
+    const invalid = 'invalid';
+    assert.ok(() => new SubsquidClient(NetworkName.Ethereum));
+    assert.ok(() => new SubsquidClient(NetworkName.EthereumSepolia));
+    assert.ok(() => new SubsquidClient(NetworkName.BNBChain));
+    assert.ok(() => new SubsquidClient(NetworkName.Polygon));
+    assert.ok(() => new SubsquidClient(NetworkName.Arbitrum));
+    assert.throws(() => new SubsquidClient(invalid));
+  });
+
   // Create a client for the query tests
-  const client = new SubsquidClient(ETHEREUM_URL);
+  const client = new SubsquidClient(NetworkName.Ethereum);
 
   // Test basic query functionality
   await t.test('Should execute basic query without filters', async () => {
@@ -44,7 +52,6 @@ test('Subsquid Client', async (t) => {
       assert.ok('tokenSubID' in tokens[0], 'Result items should have tokenSubID field');
     }
   });
-
   // Test enum filtering
   await t.test('Should query with enum filtering', async () => {
     try {
