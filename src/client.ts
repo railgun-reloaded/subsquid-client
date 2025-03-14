@@ -5,9 +5,6 @@ import { VALID_SUBSQUID_URLS } from './networks.js';
 // Import generated types
 import type { Query } from './generated/types.js';
 
-// Re-export the gql tag for use in other files
-export { gql };
-
 export const isNetworkValid = (url: string): boolean => {
   return VALID_SUBSQUID_URLS.includes(url);
 };
@@ -43,34 +40,42 @@ export class SubsquidClient {
     limit: number = 1000,
     offset?: number,
   ): Promise<Query[K]> {
-    // Build the query with proper GraphQL syntax
-    const whereArg = where ? `where: ${JSON.stringify(where).replace(/"([^"]+)":/g, '$1:')}` : '';
-    const orderByArg = orderBy?.length ? `orderBy: [${orderBy.join(', ')}]` : '';
-    const limitArg = `limit: ${limit}`;
-    const offsetArg = offset !== undefined ? `offset: ${offset}` : '';
+    try {
+      const whereClauseStr = where
+        ? `where: ${JSON.stringify(where).replace(/"([^"]+)":/g, '$1:')}`
+        : '';
 
-    // Combine all arguments
-    const args = [whereArg, orderByArg, limitArg, offsetArg].filter(Boolean).join(', ');
+      const orderByClauseStr = orderBy?.length
+        ? `orderBy: [${orderBy.map((order) => order.replace(/["']/g, '')).join(', ')}]`
+        : '';
 
-    // Build the query string with typed variables
-    const queryString = `
-      query Get${String(entity)}(${where ? '$where: JSON' : ''}) {
-        ${String(entity)}(${args}) {
-          ${fields.join('\n          ')}
+      const limitClauseStr = limit !== undefined ? `limit: ${limit}` : '';
+      const offsetClauseStr = offset !== undefined ? `offset: ${offset}` : '';
+
+      // Combine all arguments
+      const args = [whereClauseStr, orderByClauseStr, limitClauseStr, offsetClauseStr]
+        .filter(Boolean)
+        .join(', ');
+
+      // Build query string
+      const queryStr = `
+        query {
+          ${String(entity)}(${args}) {
+            ${fields.join('\n            ')}
+          }
         }
-      }
-    `;
+      `;
 
-    const query = gql`
-      ${queryString}
-    `;
+      const query = gql`
+        ${queryStr}
+      `;
 
-    // Execute the query
-    const response = await this.request<Record<string, Query[K]>>(
-      query,
-      where ? { where: JSON.stringify(where) } : undefined,
-    );
+      const response = await this.request<Record<string, Query[K]>>(query);
 
-    return response[entity as string] as Query[K];
+      return response[entity as string] as Query[K];
+    } catch (error) {
+      console.error(`Error in query for ${String(entity)}:`, error);
+      throw error;
+    }
   }
 }
