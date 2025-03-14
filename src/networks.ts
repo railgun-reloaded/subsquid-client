@@ -12,3 +12,17 @@ export const VALID_SUBSQUID_URLS = [
   POLYGON_URL,
   BSC_URL,
 ];
+export enum NetworkName {
+  // Mainnets
+  Ethereum = 'Ethereum',
+  BNBChain = 'BNB_Chain',
+  Polygon = 'Polygon',
+  Arbitrum = 'Arbitrum',
+
+  // Testnets
+  EthereumSepolia = 'Ethereum_Sepolia',
+  PolygonAmoy = 'Polygon_Amoy',
+
+  // Dev only
+  Hardhat = 'Hardhat',
+}
