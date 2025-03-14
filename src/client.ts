@@ -1,23 +1,50 @@
 import { GraphQLClient } from 'graphql-request';
 import { gql } from 'graphql-tag';
-import { VALID_SUBSQUID_URLS } from './networks';
+import {
+  NetworkName,
+  ETHEREUM_URL,
+  ETHEREUM_SEPOLIA_URL,
+  BSC_URL,
+  POLYGON_URL,
+  ARBITRUM_URL,
+} from './networks.js';
 
 // Import generated types
 import type { Query } from './generated/types';
 
-export const isNetworkValid = (url: string): boolean => {
-  return VALID_SUBSQUID_URLS.includes(url);
+// export const isNetworkValid = (url: string): boolean => {
+//   return VALID_SUBSQUID_URLS.includes(url);
+// };
+
+export const subsquidUrlForNetwork = (networkName: NetworkName): string => {
+  switch (networkName) {
+    case NetworkName.Ethereum:
+      return ETHEREUM_URL;
+    case NetworkName.EthereumSepolia:
+      return ETHEREUM_SEPOLIA_URL;
+    case NetworkName.BNBChain:
+      return BSC_URL;
+    case NetworkName.Polygon:
+      return POLYGON_URL;
+    case NetworkName.Arbitrum:
+      return ARBITRUM_URL;
+    case NetworkName.PolygonAmoy:
+    case NetworkName.Hardhat:
+    default:
+      throw new Error('No Graph API hosted service for this network');
+  }
 };
 
 export class SubsquidClient {
   private client: GraphQLClient;
 
-  constructor(url: string) {
-    if (!url || !isNetworkValid(url)) {
-      throw new Error(
-        `Invalid Subsquid URL. Please use one of the predefined URLs from networks.ts: ${VALID_SUBSQUID_URLS.join(', ')}`,
-      );
-    }
+  constructor(network: NetworkName) {
+    const url = subsquidUrlForNetwork(network);
+    // if (!url || !isNetworkValid(url)) {
+    //   throw new Error(
+    //     `Invalid Subsquid URL. Please use one of the predefined URLs from networks.ts: ${VALID_SUBSQUID_URLS.join(', ')}`,
+    //   );
+    // }
 
     this.client = new GraphQLClient(url);
   }
