@@ -1,8 +1,8 @@
 // Re-export from client.ts
-export { SubsquidClient, isNetworkValid } from './client.js';
+export { SubsquidClient, isNetworkValid } from './client';
 
 // Re-export from networks.ts
-export { ETHEREUM_URL, ETHEREUM_SEPOLIA_URL, VALID_SUBSQUID_URLS } from './networks.js';
+export { ETHEREUM_URL, ETHEREUM_SEPOLIA_URL, VALID_SUBSQUID_URLS } from './networks';
 
 // Re-export gql for external use
 export { gql } from 'graphql-tag';

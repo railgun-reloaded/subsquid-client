@@ -5,3 +5,7 @@ test/**/*.js
 
 # Build files
 tsconfig.tsbuildinfo
+**/*.js
+
+**/*.d.ts
+

@@ -10,7 +10,7 @@ import {
 } from './networks.js';
 
 // Import generated types
-import type { Query } from './generated/types.js';
+import type { Query } from './generated/types';
 
 // export const isNetworkValid = (url: string): boolean => {
 //   return VALID_SUBSQUID_URLS.includes(url);
