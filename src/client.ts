@@ -25,12 +25,12 @@ export class SubsquidClient {
     }
     return configUrl;
   };
-  
+
 
   /**
    * Generic request method for GraphQL queries with type safety
    */
-  request = async <T>(document: string | any, variables?: any): Promise<T> => {
+  private request = async <T>(document: string | any, variables?: any): Promise<T> => {
     return this.client.request<T>(document, variables);
   };
 
