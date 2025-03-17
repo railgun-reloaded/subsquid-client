@@ -7,30 +7,29 @@ import { gql } from 'graphql-tag';
 
 test('Subsquid Client', async (t) => {
   // Client initialization tests
-  await t.test('Should initialize with valid URL', () => {
+  await t.test('Should initialize with valid config', () => {
     // This should not throw an error
-    const client = new SubsquidClient(NetworkName.Ethereum);
+    const client = new SubsquidClient('ethereum');
     // Check that client was created successfully
     assert.ok(client instanceof SubsquidClient);
   });
 
   await t.test('Should throw with invalid URL', () => {
-    const invalidURL = 'https://invalid-url.com';
-    assert.throws(() => new SubsquidClient(invalidURL), Error);
+    assert.throws(() => new SubsquidClient('invalidNetwork'), Error);
   });
 
   await t.test('Should check for supported networks', () => {
     const invalid = 'invalid';
-    assert.ok(() => new SubsquidClient(NetworkName.Ethereum));
-    assert.ok(() => new SubsquidClient(NetworkName.EthereumSepolia));
-    assert.ok(() => new SubsquidClient(NetworkName.BNBChain));
-    assert.ok(() => new SubsquidClient(NetworkName.Polygon));
-    assert.ok(() => new SubsquidClient(NetworkName.Arbitrum));
+    assert.ok(() => new SubsquidClient('ethereum'));
+    assert.ok(() => new SubsquidClient('ethereumSepolia'));
+    assert.ok(() => new SubsquidClient('bnb'));
+    assert.ok(() => new SubsquidClient('polygon'));
+    assert.ok(() => new SubsquidClient('arbitrum'));
     assert.throws(() => new SubsquidClient(invalid));
   });
 
   // Create a client for the query tests
-  const client = new SubsquidClient(NetworkName.Ethereum);
+  const client = new SubsquidClient('ethereum');
 
   // Test basic query functionality
   await t.test('Should execute basic query without filters', async () => {
