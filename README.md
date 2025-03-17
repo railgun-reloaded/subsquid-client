@@ -10,7 +10,7 @@ npm install @railgun-community/subsquid-client
 
 ## Example Usage
 
-## Supported Networks
+### Supported Networks
 
 The SubsquidClient supports a predefined set of networks. To see the list of supported networks, use the SUPPORTED_NETWORKS static property:
 
