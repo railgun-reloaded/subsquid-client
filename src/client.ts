@@ -2,41 +2,30 @@ import { GraphQLClient } from 'graphql-request';
 import { gql } from 'graphql-tag';
 import {
   NetworkName,
-  ETHEREUM_URL,
-  ETHEREUM_SEPOLIA_URL,
-  BSC_URL,
-  POLYGON_URL,
-  ARBITRUM_URL,
-} from './networks.js';
+  NETWORK_CONFIG,
+  SUPPORTED_NETWORKS
+} from './networks';
 
 import type { Query } from './generated/types';
-
-export const subsquidUrlForNetwork = (networkName: NetworkName): string => {
-  switch (networkName) {
-    case NetworkName.Ethereum:
-      return ETHEREUM_URL;
-    case NetworkName.EthereumSepolia:
-      return ETHEREUM_SEPOLIA_URL;
-    case NetworkName.BNBChain:
-      return BSC_URL;
-    case NetworkName.Polygon:
-      return POLYGON_URL;
-    case NetworkName.Arbitrum:
-      return ARBITRUM_URL;
-    case NetworkName.PolygonAmoy:
-    case NetworkName.Hardhat:
-    default:
-      throw new Error('No Graph API hosted service for this network');
-  }
-};
 
 export class SubsquidClient {
   private client: GraphQLClient;
 
   constructor(network: NetworkName) {
-    const url = subsquidUrlForNetwork(network);
+    const url = this.getSubsquidUrlForNetwork(network);
     this.client = new GraphQLClient(url);
   }
+
+  private getSubsquidUrlForNetwork = (network: NetworkName): string => {
+    const configUrl = NETWORK_CONFIG[network];
+    if (!configUrl) {
+      throw new Error(
+        `Unsupported network: ${network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
+      );
+    }
+    return configUrl;
+  };
+  
 
   /**
    * Generic request method for GraphQL queries with type safety
