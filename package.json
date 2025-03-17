@@ -13,7 +13,7 @@
     "format": "prettier --write \"src/**/*.{ts,js}\" \"*.{js,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js}\" \"*.{js,json}\"",
     "generate": "graphql-codegen",
-    "prepare": "npm run generate && npm run prepare"
+    "prepare": "npm run generate && npm run build"
   },
   "keywords": [
     "subsquid"
