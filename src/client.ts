@@ -35,12 +35,6 @@ export class SubsquidClient {
 
   constructor(network: NetworkName) {
     const url = subsquidUrlForNetwork(network);
-    // if (!url || !isNetworkValid(url)) {
-    //   throw new Error(
-    //     `Invalid Subsquid URL. Please use one of the predefined URLs from networks.ts: ${VALID_SUBSQUID_URLS.join(', ')}`,
-    //   );
-    // }
-
     this.client = new GraphQLClient(url);
   }
 
