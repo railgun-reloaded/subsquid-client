@@ -10,14 +10,26 @@ npm install @railgun-community/subsquid-client
 
 ## Example Usage
 
+## Supported Networks
+
+The SubsquidClient supports a predefined set of networks. To see the list of supported networks, use the SUPPORTED_NETWORKS static property:
+
+```typescript
+import { SubsquidClient } from '@railgun-community/subsquid-client';
+
+console.log(SubsquidClient.SUPPORTED_NETWORKS);
+// example output: ['ethereum', 'ethereumSepolia', 'bnbChain', 'polygon', 'arbitrum']
+```
+
+When initializing the client, provide one of these network names as a string. If an unsupported network is provided, an error will be thrown with the list of valid options.
+
 ### Basic Usage
 
 ```typescript
-import { SubsquidClient } from './client.js';
-import { ETHEREUM_URL } from './networks.js';
+import { SubsquidClient } from './client';
 
-// Initialize the client with a valid Subsquid URL
-const client = new SubsquidClient(ETHEREUM_URL);
+// Initialize the client with a valid Subsquid Network
+const client = new SubsquidClient('ethereum');
 
 // Simple query for tokens with type-safety
 const tokens = await client.query(
