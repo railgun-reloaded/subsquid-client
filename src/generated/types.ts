@@ -3,23 +3,19 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
-  [_ in K]?: never;
-};
-export type Incremental<T> =
-  | T
-  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
   /** Big number integer */
-  BigInt: { input: string; output: string };
+  BigInt: { input: string; output: string; }
   /** Binary data encoded as a hex string always prefixed with 0x */
-  Bytes: { input: string; output: string };
+  Bytes: { input: string; output: string; }
 };
 
 export type Ciphertext = {
@@ -48,7 +44,7 @@ export enum CiphertextOrderByInput {
   TagAsc = 'tag_ASC',
   TagAscNullsFirst = 'tag_ASC_NULLS_FIRST',
   TagDesc = 'tag_DESC',
-  TagDescNullsLast = 'tag_DESC_NULLS_LAST',
+  TagDescNullsLast = 'tag_DESC_NULLS_LAST'
 }
 
 export type CiphertextWhereInput = {
@@ -127,7 +123,7 @@ export enum CommitmentBatchEventNewOrderByInput {
   TreeNumberAsc = 'treeNumber_ASC',
   TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
   TreeNumberDesc = 'treeNumber_DESC',
-  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST'
 }
 
 export type CommitmentBatchEventNewWhereInput = {
@@ -225,7 +221,7 @@ export enum CommitmentCiphertextOrderByInput {
   MemoAsc = 'memo_ASC',
   MemoAscNullsFirst = 'memo_ASC_NULLS_FIRST',
   MemoDesc = 'memo_DESC',
-  MemoDescNullsLast = 'memo_DESC_NULLS_LAST',
+  MemoDescNullsLast = 'memo_DESC_NULLS_LAST'
 }
 
 export type CommitmentCiphertextWhereInput = {
@@ -315,7 +311,7 @@ export enum CommitmentOrderByInput {
   TreePositionAsc = 'treePosition_ASC',
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
-  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
 }
 
 export type CommitmentPreimage = {
@@ -360,7 +356,7 @@ export enum CommitmentPreimageOrderByInput {
   ValueAsc = 'value_ASC',
   ValueAscNullsFirst = 'value_ASC_NULLS_FIRST',
   ValueDesc = 'value_DESC',
-  ValueDescNullsLast = 'value_DESC_NULLS_LAST',
+  ValueDescNullsLast = 'value_DESC_NULLS_LAST'
 }
 
 export type CommitmentPreimageWhereInput = {
@@ -410,7 +406,7 @@ export enum CommitmentType {
   LegacyEncryptedCommitment = 'LegacyEncryptedCommitment',
   LegacyGeneratedCommitment = 'LegacyGeneratedCommitment',
   ShieldCommitment = 'ShieldCommitment',
-  TransactCommitment = 'TransactCommitment',
+  TransactCommitment = 'TransactCommitment'
 }
 
 export type CommitmentWhereInput = {
@@ -534,7 +530,7 @@ export enum LegacyCommitmentCiphertextOrderByInput {
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST'
 }
 
 export type LegacyCommitmentCiphertextWhereInput = {
@@ -636,7 +632,7 @@ export enum LegacyEncryptedCommitmentOrderByInput {
   TreePositionAsc = 'treePosition_ASC',
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
-  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
 }
 
 export type LegacyEncryptedCommitmentWhereInput = {
@@ -801,7 +797,7 @@ export enum LegacyGeneratedCommitmentOrderByInput {
   TreePositionAsc = 'treePosition_ASC',
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
-  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
 }
 
 export type LegacyGeneratedCommitmentWhereInput = {
@@ -941,7 +937,7 @@ export enum NullifierOrderByInput {
   TreeNumberAsc = 'treeNumber_ASC',
   TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
   TreeNumberDesc = 'treeNumber_DESC',
-  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST',
+  TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST'
 }
 
 export type NullifierWhereInput = {
@@ -1091,13 +1087,16 @@ export type Query = {
   verificationHashesConnection: VerificationHashesConnection;
 };
 
+
 export type QueryCiphertextByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryCiphertextByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryCiphertextsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1106,6 +1105,7 @@ export type QueryCiphertextsArgs = {
   where?: InputMaybe<CiphertextWhereInput>;
 };
 
+
 export type QueryCiphertextsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1113,13 +1113,16 @@ export type QueryCiphertextsConnectionArgs = {
   where?: InputMaybe<CiphertextWhereInput>;
 };
 
+
 export type QueryCommitmentBatchEventNewByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryCommitmentBatchEventNewByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryCommitmentBatchEventNewsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1128,6 +1131,7 @@ export type QueryCommitmentBatchEventNewsArgs = {
   where?: InputMaybe<CommitmentBatchEventNewWhereInput>;
 };
 
+
 export type QueryCommitmentBatchEventNewsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1135,13 +1139,16 @@ export type QueryCommitmentBatchEventNewsConnectionArgs = {
   where?: InputMaybe<CommitmentBatchEventNewWhereInput>;
 };
 
+
 export type QueryCommitmentCiphertextByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryCommitmentCiphertextByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryCommitmentCiphertextsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1150,6 +1157,7 @@ export type QueryCommitmentCiphertextsArgs = {
   where?: InputMaybe<CommitmentCiphertextWhereInput>;
 };
 
+
 export type QueryCommitmentCiphertextsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1157,13 +1165,16 @@ export type QueryCommitmentCiphertextsConnectionArgs = {
   where?: InputMaybe<CommitmentCiphertextWhereInput>;
 };
 
+
 export type QueryCommitmentPreimageByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryCommitmentPreimageByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryCommitmentPreimagesArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1172,12 +1183,14 @@ export type QueryCommitmentPreimagesArgs = {
   where?: InputMaybe<CommitmentPreimageWhereInput>;
 };
 
+
 export type QueryCommitmentPreimagesConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<CommitmentPreimageOrderByInput>;
   where?: InputMaybe<CommitmentPreimageWhereInput>;
 };
+
 
 export type QueryCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1186,6 +1199,7 @@ export type QueryCommitmentsArgs = {
   where?: InputMaybe<CommitmentWhereInput>;
 };
 
+
 export type QueryCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1193,13 +1207,16 @@ export type QueryCommitmentsConnectionArgs = {
   where?: InputMaybe<CommitmentWhereInput>;
 };
 
+
 export type QueryLegacyCommitmentCiphertextByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryLegacyCommitmentCiphertextByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryLegacyCommitmentCiphertextsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1208,6 +1225,7 @@ export type QueryLegacyCommitmentCiphertextsArgs = {
   where?: InputMaybe<LegacyCommitmentCiphertextWhereInput>;
 };
 
+
 export type QueryLegacyCommitmentCiphertextsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1215,13 +1233,16 @@ export type QueryLegacyCommitmentCiphertextsConnectionArgs = {
   where?: InputMaybe<LegacyCommitmentCiphertextWhereInput>;
 };
 
+
 export type QueryLegacyEncryptedCommitmentByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryLegacyEncryptedCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryLegacyEncryptedCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1230,6 +1251,7 @@ export type QueryLegacyEncryptedCommitmentsArgs = {
   where?: InputMaybe<LegacyEncryptedCommitmentWhereInput>;
 };
 
+
 export type QueryLegacyEncryptedCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1237,13 +1259,16 @@ export type QueryLegacyEncryptedCommitmentsConnectionArgs = {
   where?: InputMaybe<LegacyEncryptedCommitmentWhereInput>;
 };
 
+
 export type QueryLegacyGeneratedCommitmentByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryLegacyGeneratedCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryLegacyGeneratedCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1252,6 +1277,7 @@ export type QueryLegacyGeneratedCommitmentsArgs = {
   where?: InputMaybe<LegacyGeneratedCommitmentWhereInput>;
 };
 
+
 export type QueryLegacyGeneratedCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1259,13 +1285,16 @@ export type QueryLegacyGeneratedCommitmentsConnectionArgs = {
   where?: InputMaybe<LegacyGeneratedCommitmentWhereInput>;
 };
 
+
 export type QueryNullifierByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryNullifierByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryNullifiersArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1274,6 +1303,7 @@ export type QueryNullifiersArgs = {
   where?: InputMaybe<NullifierWhereInput>;
 };
 
+
 export type QueryNullifiersConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1281,13 +1311,16 @@ export type QueryNullifiersConnectionArgs = {
   where?: InputMaybe<NullifierWhereInput>;
 };
 
+
 export type QueryShieldCommitmentByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryShieldCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryShieldCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1296,6 +1329,7 @@ export type QueryShieldCommitmentsArgs = {
   where?: InputMaybe<ShieldCommitmentWhereInput>;
 };
 
+
 export type QueryShieldCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1303,13 +1337,16 @@ export type QueryShieldCommitmentsConnectionArgs = {
   where?: InputMaybe<ShieldCommitmentWhereInput>;
 };
 
+
 export type QueryTokenByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryTokenByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryTokensArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1318,6 +1355,7 @@ export type QueryTokensArgs = {
   where?: InputMaybe<TokenWhereInput>;
 };
 
+
 export type QueryTokensConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1325,13 +1363,16 @@ export type QueryTokensConnectionArgs = {
   where?: InputMaybe<TokenWhereInput>;
 };
 
+
 export type QueryTransactCommitmentByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryTransactCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryTransactCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1340,6 +1381,7 @@ export type QueryTransactCommitmentsArgs = {
   where?: InputMaybe<TransactCommitmentWhereInput>;
 };
 
+
 export type QueryTransactCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1347,13 +1389,16 @@ export type QueryTransactCommitmentsConnectionArgs = {
   where?: InputMaybe<TransactCommitmentWhereInput>;
 };
 
+
 export type QueryTransactionByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryTransactionByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryTransactionsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1362,6 +1407,7 @@ export type QueryTransactionsArgs = {
   where?: InputMaybe<TransactionWhereInput>;
 };
 
+
 export type QueryTransactionsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1369,13 +1415,16 @@ export type QueryTransactionsConnectionArgs = {
   where?: InputMaybe<TransactionWhereInput>;
 };
 
+
 export type QueryUnshieldByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryUnshieldByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryUnshieldsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1384,6 +1433,7 @@ export type QueryUnshieldsArgs = {
   where?: InputMaybe<UnshieldWhereInput>;
 };
 
+
 export type QueryUnshieldsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1391,13 +1441,16 @@ export type QueryUnshieldsConnectionArgs = {
   where?: InputMaybe<UnshieldWhereInput>;
 };
 
+
 export type QueryVerificationHashByIdArgs = {
   id: Scalars['String']['input'];
 };
 
+
 export type QueryVerificationHashByUniqueInputArgs = {
   where: WhereIdInput;
 };
+
 
 export type QueryVerificationHashesArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1405,6 +1458,7 @@ export type QueryVerificationHashesArgs = {
   orderBy?: InputMaybe<Array<VerificationHashOrderByInput>>;
   where?: InputMaybe<VerificationHashWhereInput>;
 };
+
 
 export type QueryVerificationHashesConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1492,7 +1546,7 @@ export enum ShieldCommitmentOrderByInput {
   TreePositionAsc = 'treePosition_ASC',
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
-  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
 }
 
 export type ShieldCommitmentWhereInput = {
@@ -1640,13 +1694,13 @@ export enum TokenOrderByInput {
   TokenTypeAsc = 'tokenType_ASC',
   TokenTypeAscNullsFirst = 'tokenType_ASC_NULLS_FIRST',
   TokenTypeDesc = 'tokenType_DESC',
-  TokenTypeDescNullsLast = 'tokenType_DESC_NULLS_LAST',
+  TokenTypeDescNullsLast = 'tokenType_DESC_NULLS_LAST'
 }
 
 export enum TokenType {
   Erc20 = 'ERC20',
   Erc721 = 'ERC721',
-  Erc1155 = 'ERC1155',
+  Erc1155 = 'ERC1155'
 }
 
 export type TokenWhereInput = {
@@ -1779,7 +1833,7 @@ export enum TransactCommitmentOrderByInput {
   TreePositionAsc = 'treePosition_ASC',
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
-  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST',
+  TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
 }
 
 export type TransactCommitmentWhereInput = {
@@ -1988,7 +2042,7 @@ export enum TransactionOrderByInput {
   VerificationHashAsc = 'verificationHash_ASC',
   VerificationHashAscNullsFirst = 'verificationHash_ASC_NULLS_FIRST',
   VerificationHashDesc = 'verificationHash_DESC',
-  VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST',
+  VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST'
 }
 
 export type TransactionWhereInput = {
@@ -2169,7 +2223,7 @@ export enum UnshieldOrderByInput {
   TransactionHashAsc = 'transactionHash_ASC',
   TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
   TransactionHashDesc = 'transactionHash_DESC',
-  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST',
+  TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST'
 }
 
 export type UnshieldWhereInput = {
@@ -2274,7 +2328,7 @@ export enum VerificationHashOrderByInput {
   VerificationHashAsc = 'verificationHash_ASC',
   VerificationHashAscNullsFirst = 'verificationHash_ASC_NULLS_FIRST',
   VerificationHashDesc = 'verificationHash_DESC',
-  VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST',
+  VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST'
 }
 
 export type VerificationHashWhereInput = {
