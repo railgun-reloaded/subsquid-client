@@ -2,8 +2,8 @@
   "name": "@railgun-reloaded/subsquid-client",
   "version": "1.0.0",
   "description": "TypeScript client for interacting with Railgun Subsquid GraphQL APIs with enhanced type safety and filtering capabilities.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/client.js",
+  "types": "src/client.d.ts",
   "scripts": {
     "build": "tsc --build",
     "test": "npm run build && node --test ./test/*.spec.js",
