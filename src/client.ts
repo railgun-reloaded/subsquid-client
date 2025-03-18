@@ -8,6 +8,17 @@ import {
 
 import type { Query } from './generated/types';
 
+// Helper to remove null/undefined from types
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+// Get object type from Query result
+type EntityType<K extends keyof Query> =
+  Query[K] extends Array<infer U> ? U :
+  NonNullable<Query[K]>;
+
+// Get field names as string literals
+type FieldsOf<K extends keyof Query> = keyof EntityType<K> & string;
+
 export class SubsquidClient {
   private client: GraphQLClient;
 
@@ -81,9 +92,9 @@ export class SubsquidClient {
   /**
    * Generic query method that can handle any entity type with proper type safety
    */
-  async query<K extends keyof Query>(
+  async query<K extends keyof Query, F extends FieldsOf<K>>(
     entity: K,
-    fields: string[],
+    fields: F[],
     where?: any,
     orderBy?: string[],
     limit: number = 1000,
