@@ -2367,48 +2367,66 @@ export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
+type QueryIO = {
+        ciphertextById: GenerateIO<'ciphertextById', QueryCiphertextByIdArgs>
+,ciphertextByUniqueInput: GenerateIO<'ciphertextByUniqueInput', QueryCiphertextByUniqueInputArgs>
+,ciphertexts: GenerateIO<'ciphertexts', QueryCiphertextsArgs>
+,ciphertextsConnection: GenerateIO<'ciphertextsConnection', QueryCiphertextsConnectionArgs>
+,commitmentBatchEventNewById: GenerateIO<'commitmentBatchEventNewById', QueryCommitmentBatchEventNewByIdArgs>
+,commitmentBatchEventNewByUniqueInput: GenerateIO<'commitmentBatchEventNewByUniqueInput', QueryCommitmentBatchEventNewByUniqueInputArgs>
+,commitmentBatchEventNews: GenerateIO<'commitmentBatchEventNews', QueryCommitmentBatchEventNewsArgs>
+,commitmentBatchEventNewsConnection: GenerateIO<'commitmentBatchEventNewsConnection', QueryCommitmentBatchEventNewsConnectionArgs>
+,commitmentCiphertextById: GenerateIO<'commitmentCiphertextById', QueryCommitmentCiphertextByIdArgs>
+,commitmentCiphertextByUniqueInput: GenerateIO<'commitmentCiphertextByUniqueInput', QueryCommitmentCiphertextByUniqueInputArgs>
+,commitmentCiphertexts: GenerateIO<'commitmentCiphertexts', QueryCommitmentCiphertextsArgs>
+,commitmentCiphertextsConnection: GenerateIO<'commitmentCiphertextsConnection', QueryCommitmentCiphertextsConnectionArgs>
+,commitmentPreimageById: GenerateIO<'commitmentPreimageById', QueryCommitmentPreimageByIdArgs>
+,commitmentPreimageByUniqueInput: GenerateIO<'commitmentPreimageByUniqueInput', QueryCommitmentPreimageByUniqueInputArgs>
+,commitmentPreimages: GenerateIO<'commitmentPreimages', QueryCommitmentPreimagesArgs>
+,commitmentPreimagesConnection: GenerateIO<'commitmentPreimagesConnection', QueryCommitmentPreimagesConnectionArgs>
+,commitments: GenerateIO<'commitments', QueryCommitmentsArgs>
+,commitmentsConnection: GenerateIO<'commitmentsConnection', QueryCommitmentsConnectionArgs>
+,legacyCommitmentCiphertextById: GenerateIO<'legacyCommitmentCiphertextById', QueryLegacyCommitmentCiphertextByIdArgs>
+,legacyCommitmentCiphertextByUniqueInput: GenerateIO<'legacyCommitmentCiphertextByUniqueInput', QueryLegacyCommitmentCiphertextByUniqueInputArgs>
+,legacyCommitmentCiphertexts: GenerateIO<'legacyCommitmentCiphertexts', QueryLegacyCommitmentCiphertextsArgs>
+,legacyCommitmentCiphertextsConnection: GenerateIO<'legacyCommitmentCiphertextsConnection', QueryLegacyCommitmentCiphertextsConnectionArgs>
+,legacyEncryptedCommitmentById: GenerateIO<'legacyEncryptedCommitmentById', QueryLegacyEncryptedCommitmentByIdArgs>
+,legacyEncryptedCommitmentByUniqueInput: GenerateIO<'legacyEncryptedCommitmentByUniqueInput', QueryLegacyEncryptedCommitmentByUniqueInputArgs>
+,legacyEncryptedCommitments: GenerateIO<'legacyEncryptedCommitments', QueryLegacyEncryptedCommitmentsArgs>
+,legacyEncryptedCommitmentsConnection: GenerateIO<'legacyEncryptedCommitmentsConnection', QueryLegacyEncryptedCommitmentsConnectionArgs>
+,legacyGeneratedCommitmentById: GenerateIO<'legacyGeneratedCommitmentById', QueryLegacyGeneratedCommitmentByIdArgs>
+,legacyGeneratedCommitmentByUniqueInput: GenerateIO<'legacyGeneratedCommitmentByUniqueInput', QueryLegacyGeneratedCommitmentByUniqueInputArgs>
+,legacyGeneratedCommitments: GenerateIO<'legacyGeneratedCommitments', QueryLegacyGeneratedCommitmentsArgs>
+,legacyGeneratedCommitmentsConnection: GenerateIO<'legacyGeneratedCommitmentsConnection', QueryLegacyGeneratedCommitmentsConnectionArgs>
+,nullifierById: GenerateIO<'nullifierById', QueryNullifierByIdArgs>
+,nullifierByUniqueInput: GenerateIO<'nullifierByUniqueInput', QueryNullifierByUniqueInputArgs>
+,nullifiers: GenerateIO<'nullifiers', QueryNullifiersArgs>
+,nullifiersConnection: GenerateIO<'nullifiersConnection', QueryNullifiersConnectionArgs>
+,shieldCommitmentById: GenerateIO<'shieldCommitmentById', QueryShieldCommitmentByIdArgs>
+,shieldCommitmentByUniqueInput: GenerateIO<'shieldCommitmentByUniqueInput', QueryShieldCommitmentByUniqueInputArgs>
+,shieldCommitments: GenerateIO<'shieldCommitments', QueryShieldCommitmentsArgs>
+,shieldCommitmentsConnection: GenerateIO<'shieldCommitmentsConnection', QueryShieldCommitmentsConnectionArgs>
+,squidStatus: GenerateIO<'squidStatus', QuerySquidStatusArgs>
+,tokenById: GenerateIO<'tokenById', QueryTokenByIdArgs>
+,tokenByUniqueInput: GenerateIO<'tokenByUniqueInput', QueryTokenByUniqueInputArgs>
+,tokens: GenerateIO<'tokens', QueryTokensArgs>
+,tokensConnection: GenerateIO<'tokensConnection', QueryTokensConnectionArgs>
+,transactCommitmentById: GenerateIO<'transactCommitmentById', QueryTransactCommitmentByIdArgs>
+,transactCommitmentByUniqueInput: GenerateIO<'transactCommitmentByUniqueInput', QueryTransactCommitmentByUniqueInputArgs>
+,transactCommitments: GenerateIO<'transactCommitments', QueryTransactCommitmentsArgs>
+,transactCommitmentsConnection: GenerateIO<'transactCommitmentsConnection', QueryTransactCommitmentsConnectionArgs>
+,transactionById: GenerateIO<'transactionById', QueryTransactionByIdArgs>
+,transactionByUniqueInput: GenerateIO<'transactionByUniqueInput', QueryTransactionByUniqueInputArgs>
+,transactions: GenerateIO<'transactions', QueryTransactionsArgs>
+,transactionsConnection: GenerateIO<'transactionsConnection', QueryTransactionsConnectionArgs>
+,unshieldById: GenerateIO<'unshieldById', QueryUnshieldByIdArgs>
+,unshieldByUniqueInput: GenerateIO<'unshieldByUniqueInput', QueryUnshieldByUniqueInputArgs>
+,unshields: GenerateIO<'unshields', QueryUnshieldsArgs>
+,unshieldsConnection: GenerateIO<'unshieldsConnection', QueryUnshieldsConnectionArgs>
+,verificationHashById: GenerateIO<'verificationHashById', QueryVerificationHashByIdArgs>
+,verificationHashByUniqueInput: GenerateIO<'verificationHashByUniqueInput', QueryVerificationHashByUniqueInputArgs>
+,verificationHashes: GenerateIO<'verificationHashes', QueryVerificationHashesArgs>
+,verificationHashesConnection: GenerateIO<'verificationHashesConnection', QueryVerificationHashesConnectionArgs>
 
-    // Test generation for a single type
-    type GenerateIO<
-      Key extends keyof Query,
-      QueryArgs,
-      Field = Query[Key],
-      Entity = Field extends Array<infer IT1>
-        ? IT1
-        : Field extends Maybe<infer IT2>
-          ? NonNullable<IT2>
-          : Field,
-
-      Wrapper = Field extends Array<infer _>
-        ? 'array'
-        : Field extends Maybe<infer _>
-          ? 'maybe'
-          : 'simple'
-      > = {
-        entity: Entity,
-        input: AddFields<QueryArgs, Entity>
-        output: Field
-        wrapper: Wrapper
-    }
-
-    type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
-
-    // Sample generated type for ciphertexts
-    type CiphertextsIO = GenerateIO<'ciphertexts', QueryCiphertextsArgs>;
-
-    // This would be part of the full QueryIO type
-    type PartialQueryIO = {
-      ciphertexts: GenerateIO<'ciphertexts', QueryCiphertextsArgs>,
-    };
-
-    // Sample QueryInput (partial)
-    type PartialQueryInput = {
-      ciphertexts?: PartialQueryIO['ciphertexts']['input']
-    };
-
-    // This is what our query function signature would look like for this field
-    async function querySample<T extends PartialQueryInput>(input: T & Record<Exclude<keyof T, keyof PartialQueryInput>, never>): Promise<T> {
-      // Implementation logic
-      return {} as any;
-    }
+      }
     
