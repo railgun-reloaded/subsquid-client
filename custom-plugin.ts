@@ -1,20 +1,25 @@
 module.exports = {
   plugin(schema, _documents, _config) {
+  if (!schema.getQueryType()) {
+    throw new Error('No query type found in schema');
+  }
 
-  // HELPERS 
+
   function capitalize(str) {                          
     return str.charAt(0).toUpperCase() + str.slice(1);
-  }                                                       
-  // FINISH HELPERS 
+  }
 
   function printPreloadTypes() {
-    return `type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
+    const extractFieldsType = 
+`type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
   ? Pick<T, F[number]>
-  : T;
+  : T;`;
 
-type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
+    const addFieldsType = 
+`type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }`;
 
-type GenerateIO<
+    const generateIOType = 
+`type GenerateIO<
   Key extends keyof Query, 
   QueryArgs,
   Field = Query[Key],
@@ -33,22 +38,27 @@ type GenerateIO<
   input: AddFields<QueryArgs, Entity>;
   output: Field;
   wrapper: Wrapper;
-}`
+}`;
+    return [
+      extractFieldsType,
+      '',
+      addFieldsType,
+      '',
+      generateIOType
+    ].join('\n');
   };
 
   function printQueryIO() {
     const queryType = schema.getQueryType();
-    if (!queryType) {
-      throw new Error('No query type found in schema');
-    }
     const queryFields = queryType.getFields();
-    const queryFieldsNames = Object.keys(queryFields);
-    
+    let queryFieldsNames = Object.keys(queryFields);
+    queryFieldsNames = queryFieldsNames.filter(name => name !== 'squidStatus');  //TODO: Not using this query ??                                                                                                                                                            │ │
     return `type QueryIO = {
   ${queryFieldsNames.map((fieldName) => `${fieldName}: GenerateIO<'${fieldName}', Query${capitalize(fieldName)}Args>`).join('\n  ')}
 }`;
   };
 
+// return its done like this bc of indentation and keeping stuff _nice_ 
   return `${printPreloadTypes()}
 
 ${printQueryIO()}`;
