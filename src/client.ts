@@ -6,7 +6,20 @@ import {
   SUPPORTED_NETWORKS
 } from './networks';
 
-import type { Query } from './generated/types';
+import type { Query, QueryIO, ExtractFields } from './generated/types';
+
+type QueryInput = {
+  [K in keyof QueryIO]?: QueryIO[K]['input']
+};
+
+type QueryOutput<T extends QueryInput> = {
+  [K in (keyof T & keyof QueryIO)]: 
+    T[K] extends { fields: (keyof QueryIO[K]['entity'])[] }
+      ? QueryIO[K]['wrapper'] extends 'array'
+        ? ExtractFields<QueryIO[K]['entity'], T[K]['fields']>[]
+        : ExtractFields<QueryIO[K]['entity'], T[K]['fields']>
+      : QueryIO[K]['output']
+};
 
 export class SubsquidClient {
   private client: GraphQLClient;
@@ -81,21 +94,22 @@ export class SubsquidClient {
   /**
    * Generic query method that can handle any entity type with proper type safety
    */
-  async query<K extends keyof Query>(
-    entity: K,
-    fields: string[],
-    where?: any,
-    orderBy?: string[],
-    limit: number = 1000,
-    offset?: number,
-  ): Promise<Query[K]> {
+   async query<T extends QueryInput>(input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): Promise<QueryOutput<T>> {
     try {
+      
+      
+      const entityName = Object.keys(input)[0] || 'unknown'; // TODO: Fix
+      
+      const { fields, where, orderBy, limit, offset } = input; // TODO: Fix
+
+
+
       const whereClauseStr = where ? `where: ${this.jsonToGraphQLArgs(where)}` : '';
-
+      
       const orderByClauseStr = orderBy?.length
-        ? `orderBy: [${orderBy.map((order) => order.replace(/["']/g, '')).join(', ')}]`
+        ? `orderBy: [${orderBy.map((order: string) => order.replace(/["']/g, '')).join(', ')}]`
         : '';
-
+        
       const limitClauseStr = limit !== undefined ? `limit: ${limit}` : '';
       const offsetClauseStr = offset !== undefined ? `offset: ${offset}` : '';
 
@@ -107,7 +121,7 @@ export class SubsquidClient {
       // Build query string
       const queryStr = `
         query {
-          ${String(entity)}(${args}) {
+          ${entityName}(${args}) {
             ${fields.join('\n            ')}
           }
         }
@@ -117,11 +131,12 @@ export class SubsquidClient {
         ${queryStr}
       `;
 
-      const response = await this.request<Record<string, Query[K]>>(query);
+      const response = await this.request<Record<string, any>>(query);
 
-      return response[entity as string] as Query[K];
+      return response as unknown as QueryOutput<T>;
     } catch (error) {
-      console.error(`Error in query for ${String(entity)}:`, error);
+      const entityName = Object.keys(input)[0] || 'unknown';
+      console.error(`Error in query for ${entityName}:`, error);
       throw error;
     }
   }
