@@ -2,7 +2,20 @@
   "name": "@railgun-reloaded/subsquid-client",
   "version": "1.0.0",
   "description": "TypeScript client for interacting with Railgun Subsquid GraphQL APIs with enhanced type safety and filtering capabilities.",
+  "homepage": "https://github.com/railgun-reloaded/subsquid-client#readme",
+  "bugs": {
+    "url": "https://github.com/railgun-reloaded/subsquid-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/railgun-reloaded/subsquid-client.git"
+  },
+  "license": "MIT",
+  "author": "Railgun Project Contributors",
   "main": "src/client.js",
+  "directories": {
+    "test": "test"
+  },
   "types": "src/client.d.ts",
   "scripts": {
     "build": "tsc --build",
@@ -16,14 +29,17 @@
     "prepare": "npm run generate && npm run build"
   },
   "keywords": [
-    "subsquid"
+    "subsquid",
+    "railgun",
+    "reloaded",
+    "railgun-reloaded"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/railgun-reloaded/subsquid-client.git"
+  "dependencies": {
+    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
+    "graphql": "^16.10.0",
+    "graphql-tag": "^2.12.6",
+    "typescript": "^5.8.2"
   },
-  "author": "Railgun Project Contributors",
-  "license": "MIT",
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.5",
     "@graphql-codegen/graphql-modules-preset": "^4.0.15",
@@ -38,11 +54,5 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
     "prettier": "^3.5.3"
-  },
-  "dependencies": {
-    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
-    "graphql": "^16.10.0",
-    "graphql-tag": "^2.12.6",
-    "typescript": "^5.8.2"
   }
 }

@@ -4,7 +4,7 @@
 
 ## Install
 
-```bash
+```sh
 npm install @railgun-community/subsquid-client
 ```
 
@@ -14,7 +14,7 @@ npm install @railgun-community/subsquid-client
 
 The SubsquidClient supports a predefined set of networks. To see the list of supported networks, use the SUPPORTED_NETWORKS static property:
 
-```typescript
+```ts
 import { SubsquidClient } from '@railgun-community/subsquid-client';
 
 console.log(SubsquidClient.SUPPORTED_NETWORKS);
@@ -25,7 +25,7 @@ When initializing the client, provide one of these network names as a string. If
 
 ### Basic Usage
 
-```typescript
+```ts
 import { SubsquidClient } from './client';
 
 // Initialize the client with a valid Subsquid Network
@@ -37,72 +37,69 @@ const tokens = await client.query(
   ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
   undefined,
   undefined,
-  5 // limit
+  5, // limit
 );
 console.log(tokens);
 ```
 
 ### Filtering with Enum Values
 
-```typescript
+```ts
 // Filter tokens by ERC20 type
 const erc20Tokens = await client.query(
   'tokens',
   ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
   { tokenType_eq: 'ERC20' },
   undefined,
-  5
+  5,
 );
 console.log(erc20Tokens);
 ```
 
 ### Using OR Conditions
 
-```typescript
+```ts
 // Find tokens that are either ERC20 or ERC721
 const mixedTokens = await client.query(
   'tokens',
   ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
   {
-    OR: [
-      { tokenType_eq: 'ERC20' },
-      { tokenType_eq: 'ERC721' }
-    ]
+    OR: [{ tokenType_eq: 'ERC20' }, { tokenType_eq: 'ERC721' }],
   },
   undefined,
-  5
+  5,
 );
 console.log(mixedTokens);
 ```
 
 ### Ordering Results
 
-```typescript
+```ts
 // Order tokens by ID ascending
 const orderedTokens = await client.query(
   'tokens',
   ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
   undefined,
   ['id_ASC'],
-  5
+  5,
 );
 console.log(orderedTokens);
 ```
 
 ### Filtering Other Entity Types
 
-```typescript
+```ts
 // Filter transactions by block number
 const recentTransactions = await client.query(
   'transactions',
   ['id', 'blockNumber', 'transactionHash'],
   { blockNumber_gt: '14760000' },
   undefined,
-  5
+  5,
 );
 console.log(recentTransactions);
 ```
 
 ## License
 
-MIT
+[MIT](LICENSE)
