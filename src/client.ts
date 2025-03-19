@@ -1,24 +1,18 @@
 import { GraphQLClient } from 'graphql-request';
 import { gql } from 'graphql-tag';
-import {
-  NetworkName,
-  NETWORK_CONFIG,
-  SUPPORTED_NETWORKS
-} from './networks';
-
-import type { Query, QueryIO, ExtractFields } from './generated/types';
+import { NetworkName, NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks';
+import type { QueryIO, ExtractFields } from './generated/types';
 
 type QueryInput = {
-  [K in keyof QueryIO]?: QueryIO[K]['input']
+  [K in keyof QueryIO]?: QueryIO[K]['input'];
 };
 
 type QueryOutput<T extends QueryInput> = {
-  [K in (keyof T & keyof QueryIO)]: 
-    T[K] extends { fields: (keyof QueryIO[K]['entity'])[] }
-      ? QueryIO[K]['wrapper'] extends 'array'
-        ? ExtractFields<QueryIO[K]['entity'], T[K]['fields']>[]
-        : ExtractFields<QueryIO[K]['entity'], T[K]['fields']>
-      : QueryIO[K]['output']
+  [K in keyof T & keyof QueryIO]: T[K] extends { fields: (keyof QueryIO[K]['entity'])[] }
+    ? QueryIO[K]['wrapper'] extends 'array'
+      ? ExtractFields<QueryIO[K]['entity'], T[K]['fields']>[]
+      : ExtractFields<QueryIO[K]['entity'], T[K]['fields']>
+    : QueryIO[K]['output'];
 };
 
 export class SubsquidClient {
@@ -33,12 +27,11 @@ export class SubsquidClient {
     const configUrl = NETWORK_CONFIG[network];
     if (!configUrl) {
       throw new Error(
-        `Unsupported network: ${network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
+        `Unsupported network: ${network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`,
       );
     }
     return configUrl;
   };
-
 
   /**
    * Generic request method for GraphQL queries with type safety
@@ -94,49 +87,44 @@ export class SubsquidClient {
   /**
    * Generic query method that can handle any entity type with proper type safety
    */
-   async query<T extends QueryInput>(input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): Promise<QueryOutput<T>> {
+  async query<T extends QueryInput>(
+    input: T & Record<Exclude<keyof T, keyof QueryInput>, never>,
+  ): Promise<QueryOutput<T>> {
     try {
     
+    console.log('input: ', input);
+    const entities = Object.entries(input);
+    const queryStr = `
+        query {
+          ${entities
+            .map(([entityName, filters]) => {
+              console.log('Mapping entity name: ', entityName);
+              const gqlArgs = Object.entries(filters).map(([name, value]) => {
+                console.log('Filter name:', name);
+                // Check for enum values 
+                const probablyEnum = /^[A-Z_](?:[A-Z0-9][A-Z0-9_]*)*$/;
+                if (probablyEnum.test(value)) {
+                  console.log('Enum value:', value); 
+                }
+              });
+              console.log('gqlArgs for entity');
+            }).join('\n')}
+        }
+      `;
 
-      const query = Object.entries(input).map(([_entityName, filters]) => {
-        console.log('Query entity name:', _entityName);
-        // Need to handle field types 
-        const gqlArgs = Object.entries(filters).map(([name, value]) => {
-          console.log('Filter name:', name);
-          // Check for enum values 
-          const probablyEnum = /^[A-Z_](?:[A-Z0-9][A-Z0-9_]*)*$/;
-          if (probablyEnum.test(value)) {
-            console.log('Enum value:', value); 
-          }
-        }).join(', ');
-        console.log('gql args: ', gqlArgs);
-      });
-      //   const query = Object.entries(input).map(([entityName, filters]) => {
-      
-      //     const gqlArgs = Object.entries(filters).map(([name, value]) => {
-      //       if (probablyEnum.test(value)) {
-      //       }
-      
-      //       return `${name}: ${JSON.stringify(value)}`
-      //     }).join(', ')
-      
-      //     const fields = filters.fields.join(', ')
-      
-      
-      //   })
-      
-      //   const req = await fetch('....')
-      //   const res = await req.json()
-      
-      //   return res
-      // }
-    
+
+    console.log('queryStr: ', queryStr);
+
+
+
+    const query = gql`
+        ${queryStr}
+      `;
+
       const response = await this.request<QueryOutput<T>>(query);
-
       return response;
     } catch (error) {
-      const entityName = Object.keys(input)[0] || 'unknown';
-      console.error(`Error in query for ${entityName}:`, error);
+      console.error('Error in query', error);
       throw error;
     }
   }
