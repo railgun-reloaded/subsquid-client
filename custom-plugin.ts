@@ -17,13 +17,8 @@ module.exports = {
     }
     const queryFields = queryType.getFields();
     const queryFieldsNames = Object.keys(queryFields);
-
-    const queryIOKvs = queryFieldsNames.map((fieldName) => {
-      const queryFieldKv = `${fieldName}: GenerateIO<'${fieldName}', Query${capitalize(fieldName)}Args>\n`;
-      return queryFieldKv;
-    });
     const queryIOTemplate = `type QueryIO = {
-        ${queryIOKvs}
+        ${queryFieldsNames.map((fieldName) => `${fieldName}: GenerateIO<'${fieldName}', Query${capitalize(fieldName)}Args>\n`)}
       }
     `;
     return queryIOTemplate;
