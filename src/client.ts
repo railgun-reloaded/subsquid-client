@@ -1,24 +1,18 @@
 import { GraphQLClient } from 'graphql-request';
 import { gql } from 'graphql-tag';
-import {
-  NetworkName,
-  NETWORK_CONFIG,
-  SUPPORTED_NETWORKS
-} from './networks';
-
-import type { Query, QueryIO, ExtractFields } from './generated/types';
+import { NetworkName, NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks';
+import type { QueryIO, ExtractFields } from './generated/types';
 
 type QueryInput = {
-  [K in keyof QueryIO]?: QueryIO[K]['input']
+  [K in keyof QueryIO]?: QueryIO[K]['input'];
 };
 
 type QueryOutput<T extends QueryInput> = {
-  [K in (keyof T & keyof QueryIO)]: 
-    T[K] extends { fields: (keyof QueryIO[K]['entity'])[] }
-      ? QueryIO[K]['wrapper'] extends 'array'
-        ? ExtractFields<QueryIO[K]['entity'], T[K]['fields']>[]
-        : ExtractFields<QueryIO[K]['entity'], T[K]['fields']>
-      : QueryIO[K]['output']
+  [K in keyof T & keyof QueryIO]: T[K] extends { fields: (keyof QueryIO[K]['entity'])[] }
+    ? QueryIO[K]['wrapper'] extends 'array'
+      ? ExtractFields<QueryIO[K]['entity'], T[K]['fields']>[]
+      : ExtractFields<QueryIO[K]['entity'], T[K]['fields']>
+    : QueryIO[K]['output'];
 };
 
 export class SubsquidClient {
@@ -33,12 +27,11 @@ export class SubsquidClient {
     const configUrl = NETWORK_CONFIG[network];
     if (!configUrl) {
       throw new Error(
-        `Unsupported network: ${network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
+        `Unsupported network: ${network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`,
       );
     }
     return configUrl;
   };
-
 
   /**
    * Generic request method for GraphQL queries with type safety
@@ -94,49 +87,55 @@ export class SubsquidClient {
   /**
    * Generic query method that can handle any entity type with proper type safety
    */
-   async query<T extends QueryInput>(input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): Promise<QueryOutput<T>> {
+  async query<T extends QueryInput>(
+    input: T & Record<Exclude<keyof T, keyof QueryInput>, never>,
+  ): Promise<QueryOutput<T>> {
     try {
-      
-      
-      const entityName = Object.keys(input)[0] || 'unknown'; // TODO: Fix
-      
-      const { fields, where, orderBy, limit, offset } = input; // TODO: Fix
+      const entities = Object.entries(input);
 
-
-
-      const whereClauseStr = where ? `where: ${this.jsonToGraphQLArgs(where)}` : '';
-      
-      const orderByClauseStr = orderBy?.length
-        ? `orderBy: [${orderBy.map((order: string) => order.replace(/["']/g, '')).join(', ')}]`
-        : '';
-        
-      const limitClauseStr = limit !== undefined ? `limit: ${limit}` : '';
-      const offsetClauseStr = offset !== undefined ? `offset: ${offset}` : '';
-
-      // Combine all arguments
-      const args = [whereClauseStr, orderByClauseStr, limitClauseStr, offsetClauseStr]
-        .filter(Boolean)
-        .join(', ');
-
-      // Build query string
       const queryStr = `
-        query {
-          ${entityName}(${args}) {
-            ${fields.join('\n            ')}
-          }
-        }
-      `;
+  query {
+    ${entities
+      .map((entityInfo) => {
+        // @ts-ignore // TODO: Fix this
+        const [currentEntityName, { fields, where, orderBy, limit, offset }] = entityInfo;
+
+        const whereClauseStr = where ? `where: ${this.jsonToGraphQLArgs(where)}` : '';
+
+        const orderByClauseStr = orderBy?.length
+          ? `orderBy: [${orderBy.map((order: string) => order.replace(/["']/g, '')).join(', ')}]`
+          : '';
+
+        const limitClauseStr = limit !== undefined ? `limit: ${limit}` : '';
+        const offsetClauseStr = offset !== undefined ? `offset: ${offset}` : '';
+
+        const combinedArguments = [
+          whereClauseStr,
+          orderByClauseStr,
+          limitClauseStr,
+          offsetClauseStr,
+        ]
+          .filter(Boolean)
+          .join(', ');
+
+        const argsForCurrentEntity = combinedArguments ? `(${combinedArguments})` : '';
+
+        return `${currentEntityName}${argsForCurrentEntity} {
+        ${fields.join('\n            ')}
+      }`;
+      })
+      .join('\n')}
+  }
+`;
 
       const query = gql`
         ${queryStr}
       `;
 
-      const response = await this.request<Record<string, any>>(query);
-
-      return response as unknown as QueryOutput<T>;
+      const response = await this.request<QueryOutput<T>>(query);
+      return response;
     } catch (error) {
-      const entityName = Object.keys(input)[0] || 'unknown';
-      console.error(`Error in query for ${entityName}:`, error);
+      console.error('Error in query', error);
       throw error;
     }
   }
