@@ -2367,7 +2367,7 @@ export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
-type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
+export type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
   ? Pick<T, F[number]>
   : T;
 
@@ -2394,7 +2394,7 @@ type GenerateIO<
   wrapper: Wrapper;
 }
 
-type QueryIO = {
+export type QueryIO = {
   ciphertextById: GenerateIO<'ciphertextById', QueryCiphertextByIdArgs>
   ciphertextByUniqueInput: GenerateIO<'ciphertextByUniqueInput', QueryCiphertextByUniqueInputArgs>
   ciphertexts: GenerateIO<'ciphertexts', QueryCiphertextsArgs>
@@ -2433,7 +2433,6 @@ type QueryIO = {
   shieldCommitmentByUniqueInput: GenerateIO<'shieldCommitmentByUniqueInput', QueryShieldCommitmentByUniqueInputArgs>
   shieldCommitments: GenerateIO<'shieldCommitments', QueryShieldCommitmentsArgs>
   shieldCommitmentsConnection: GenerateIO<'shieldCommitmentsConnection', QueryShieldCommitmentsConnectionArgs>
-  squidStatus: GenerateIO<'squidStatus', QuerySquidStatusArgs>
   tokenById: GenerateIO<'tokenById', QueryTokenByIdArgs>
   tokenByUniqueInput: GenerateIO<'tokenByUniqueInput', QueryTokenByUniqueInputArgs>
   tokens: GenerateIO<'tokens', QueryTokensArgs>
