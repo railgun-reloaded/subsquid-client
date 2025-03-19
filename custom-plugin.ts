@@ -4,14 +4,13 @@ module.exports = {
     throw new Error('No query type found in schema');
   }
 
-
   function capitalize(str) {                          
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   function printPreloadTypes() {
     const extractFieldsType = 
-`type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
+`export type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
   ? Pick<T, F[number]>
   : T;`;
 
@@ -53,7 +52,7 @@ module.exports = {
     const queryFields = queryType.getFields();
     let queryFieldsNames = Object.keys(queryFields);
     queryFieldsNames = queryFieldsNames.filter(name => name !== 'squidStatus');  //TODO: Not using this query ??                                                                                                                                                            │ │
-    return `type QueryIO = {
+    return `export type QueryIO = {
   ${queryFieldsNames.map((fieldName) => `${fieldName}: GenerateIO<'${fieldName}', Query${capitalize(fieldName)}Args>`).join('\n  ')}
 }`;
   };
