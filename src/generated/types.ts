@@ -2366,3 +2366,49 @@ export type VerificationHashesConnection = {
 export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
+
+
+    // Test generation for a single type
+    type GenerateIO<
+      Key extends keyof Query,
+      QueryArgs,
+      Field = Query[Key],
+      Entity = Field extends Array<infer IT1>
+        ? IT1
+        : Field extends Maybe<infer IT2>
+          ? NonNullable<IT2>
+          : Field,
+
+      Wrapper = Field extends Array<infer _>
+        ? 'array'
+        : Field extends Maybe<infer _>
+          ? 'maybe'
+          : 'simple'
+      > = {
+        entity: Entity,
+        input: AddFields<QueryArgs, Entity>
+        output: Field
+        wrapper: Wrapper
+    }
+
+    type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
+
+    // Sample generated type for ciphertexts
+    type CiphertextsIO = GenerateIO<'ciphertexts', QueryCiphertextsArgs>;
+
+    // This would be part of the full QueryIO type
+    type PartialQueryIO = {
+      ciphertexts: GenerateIO<'ciphertexts', QueryCiphertextsArgs>,
+    };
+
+    // Sample QueryInput (partial)
+    type PartialQueryInput = {
+      ciphertexts?: PartialQueryIO['ciphertexts']['input']
+    };
+
+    // This is what our query function signature would look like for this field
+    async function querySample<T extends PartialQueryInput>(input: T & Record<Exclude<keyof T, keyof PartialQueryInput>, never>): Promise<T> {
+      // Implementation logic
+      return {} as any;
+    }
+    

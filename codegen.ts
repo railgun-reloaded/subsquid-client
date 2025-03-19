@@ -1,4 +1,5 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
+// import * as CustomPlugin from './custom-plugin';
 
 // Single schema file for all networks
 const schemaFile = './src/graphql/schema.graphql';
@@ -8,7 +9,7 @@ const config: CodegenConfig = {
     // Generate base types
     'src/generated/types.ts': {
       schema: schemaFile,
-      plugins: ['typescript'],
+      plugins: ['typescript', './custom-plugin.ts'],
       config: {
         scalars: {
           BigInt: 'string',
