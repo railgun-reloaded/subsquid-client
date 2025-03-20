@@ -17,28 +17,15 @@ type QueryOutput<T extends QueryInput> = {
     : QueryIO[K]['output'];
 };
 
-// Type-safe filter value type mapping
 type FilterValue<K extends keyof QueryIO, F extends keyof QueryIO[K]['input']> =
   F extends 'fields' ? (keyof QueryIO[K]['entity'])[] :
-  F extends 'where' ? Record<string, any> :  // We could make this more specific if needed
-  F extends 'orderBy' ? string[] :
+  F extends 'where' ? QueryIO[K]['input'] extends { where?: infer W } ? W : Record<string, any> :
+  F extends 'orderBy' ? QueryIO[K]['input'] extends { orderBy?: infer O } ? O : string[] :
   F extends 'limit' | 'offset' | 'first' ? number :
   F extends 'after' ? string :
-  unknown; // Default for any other filter properties
+  unknown; 
 
-
-// Keeping this commented as reference, but we're not using it currently
-/*
-type FilterName =
-| 'fields'    // Required fields to select
-| 'where'     // Filter conditions
-| 'orderBy'   // Sorting options
-| 'limit'     // Number of items to return
-| 'offset'    // Number of items to skip
-| 'after'     // Cursor for pagination
-| 'first';    // Number of items to return (for connections)
-*/
-
+type FieldsArgs<K extends keyof QueryIO> = keyof QueryIO[K]['entity'];
 
 export class SubsquidClient {
   private client: GraphQLClient;
@@ -68,6 +55,8 @@ export class SubsquidClient {
   /**
    * Converts a JSON object to a GraphQL arguments string
    * Handles enum values correctly (removes quotes from values that appear to be enums)
+   * 
+   * This method is needed for complex nested objects like 'where' filters
    */
   private jsonToGraphQLArgs(obj: any): string {
     if (!obj) return '';
@@ -109,23 +98,19 @@ export class SubsquidClient {
     return processObj(obj);
   }
 
-
-  
+  /**
+   * Process a filter for a GraphQL query, handling different filter types appropriately
+   * 
+   * @param entityName - The entity being queried (e.g., 'tokens', 'commitments')
+   * @param filterName - The filter name (e.g., 'where', 'orderBy', 'limit')
+   * @param value - The filter value with appropriate type based on FilterValue
+   * @returns Formatted GraphQL argument string
+   */
   private processFilter<K extends keyof QueryIO, F extends keyof QueryIO[K]['input']>(
-      entityName: K,
+      _entityName: K,
       filterName: F,
       value: FilterValue<K, F>
     ): string {
-    console.log('process filter entity: ', entityName);
-    console.log('process filter: ', filterName);
-    console.log('value: ', value);
-    
-    // Skip fields as they're handled separately
-    if (filterName === 'fields') {
-      return '';
-    }
-
-    // Handle different filter types
     switch (filterName) {
       case 'where':
         return value ? `where: ${this.jsonToGraphQLArgs(value)}` : '';
@@ -139,16 +124,16 @@ export class SubsquidClient {
         }
         return '';
         
+      // All of these are `type number`
       case 'limit':
       case 'offset':
       case 'first':
         return value !== undefined ? `${String(filterName)}: ${value}` : '';
-        
       case 'after':
         return value ? `after: ${JSON.stringify(value)}` : '';
         
       default:
-        // For any other parameter, determine format automatically
+        // For any unknown filter, attempt to format it in a sensible way based on its type
         if (value !== undefined && value !== null) {
           if (typeof value === 'string') {
             // Check if it's an enum value (all caps with underscores)
@@ -165,6 +150,53 @@ export class SubsquidClient {
         return '';
     }
   }
+
+  /**
+   * Parse a single entity query from the input object
+   * 
+   * @param entityName - The entity name (e.g., 'tokens')
+   * @param filters - The filters for the entity (e.g., { fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'], limit: 5 })
+   * @returns Formatted GraphQL query string
+   */
+  private parseEntityQuery<K extends keyof QueryIO>(
+    {entityName, filters}: { entityName: K, filters: QueryIO[K]['input'] }
+  ): string {
+    // We know entity name is a key of QueryIO, force a cast type over it
+    const typedEntityName = entityName as keyof QueryIO;
+    const fields = filters.fields as FieldsArgs<typeof typedEntityName>[];
+    
+    // Check that query has actually some fields requested data, if not is not a valid gql query
+    if (!fields || !Array.isArray(fields) || fields.length === 0) {
+      throw new Error(`Query can't have empty return data for entity ${String(typedEntityName)}`);
+    }
+    
+    // Process all filter args into a formatted string for the entity query
+    const filterArgs = Object.entries(filters)
+      .filter(([ name, _value ]) => name !== 'fields') // Fields is handled separately from the rest
+      .reduce((acc: string[], [name, value]) => {
+        const argName = name as keyof QueryIO[typeof typedEntityName]['input']; // type the argument name, some queries do not allow doing where or other filters, so we need to type it
+        const argValues = value as FilterValue<typeof typedEntityName, keyof QueryIO[typeof typedEntityName]['input']>;
+        
+        // Process the filter and add it to accumulator if it's not empty
+        const processed = this.processFilter(typedEntityName, argName, argValues);
+        if (processed) acc.push(processed);
+        
+        return acc;
+      }, [])
+      .join(', ');
+    
+    console.log('Filter args: ', filterArgs);
+
+    // Handle edge case: don't include empty parentheses when args is empty
+    const filtersForQuery = filterArgs ? `(${filterArgs})` : '';
+
+    const queryForEntity = `${String(entityName)}${filtersForQuery} {
+      ${fields.join('\n                ')}
+    }`;
+
+    return queryForEntity;
+  }
+    // Get strongly typed entity name
   /**
    * Generic query method that can handle any entity type with proper type safety
    */
@@ -172,50 +204,15 @@ export class SubsquidClient {
     input: T & Record<Exclude<keyof T, keyof QueryInput>, never>,
   ): Promise<QueryOutput<T>> {
     try {
-      console.log('input: ', input);
       const entities = Object.entries(input);
       
       const queryStr = `
         query {
           ${entities
-            .map(([entityName, filters]) => {
-              // Get strongly typed entity name
-              const typedEntityName = entityName as keyof QueryIO;
-              const typedFilters = filters as QueryIO[typeof typedEntityName]['input'];
-              
-              // Extract fields which are required for selection
-              const fields = typedFilters.fields as (keyof QueryIO[typeof typedEntityName]['entity'])[];
-              
-              console.log('Fields: ', fields);
-
-              if (!fields || !Array.isArray(fields)) {
-                throw new Error(`Fields must be provided for entity ${String(typedEntityName)}`);
-              }
-              
-              // can this be done with a map reduce ? 
-              const args = Object.entries(typedFilters)
-                .filter(([name]) => name !== 'fields')
-                .map(([name, value]) => {
-                  const argsName = name as keyof QueryIO[typeof typedEntityName]['input'];
-                  const argsValues = value as FilterValue<typeof typedEntityName, keyof QueryIO[typeof typedEntityName]['input']>
-                  return this.processFilter(
-                    typedEntityName, 
-                    argsName,
-                    argsValues
-                  );
-                })
-                .filter(Boolean)
-                .join(', ');
-  
-              // Handle edge case: don't include empty parentheses when args is empty
-              const queryForEntity = `${String(entityName)}${args ? `(${args})` : ''} {
-                ${fields.join('\n                ')}
-              }`;
-
-              console.log('queryForEntity: ', queryForEntity);
-              
-
-              return queryForEntity;
+            .map(([entity, filters]) => {
+              const entityName = entity as keyof QueryIO;
+              const parsedQuery = this.parseEntityQuery({ entityName, filters });
+              return parsedQuery;
             }).join('\n          ')}
         }
       `;
