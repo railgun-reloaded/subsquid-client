@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { gql } from 'graphql-tag';
 import { NetworkName, NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks';
-import { QueryIO, QueryInput, QueryOutput, FilterValue, FieldsArgs } from './types';
+import { type QueryIO, QueryInput, QueryOutput, FilterValue, FieldsArgs, Strictly } from './types';
 
 export class SubsquidClient {
   private client: GraphQLClient;
@@ -167,7 +167,7 @@ export class SubsquidClient {
    * Generic query method that can handle any entity type with proper type safety
    */
   async query<T extends QueryInput>(
-    input: T & Record<Exclude<keyof T, keyof QueryInput>, never>,
+    input: Strictly<T, QueryInput>,
   ): Promise<QueryOutput<T>> {
     try {
       const entities = Object.entries(input);
