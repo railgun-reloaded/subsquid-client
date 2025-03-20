@@ -1,14 +1,11 @@
-import { GraphQLClient } from 'graphql-request';
-import { gql } from 'graphql-tag';
 import { NetworkName, NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks';
 import { type QueryIO, QueryInput, QueryOutput, FilterValue, FieldsArgs, Strictly } from './types';
 
 export class SubsquidClient {
-  private client: GraphQLClient;
+  private clientUrl: string;
 
   constructor(network: NetworkName) {
-    const url = this.getSubsquidUrlForNetwork(network);
-    this.client = new GraphQLClient(url);
+    this.clientUrl = this.getSubsquidUrlForNetwork(network);
   }
 
   private getSubsquidUrlForNetwork = (network: NetworkName): string => {
@@ -22,10 +19,28 @@ export class SubsquidClient {
   };
 
   /**
-   * Generic request method for GraphQL queries with type safety
+   * Generic request method for GraphQL queries using fetch with type safety
    */
-  private request = async <T>(document: string | any, variables?: any): Promise<T> => {
-    return this.client.request<T>(document, variables);
+  private request = async <T>(query: string): Promise<T> => {
+    const response = await fetch(this.clientUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Network response was not ok: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+
+    if (result.errors) {
+      throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
+    }
+
+    return result.data as T;
   };
 
   /**
@@ -181,8 +196,7 @@ export class SubsquidClient {
             }).join('\n          ')}
         }
       `;
-      const query = gql`${queryStr}`;
-      return this.request<QueryOutput<T>>(query);
+      return this.request<QueryOutput<T>>(queryStr);
     } catch (error) {
       console.error('Error in query', error);
       throw error;
