@@ -1,9 +1,9 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert';
-import { SubsquidClient } from '../src/client.js';
-import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks.js';
-import { TokenType } from '../src/generated/types'; // WHAT DO WE DO WITH THIS ???
+import { SubsquidClient } from '../src/client';
+import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks';
+import { TokenType } from '../src/generated/types';
 
 test('Subsquid Client', async (t) => {
   // Client initialization tests
@@ -49,6 +49,63 @@ test('Subsquid Client', async (t) => {
       assert.ok('tokenSubID' in tokens[0], 'Result items should have tokenSubID field');
     }
   });
+
+  await t.test('Should execute basic query for several entities', async () => {
+    const { tokens, commitments, nullifiers, transactions } = await client.query({
+      tokens: {
+        fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+        limit: 5,
+      },
+      commitments: {
+        fields: ['id', 'transactionHash', 'treeNumber', 'batchStartTreePosition'],
+        limit: 5,
+      },
+      nullifiers: {
+        fields: ['id', 'nullifier', 'transactionHash', 'treeNumber'],
+        limit: 5,
+      },
+      transactions: {
+        fields: ['id', 'blockNumber', 'transactionHash'],
+        limit: 5,
+      }
+    });
+
+    const entitiesResult = [tokens, commitments, nullifiers, transactions];
+
+    entitiesResult.forEach((entity) => {
+      assert.ok(Array.isArray(entity), 'Result should be an array');
+      assert.ok(entity.length <= 5, 'Result should respect the limit');
+    });
+
+    if (tokens.length > 0) {
+      assert.ok('id' in tokens[0], 'Result items should have id field');
+      assert.ok('tokenType' in tokens[0], 'Result items should have tokenType field');
+      assert.ok('tokenAddress' in tokens[0], 'Result items should have tokenAddress field');
+      assert.ok('tokenSubID' in tokens[0], 'Result items should have tokenSubID field');
+    }
+
+    if (commitments.length > 0) {
+      assert.ok('id' in commitments[0], 'Result items should have id field');
+      assert.ok('transactionHash' in commitments[0], 'Result items should have transactionHash field');
+      assert.ok('treeNumber' in commitments[0], 'Result items should have treeNumber field');
+      assert.ok('batchStartTreePosition' in commitments[0], 'Result items should have batchStartTreePosition field');
+    }
+
+    if (nullifiers.length > 0) {
+      assert.ok('id' in nullifiers[0], 'Result items should have id field');
+      assert.ok('nullifier' in nullifiers[0], 'Result items should have nullifier field');
+      assert.ok('transactionHash' in nullifiers[0], 'Result items should have transactionHash field');
+      assert.ok('treeNumber' in nullifiers[0], 'Result items should have treeNumber field');
+    }
+
+    if (transactions.length > 0) {
+      assert.ok('id' in transactions[0], 'Result items should have id field');
+      assert.ok('blockNumber' in transactions[0], 'Result items should have blockNumber field');
+      assert.ok('transactionHash' in transactions[0], 'Result items should have transactionHash field');
+    } 
+
+  });
+
   await t.test('Should query with enum filtering', async () => {
     try {
       const { tokens } = await client.query(
