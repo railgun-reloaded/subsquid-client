@@ -31,7 +31,7 @@ test('Subsquid Client', async (t) => {
   // Create a client for the query tests
   const client = new SubsquidClient('ethereum');
 
-  // // Test basic query functionality
+  // Test basic query functionality
   await t.test('Should execute basic query without filters', async () => {
     const { tokens } = await client.query({
       tokens: {
@@ -167,7 +167,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // // // Test OR conditions
+  // Test OR conditions
   await t.test('Should query with OR conditions', async () => {
     try {
       const { tokens } = await client.query(
@@ -197,7 +197,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // // Test ordering
+  // Test ordering
   await t.test('Should query with ordering', async () => {
     try {
       const { tokens } = await client.query({
@@ -224,7 +224,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // // Test different entity types
+  // Test different entity types
   await t.test('Should query different entity types', async () => {
     try {
       const { transactions } = await client.query({
@@ -249,7 +249,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // // Test filtering on other entity types
+  // Test filtering on other entity types
   await t.test('Should query transactions with blockNumber filter', async () => {
     try {
       const blockThreshold = '14760000';
