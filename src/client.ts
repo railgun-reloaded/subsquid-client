@@ -1,5 +1,5 @@
 import { NetworkName, NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks';
-import { type QueryIO, QueryInput, QueryOutput, FilterValue, FieldsArgs, Strictly } from './types';
+import { QueryIO, QueryInput, QueryOutput, FilterValue, FieldsArgs } from './types';
 
 export class SubsquidClient {
   private clientUrl: string;
@@ -44,49 +44,50 @@ export class SubsquidClient {
   };
 
   /**
-   * Converts a value to a GraphQL argument `where` argument to string
-   *
-  **/
-  private processWhereArgs<V>(value: V): string {
-    // Handle null/undefined
-    if (value === null || value === undefined) {
-      return 'null';
-    }
-    
-    // Handle strings (including enums)
-    if (typeof value === 'string') {
-      // Check if this is likely an enum (all uppercase with underscores and numbers)
-      const probablyEnum = /^[A-Z_](?:[A-Z0-9][A-Z0-9_]*)*$/;
-      if (probablyEnum.test(value)) {
-        return value; // Return enum without quotes
-      } else {
-        return JSON.stringify(value); // Return string with quotes
-      }
-    }
-    
-    // Handle numbers and booleans
-    if (typeof value === 'number' || typeof value === 'boolean') {
-      return String(value);
-    }
-    
-    // Handle arrays
-    if (Array.isArray(value)) {
-      const items = value.map(item => this.processWhereArgs(item)).join(', ');
-      return `[${items}]`;
-    }
-    
-    // Handle objects, most likely to be nested queries
-    if (value !== null && typeof value === 'object') {
-      const pairs = Object.entries(value)
-        .map(([key, val]) => `${key}: ${this.processWhereArgs(val)}`)
-        .join(', ');
-      return `{${pairs}}`;
-    }
-    
-    // Fallback for any other type
-    return String(value);
-  };
+   * Converts a JSON object to a GraphQL arguments string
+   * Handles enum values correctly (removes quotes from values that appear to be enums)
+   * 
+   * This method is needed for complex nested objects like 'where' filters
+   */
+  private jsonToGraphQLArgs(obj: any): string {
+    if (!obj) return '';
 
+    // Replace with a completely new implementation
+    const processObj = (obj: any): string => {
+      if (obj === null || obj === undefined) {
+        return 'null';
+      }
+
+      if (typeof obj === 'string') {
+        // Check if this is likely an enum (all uppercase with underscores and numbers)
+        if (/^[A-Z0-9_]+$/.test(obj)) {
+          return obj; // Return enum without quotes
+        } else {
+          return JSON.stringify(obj); // Return string with quotes
+        }
+      }
+
+      if (typeof obj === 'number' || typeof obj === 'boolean') {
+          return String(obj);
+      }
+
+      if (Array.isArray(obj)) {
+        const items = obj.map((item) => processObj(item)).join(', ');
+        return `[${items}]`;
+      }
+
+      if (typeof obj === 'object') {
+        const pairs = Object.entries(obj)
+          .map(([key, value]) => `${key}: ${processObj(value)}`)
+          .join(', ');
+        return `{${pairs}}`;
+      }
+  
+      return String(obj);
+    };
+
+    return processObj(obj);
+  }
 
   /**
    * Process a filter for a GraphQL query, handling different filter types appropriately
@@ -101,13 +102,9 @@ export class SubsquidClient {
       filterName: F,
       value: FilterValue<K, F>
     ): string {
-
     switch (filterName) {
       case 'where':
-        if (value === null || value === undefined) {
-          return '';
-        }
-        return `where: ${this.processWhereArgs(value)}`;
+        return value ? `where: ${this.jsonToGraphQLArgs(value)}` : '';
         
       case 'orderBy':
         if (Array.isArray(value) && value.length > 0) {
@@ -118,20 +115,30 @@ export class SubsquidClient {
         }
         return '';
         
+      // All of these are `type number`
       case 'limit':
       case 'offset':
       case 'first':
         return value !== undefined ? `${String(filterName)}: ${value}` : '';
-        
       case 'after':
         return value ? `after: ${JSON.stringify(value)}` : '';
         
-      case 'fields':
-        // Fields are handled separately, so we don't process them here
-        return '';
-        
       default:
-        throw new Error(`Unexpected filter name: ${String(filterName)}`);
+        // For any unknown filter, attempt to format it in a sensible way based on its type
+        if (value !== undefined && value !== null) {
+          if (typeof value === 'string') {
+            // Check if it's an enum value (all caps with underscores)
+            const isEnum = /^[A-Z][A-Z0-9_]*$/.test(value as string);
+            return `${String(filterName)}: ${isEnum ? value : JSON.stringify(value)}`;
+          } else if (typeof value === 'number' || typeof value === 'boolean') {
+            return `${String(filterName)}: ${value}`;
+          } else if (Array.isArray(value)) {
+            return `${String(filterName)}: ${this.jsonToGraphQLArgs(value)}`;
+          } else if (typeof value === 'object') {
+            return `${String(filterName)}: ${this.jsonToGraphQLArgs(value)}`;
+          }
+        }
+        return '';
     }
   }
 
@@ -182,7 +189,7 @@ export class SubsquidClient {
    * Generic query method that can handle any entity type with proper type safety
    */
   async query<T extends QueryInput>(
-    input: Strictly<T, QueryInput>,
+    input: T & Record<Exclude<keyof T, keyof QueryInput>, never>,
   ): Promise<QueryOutput<T>> {
     try {
       const entities = Object.entries(input);
