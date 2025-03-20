@@ -15,6 +15,7 @@ const config: CodegenConfig = {
           BigInt: 'string',
           Bytes: 'string',
         },
+        constEnums: true, // Enable const enums
       },
     },
     // Generate operation types and GraphQL request helpers
