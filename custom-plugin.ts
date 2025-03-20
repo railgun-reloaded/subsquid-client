@@ -7,7 +7,7 @@ module.exports = {
   function capitalize(str) {                          
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-
+   
   function printPreloadTypes() {
     const extractFieldsType = 
 `export type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
