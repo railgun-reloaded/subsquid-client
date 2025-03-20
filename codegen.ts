@@ -8,12 +8,13 @@ const config: CodegenConfig = {
     // Generate base types
     'src/generated/types.ts': {
       schema: schemaFile,
-      plugins: ['typescript'],
+      plugins: ['typescript', './generate-types.ts'],
       config: {
         scalars: {
           BigInt: 'string',
           Bytes: 'string',
         },
+        constEnums: true,
       },
     },
     // Generate operation types and GraphQL request helpers

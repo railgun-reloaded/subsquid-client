@@ -1,9 +1,9 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert';
-import { SubsquidClient } from '../src/client.js';
-import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks.js';
-import { gql } from 'graphql-tag';
+import { SubsquidClient } from '../src/client';
+import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks';
+import { TokenOrderByInput, TokenType } from '../src/generated/types';
 
 test('Subsquid Client', async (t) => {
   // Client initialization tests
@@ -33,14 +33,12 @@ test('Subsquid Client', async (t) => {
 
   // Test basic query functionality
   await t.test('Should execute basic query without filters', async () => {
-    const tokens = await client.query(
-      'tokens',
-      ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
-      undefined,
-      undefined,
-      5,
-    );
-
+    const { tokens } = await client.query({
+      tokens: {
+        fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+        limit: 5,
+      }
+    });
     assert.ok(Array.isArray(tokens), 'Result should be an array');
     assert.ok(tokens.length <= 5, 'Result should respect the limit');
 
@@ -51,21 +49,78 @@ test('Subsquid Client', async (t) => {
       assert.ok('tokenSubID' in tokens[0], 'Result items should have tokenSubID field');
     }
   });
-  // Test enum filtering
+
+  await t.test('Should execute basic query for several entities', async () => {
+    const { tokens, commitments, nullifiers, transactions } = await client.query({
+      tokens: {
+        fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+        limit: 5,
+      },
+      commitments: {
+        fields: ['id', 'transactionHash', 'treeNumber', 'batchStartTreePosition'],
+        limit: 5,
+      },
+      nullifiers: {
+        fields: ['id', 'nullifier', 'transactionHash', 'treeNumber'],
+        limit: 5,
+      },
+      transactions: {
+        fields: ['id', 'blockNumber', 'transactionHash'],
+        limit: 5,
+      }
+    });
+
+    const entitiesResult = [tokens, commitments, nullifiers, transactions];
+
+    entitiesResult.forEach((entity) => {
+      assert.ok(Array.isArray(entity), 'Result should be an array');
+      assert.ok(entity.length <= 5, 'Result should respect the limit');
+    });
+
+    if (tokens.length > 0) {
+      assert.ok('id' in tokens[0], 'Result items should have id field');
+      assert.ok('tokenType' in tokens[0], 'Result items should have tokenType field');
+      assert.ok('tokenAddress' in tokens[0], 'Result items should have tokenAddress field');
+      assert.ok('tokenSubID' in tokens[0], 'Result items should have tokenSubID field');
+    }
+
+    if (commitments.length > 0) {
+      assert.ok('id' in commitments[0], 'Result items should have id field');
+      assert.ok('transactionHash' in commitments[0], 'Result items should have transactionHash field');
+      assert.ok('treeNumber' in commitments[0], 'Result items should have treeNumber field');
+      assert.ok('batchStartTreePosition' in commitments[0], 'Result items should have batchStartTreePosition field');
+    }
+
+    if (nullifiers.length > 0) {
+      assert.ok('id' in nullifiers[0], 'Result items should have id field');
+      assert.ok('nullifier' in nullifiers[0], 'Result items should have nullifier field');
+      assert.ok('transactionHash' in nullifiers[0], 'Result items should have transactionHash field');
+      assert.ok('treeNumber' in nullifiers[0], 'Result items should have treeNumber field');
+    }
+
+    if (transactions.length > 0) {
+      assert.ok('id' in transactions[0], 'Result items should have id field');
+      assert.ok('blockNumber' in transactions[0], 'Result items should have blockNumber field');
+      assert.ok('transactionHash' in transactions[0], 'Result items should have transactionHash field');
+    } 
+
+  });
+
   await t.test('Should query with enum filtering', async () => {
     try {
-      const tokens = await client.query(
-        'tokens',
-        ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
-        { tokenType_eq: 'ERC20' },
-        undefined,
-        5,
+      const { tokens } = await client.query(
+        {
+          tokens: {
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            limit: 5,
+            where: {
+              tokenType_eq: TokenType.Erc20
+            },
+          },
+        }
       );
-
       assert.ok(Array.isArray(tokens), 'Result should be an array');
-
       if (tokens.length > 0) {
-        // All returned tokens should be ERC20
         tokens.forEach((token) => {
           assert.strictEqual(token.tokenType, 'ERC20', 'All tokens should have ERC20 tokenType');
         });
@@ -74,24 +129,62 @@ test('Subsquid Client', async (t) => {
       assert.fail(`Query with enum filtering failed: ${error.message}`);
     }
   });
+  
+  await t.test('Should query with complex nested where conditions', async () => {
+    try {
+      const { tokens } = await client.query(
+        {
+          tokens: {
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            limit: 10,
+            where: {
+              AND: [
+                { tokenType_eq: TokenType.Erc20 },
+                { 
+                  OR: [
+                    { tokenAddress_eq: "0x0000000000000000000000000000000000000000" }
+                  ]
+                }
+              ]
+            },
+            orderBy: [TokenOrderByInput.IdAsc]
+          },
+        }
+      );
+      assert.ok(Array.isArray(tokens), 'Result should be an array');
+      if (tokens.length > 0) {
+        tokens.forEach((token) => {
+          assert.strictEqual(token.tokenType, 'ERC20', 'All tokens should have ERC20 tokenType');
+          assert.ok(
+            token.tokenAddress.includes('0x') || token.id > '0', 
+            'Token address should contain 0x or id should be greater than 0'
+          );
+        });
+      }
+    } catch (error) {
+      console.error('Error details:', error);
+      assert.fail(`Query with complex where conditions failed: ${error.message}`);
+    }
+  });
 
   // Test OR conditions
   await t.test('Should query with OR conditions', async () => {
     try {
-      const tokens = await client.query(
-        'tokens',
-        ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+      const { tokens } = await client.query(
         {
-          OR: [{ tokenType_eq: 'ERC20' }, { tokenType_eq: 'ERC721' }],
-        },
-        undefined,
-        5,
+          tokens: {
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            limit: 5,
+            where: {
+              OR: [{ tokenType_eq: TokenType.Erc20 }, { tokenType_eq: TokenType.Erc721 }],
+            },
+          },
+        }
       );
 
       assert.ok(Array.isArray(tokens), 'Result should be an array');
 
       if (tokens.length > 0) {
-        // All returned tokens should be either ERC20 or ERC721
         tokens.forEach((token) => {
           assert.ok(
             ['ERC20', 'ERC721'].includes(token.tokenType),
@@ -107,13 +200,13 @@ test('Subsquid Client', async (t) => {
   // Test ordering
   await t.test('Should query with ordering', async () => {
     try {
-      const tokens = await client.query(
-        'tokens',
-        ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
-        undefined,
-        ['id_ASC'],
-        5,
-      );
+      const { tokens } = await client.query({
+        tokens: {
+          fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+          limit: 5,
+          orderBy: ['id_ASC']
+        }
+      });
 
       assert.ok(Array.isArray(tokens), 'Result should be an array');
 
@@ -134,13 +227,12 @@ test('Subsquid Client', async (t) => {
   // Test different entity types
   await t.test('Should query different entity types', async () => {
     try {
-      const transactions = await client.query(
-        'transactions',
-        ['id', 'blockNumber', 'transactionHash'],
-        undefined,
-        undefined,
-        5,
-      );
+      const { transactions } = await client.query({
+        transactions: {
+          fields: ['id', 'blockNumber', 'transactionHash'],
+          limit: 5,
+        }
+      });
 
       assert.ok(Array.isArray(transactions), 'Result should be an array');
 
@@ -161,18 +253,19 @@ test('Subsquid Client', async (t) => {
   await t.test('Should query transactions with blockNumber filter', async () => {
     try {
       const blockThreshold = '14760000';
-      const transactions = await client.query(
-        'transactions',
-        ['id', 'blockNumber', 'transactionHash'],
-        { blockNumber_gt: blockThreshold },
-        undefined,
-        5,
-      );
+      const { transactions } = await client.query({
+        transactions: {
+          fields: ['id', 'blockNumber', 'transactionHash'],
+          limit: 5,
+          where: {
+            blockNumber_gt: blockThreshold
+          }
+        }
+      });
 
       assert.ok(Array.isArray(transactions), 'Result should be an array');
 
       if (transactions.length > 0) {
-        // All transactions should have block numbers greater than the threshold
         transactions.forEach((tx) => {
           assert.ok(
             parseInt(tx.blockNumber) > parseInt(blockThreshold),
