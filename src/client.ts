@@ -70,7 +70,7 @@ export class SubsquidClient {
       }
 
       if (typeof obj === 'number' || typeof obj === 'boolean') {
-        return String(obj);
+          return String(obj);
       }
 
       if (Array.isArray(obj)) {
@@ -84,7 +84,7 @@ export class SubsquidClient {
           .join(', ');
         return `{${pairs}}`;
       }
-
+  
       return String(obj);
     };
 
@@ -96,44 +96,44 @@ export class SubsquidClient {
    */
    async query<T extends QueryInput>(input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): Promise<QueryOutput<T>> {
     try {
-      
-      
-      const entityName = Object.keys(input)[0] || 'unknown'; // TODO: Fix
-      
-      const { fields, where, orderBy, limit, offset } = input; // TODO: Fix
+    
 
-
-
-      const whereClauseStr = where ? `where: ${this.jsonToGraphQLArgs(where)}` : '';
-      
-      const orderByClauseStr = orderBy?.length
-        ? `orderBy: [${orderBy.map((order: string) => order.replace(/["']/g, '')).join(', ')}]`
-        : '';
-        
-      const limitClauseStr = limit !== undefined ? `limit: ${limit}` : '';
-      const offsetClauseStr = offset !== undefined ? `offset: ${offset}` : '';
-
-      // Combine all arguments
-      const args = [whereClauseStr, orderByClauseStr, limitClauseStr, offsetClauseStr]
-        .filter(Boolean)
-        .join(', ');
-
-      // Build query string
-      const queryStr = `
-        query {
-          ${entityName}(${args}) {
-            ${fields.join('\n            ')}
+      const query = Object.entries(input).map(([_entityName, filters]) => {
+        console.log('Query entity name:', _entityName);
+        // Need to handle field types 
+        const gqlArgs = Object.entries(filters).map(([name, value]) => {
+          console.log('Filter name:', name);
+          // Check for enum values 
+          const probablyEnum = /^[A-Z_](?:[A-Z0-9][A-Z0-9_]*)*$/;
+          if (probablyEnum.test(value)) {
+            console.log('Enum value:', value); 
           }
-        }
-      `;
+        }).join(', ');
+        console.log('gql args: ', gqlArgs);
+      });
+      //   const query = Object.entries(input).map(([entityName, filters]) => {
+      
+      //     const gqlArgs = Object.entries(filters).map(([name, value]) => {
+      //       if (probablyEnum.test(value)) {
+      //       }
+      
+      //       return `${name}: ${JSON.stringify(value)}`
+      //     }).join(', ')
+      
+      //     const fields = filters.fields.join(', ')
+      
+      
+      //   })
+      
+      //   const req = await fetch('....')
+      //   const res = await req.json()
+      
+      //   return res
+      // }
+    
+      const response = await this.request<QueryOutput<T>>(query);
 
-      const query = gql`
-        ${queryStr}
-      `;
-
-      const response = await this.request<Record<string, any>>(query);
-
-      return response as unknown as QueryOutput<T>;
+      return response;
     } catch (error) {
       const entityName = Object.keys(input)[0] || 'unknown';
       console.error(`Error in query for ${entityName}:`, error);
