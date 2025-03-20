@@ -2433,6 +2433,7 @@ export type QueryIO = {
   shieldCommitmentByUniqueInput: GenerateIO<'shieldCommitmentByUniqueInput', QueryShieldCommitmentByUniqueInputArgs>
   shieldCommitments: GenerateIO<'shieldCommitments', QueryShieldCommitmentsArgs>
   shieldCommitmentsConnection: GenerateIO<'shieldCommitmentsConnection', QueryShieldCommitmentsConnectionArgs>
+  squidStatus: GenerateIO<'squidStatus', {}>
   tokenById: GenerateIO<'tokenById', QueryTokenByIdArgs>
   tokenByUniqueInput: GenerateIO<'tokenByUniqueInput', QueryTokenByUniqueInputArgs>
   tokens: GenerateIO<'tokens', QueryTokensArgs>
