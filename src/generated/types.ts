@@ -32,7 +32,7 @@ export type CiphertextEdge = {
   node: Ciphertext;
 };
 
-export enum CiphertextOrderByInput {
+export const enum CiphertextOrderByInput {
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
@@ -45,7 +45,7 @@ export enum CiphertextOrderByInput {
   TagAscNullsFirst = 'tag_ASC_NULLS_FIRST',
   TagDesc = 'tag_DESC',
   TagDescNullsLast = 'tag_DESC_NULLS_LAST'
-}
+};
 
 export type CiphertextWhereInput = {
   AND?: InputMaybe<Array<CiphertextWhereInput>>;
@@ -111,7 +111,7 @@ export type CommitmentBatchEventNewEdge = {
   node: CommitmentBatchEventNew;
 };
 
-export enum CommitmentBatchEventNewOrderByInput {
+export const enum CommitmentBatchEventNewOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
   BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
   BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
@@ -124,7 +124,7 @@ export enum CommitmentBatchEventNewOrderByInput {
   TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
   TreeNumberDesc = 'treeNumber_DESC',
   TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST'
-}
+};
 
 export type CommitmentBatchEventNewWhereInput = {
   AND?: InputMaybe<Array<CommitmentBatchEventNewWhereInput>>;
@@ -189,7 +189,7 @@ export type CommitmentCiphertextEdge = {
   node: CommitmentCiphertext;
 };
 
-export enum CommitmentCiphertextOrderByInput {
+export const enum CommitmentCiphertextOrderByInput {
   AnnotationDataAsc = 'annotationData_ASC',
   AnnotationDataAscNullsFirst = 'annotationData_ASC_NULLS_FIRST',
   AnnotationDataDesc = 'annotationData_DESC',
@@ -222,7 +222,7 @@ export enum CommitmentCiphertextOrderByInput {
   MemoAscNullsFirst = 'memo_ASC_NULLS_FIRST',
   MemoDesc = 'memo_DESC',
   MemoDescNullsLast = 'memo_DESC_NULLS_LAST'
-}
+};
 
 export type CommitmentCiphertextWhereInput = {
   AND?: InputMaybe<Array<CommitmentCiphertextWhereInput>>;
@@ -273,7 +273,7 @@ export type CommitmentEdge = {
   node: Commitment;
 };
 
-export enum CommitmentOrderByInput {
+export const enum CommitmentOrderByInput {
   TypeAsc = '_type_ASC',
   TypeDesc = '_type_DESC',
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
@@ -312,7 +312,7 @@ export enum CommitmentOrderByInput {
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
   TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
-}
+};
 
 export type CommitmentPreimage = {
   __typename?: 'CommitmentPreimage';
@@ -328,7 +328,7 @@ export type CommitmentPreimageEdge = {
   node: CommitmentPreimage;
 };
 
-export enum CommitmentPreimageOrderByInput {
+export const enum CommitmentPreimageOrderByInput {
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
@@ -357,7 +357,7 @@ export enum CommitmentPreimageOrderByInput {
   ValueAscNullsFirst = 'value_ASC_NULLS_FIRST',
   ValueDesc = 'value_DESC',
   ValueDescNullsLast = 'value_DESC_NULLS_LAST'
-}
+};
 
 export type CommitmentPreimageWhereInput = {
   AND?: InputMaybe<Array<CommitmentPreimageWhereInput>>;
@@ -402,12 +402,12 @@ export type CommitmentPreimagesConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
-export enum CommitmentType {
+export const enum CommitmentType {
   LegacyEncryptedCommitment = 'LegacyEncryptedCommitment',
   LegacyGeneratedCommitment = 'LegacyGeneratedCommitment',
   ShieldCommitment = 'ShieldCommitment',
   TransactCommitment = 'TransactCommitment'
-}
+};
 
 export type CommitmentWhereInput = {
   AND?: InputMaybe<Array<CommitmentWhereInput>>;
@@ -514,7 +514,7 @@ export type LegacyCommitmentCiphertextEdge = {
   node: LegacyCommitmentCiphertext;
 };
 
-export enum LegacyCommitmentCiphertextOrderByInput {
+export const enum LegacyCommitmentCiphertextOrderByInput {
   CiphertextIdAsc = 'ciphertext_id_ASC',
   CiphertextIdAscNullsFirst = 'ciphertext_id_ASC_NULLS_FIRST',
   CiphertextIdDesc = 'ciphertext_id_DESC',
@@ -531,7 +531,7 @@ export enum LegacyCommitmentCiphertextOrderByInput {
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST'
-}
+};
 
 export type LegacyCommitmentCiphertextWhereInput = {
   AND?: InputMaybe<Array<LegacyCommitmentCiphertextWhereInput>>;
@@ -592,7 +592,7 @@ export type LegacyEncryptedCommitmentEdge = {
   node: LegacyEncryptedCommitment;
 };
 
-export enum LegacyEncryptedCommitmentOrderByInput {
+export const enum LegacyEncryptedCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
   BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
   BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
@@ -633,7 +633,7 @@ export enum LegacyEncryptedCommitmentOrderByInput {
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
   TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
-}
+};
 
 export type LegacyEncryptedCommitmentWhereInput = {
   AND?: InputMaybe<Array<LegacyEncryptedCommitmentWhereInput>>;
@@ -749,7 +749,7 @@ export type LegacyGeneratedCommitmentEdge = {
   node: LegacyGeneratedCommitment;
 };
 
-export enum LegacyGeneratedCommitmentOrderByInput {
+export const enum LegacyGeneratedCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
   BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
   BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
@@ -798,7 +798,7 @@ export enum LegacyGeneratedCommitmentOrderByInput {
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
   TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
-}
+};
 
 export type LegacyGeneratedCommitmentWhereInput = {
   AND?: InputMaybe<Array<LegacyGeneratedCommitmentWhereInput>>;
@@ -913,7 +913,7 @@ export type NullifierEdge = {
   node: Nullifier;
 };
 
-export enum NullifierOrderByInput {
+export const enum NullifierOrderByInput {
   BlockNumberAsc = 'blockNumber_ASC',
   BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
@@ -938,7 +938,7 @@ export enum NullifierOrderByInput {
   TreeNumberAscNullsFirst = 'treeNumber_ASC_NULLS_FIRST',
   TreeNumberDesc = 'treeNumber_DESC',
   TreeNumberDescNullsLast = 'treeNumber_DESC_NULLS_LAST'
-}
+};
 
 export type NullifierWhereInput = {
   AND?: InputMaybe<Array<NullifierWhereInput>>;
@@ -1490,7 +1490,7 @@ export type ShieldCommitmentEdge = {
   node: ShieldCommitment;
 };
 
-export enum ShieldCommitmentOrderByInput {
+export const enum ShieldCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
   BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
   BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
@@ -1547,7 +1547,7 @@ export enum ShieldCommitmentOrderByInput {
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
   TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
-}
+};
 
 export type ShieldCommitmentWhereInput = {
   AND?: InputMaybe<Array<ShieldCommitmentWhereInput>>;
@@ -1678,7 +1678,7 @@ export type TokenEdge = {
   node: Token;
 };
 
-export enum TokenOrderByInput {
+export const enum TokenOrderByInput {
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
@@ -1695,13 +1695,13 @@ export enum TokenOrderByInput {
   TokenTypeAscNullsFirst = 'tokenType_ASC_NULLS_FIRST',
   TokenTypeDesc = 'tokenType_DESC',
   TokenTypeDescNullsLast = 'tokenType_DESC_NULLS_LAST'
-}
+};
 
-export enum TokenType {
+export const enum TokenType {
   Erc20 = 'ERC20',
   Erc721 = 'ERC721',
   Erc1155 = 'ERC1155'
-}
+};
 
 export type TokenWhereInput = {
   AND?: InputMaybe<Array<TokenWhereInput>>;
@@ -1777,7 +1777,7 @@ export type TransactCommitmentEdge = {
   node: TransactCommitment;
 };
 
-export enum TransactCommitmentOrderByInput {
+export const enum TransactCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
   BatchStartTreePositionAscNullsFirst = 'batchStartTreePosition_ASC_NULLS_FIRST',
   BatchStartTreePositionDesc = 'batchStartTreePosition_DESC',
@@ -1834,7 +1834,7 @@ export enum TransactCommitmentOrderByInput {
   TreePositionAscNullsFirst = 'treePosition_ASC_NULLS_FIRST',
   TreePositionDesc = 'treePosition_DESC',
   TreePositionDescNullsLast = 'treePosition_DESC_NULLS_LAST'
-}
+};
 
 export type TransactCommitmentWhereInput = {
   AND?: InputMaybe<Array<TransactCommitmentWhereInput>>;
@@ -1974,7 +1974,7 @@ export type TransactionInterface = {
   verificationHash: Scalars['Bytes']['output'];
 };
 
-export enum TransactionOrderByInput {
+export const enum TransactionOrderByInput {
   BlockNumberAsc = 'blockNumber_ASC',
   BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
@@ -2043,7 +2043,7 @@ export enum TransactionOrderByInput {
   VerificationHashAscNullsFirst = 'verificationHash_ASC_NULLS_FIRST',
   VerificationHashDesc = 'verificationHash_DESC',
   VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST'
-}
+};
 
 export type TransactionWhereInput = {
   AND?: InputMaybe<Array<TransactionWhereInput>>;
@@ -2175,7 +2175,7 @@ export type UnshieldEdge = {
   node: Unshield;
 };
 
-export enum UnshieldOrderByInput {
+export const enum UnshieldOrderByInput {
   AmountAsc = 'amount_ASC',
   AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
   AmountDesc = 'amount_DESC',
@@ -2224,7 +2224,7 @@ export enum UnshieldOrderByInput {
   TransactionHashAscNullsFirst = 'transactionHash_ASC_NULLS_FIRST',
   TransactionHashDesc = 'transactionHash_DESC',
   TransactionHashDescNullsLast = 'transactionHash_DESC_NULLS_LAST'
-}
+};
 
 export type UnshieldWhereInput = {
   AND?: InputMaybe<Array<UnshieldWhereInput>>;
@@ -2320,7 +2320,7 @@ export type VerificationHashEdge = {
   node: VerificationHash;
 };
 
-export enum VerificationHashOrderByInput {
+export const enum VerificationHashOrderByInput {
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
@@ -2329,7 +2329,7 @@ export enum VerificationHashOrderByInput {
   VerificationHashAscNullsFirst = 'verificationHash_ASC_NULLS_FIRST',
   VerificationHashDesc = 'verificationHash_DESC',
   VerificationHashDescNullsLast = 'verificationHash_DESC_NULLS_LAST'
-}
+};
 
 export type VerificationHashWhereInput = {
   AND?: InputMaybe<Array<VerificationHashWhereInput>>;
