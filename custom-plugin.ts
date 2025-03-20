@@ -47,17 +47,24 @@ module.exports = {
     ].join('\n');
   };
 
+  function generateTypeKV(fieldName) {
+    // Since there's no Query Args type for squidStatus, we don't need to handle the GenerateIO type for it
+    if (fieldName === 'squidStatus') {
+      return `${fieldName}: GenerateIO<'${fieldName}', {}>`;
+    }
+    return `${fieldName}: GenerateIO<'${fieldName}', Query${capitalize(fieldName)}Args>`;
+  }
+
   function printQueryIO() {
     const queryType = schema.getQueryType();
     const queryFields = queryType.getFields();
-    let queryFieldsNames = Object.keys(queryFields);
-    queryFieldsNames = queryFieldsNames.filter(name => name !== 'squidStatus');  //TODO: Not using this query ??                                                                                                                                                            │ │
+    const queryFieldsNames = Object.keys(queryFields);                                                                                                                              
     return `export type QueryIO = {
-  ${queryFieldsNames.map((fieldName) => `${fieldName}: GenerateIO<'${fieldName}', Query${capitalize(fieldName)}Args>`).join('\n  ')}
+  ${queryFieldsNames.map(generateTypeKV).join('\n  ')}
 }`;
   };
 
-// return its done like this bc of indentation and keeping stuff _nice_ 
+  // Note: Return like this with the weird indentation is to match the indentation of the original file
   return `${printPreloadTypes()}
 
 ${printQueryIO()}`;
