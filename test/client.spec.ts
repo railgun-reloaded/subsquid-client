@@ -3,30 +3,30 @@ import test from 'node:test';
 import assert from 'node:assert';
 import { SubsquidClient } from '../src/client.js';
 import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks.js';
-import { gql } from 'graphql-tag';
+import { TokenType } from '../src/generated/types'; // WHAT DO WE DO WITH THIS ???
 
 test('Subsquid Client', async (t) => {
   // Client initialization tests
-  // await t.test('Should initialize with valid config', () => {
-  //   // This should not throw an error
-  //   const client = new SubsquidClient('ethereum');
-  //   // Check that client was created successfully
-  //   assert.ok(client instanceof SubsquidClient);
-  // });
+  await t.test('Should initialize with valid config', () => {
+    // This should not throw an error
+    const client = new SubsquidClient('ethereum');
+    // Check that client was created successfully
+    assert.ok(client instanceof SubsquidClient);
+  });
 
-  // await t.test('Should throw with invalid URL', () => {
-  //   assert.throws(() => new SubsquidClient('invalidNetwork'), Error);
-  // });
+  await t.test('Should throw with invalid URL', () => {
+    assert.throws(() => new SubsquidClient('invalidNetwork'), Error);
+  });
 
-  // await t.test('Should check for supported networks', () => {
-  //   const invalid = 'invalid';
-  //   assert.ok(() => new SubsquidClient('ethereum'));
-  //   assert.ok(() => new SubsquidClient('ethereumSepolia'));
-  //   assert.ok(() => new SubsquidClient('bnb'));
-  //   assert.ok(() => new SubsquidClient('polygon'));
-  //   assert.ok(() => new SubsquidClient('arbitrum'));
-  //   assert.throws(() => new SubsquidClient(invalid));
-  // });
+  await t.test('Should check for supported networks', () => {
+    const invalid = 'invalid';
+    assert.ok(() => new SubsquidClient('ethereum'));
+    assert.ok(() => new SubsquidClient('ethereumSepolia'));
+    assert.ok(() => new SubsquidClient('bnb'));
+    assert.ok(() => new SubsquidClient('polygon'));
+    assert.ok(() => new SubsquidClient('arbitrum'));
+    assert.throws(() => new SubsquidClient(invalid));
+  });
 
   // Create a client for the query tests
   const client = new SubsquidClient('ethereum');
@@ -39,8 +39,6 @@ test('Subsquid Client', async (t) => {
         limit: 5,
       }
     });
-    console.log('Tokens response query: ', tokens);
-
     assert.ok(Array.isArray(tokens), 'Result should be an array');
     assert.ok(tokens.length <= 5, 'Result should respect the limit');
 
@@ -51,28 +49,29 @@ test('Subsquid Client', async (t) => {
       assert.ok('tokenSubID' in tokens[0], 'Result items should have tokenSubID field');
     }
   });
-  // await t.test('Should query with enum filtering', async () => {
-  //   try {
-  //     const tokens = await client.query(
-  //       'tokens',
-  //       ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
-  //       { tokenType_eq: 'ERC20' },
-  //       undefined,
-  //       5,
-  //     );
-
-  //     assert.ok(Array.isArray(tokens), 'Result should be an array');
-
-  //     if (tokens.length > 0) {
-  //       // All returned tokens should be ERC20
-  //       tokens.forEach((token) => {
-  //         assert.strictEqual(token.tokenType, 'ERC20', 'All tokens should have ERC20 tokenType');
-  //       });
-  //     }
-  //   } catch (error) {
-  //     assert.fail(`Query with enum filtering failed: ${error.message}`);
-  //   }
-  // });
+  await t.test('Should query with enum filtering', async () => {
+    try {
+      const { tokens } = await client.query(
+        {
+          tokens: {
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            limit: 5,
+            where: {
+              tokenType_eq: TokenType.Erc20, // this works too: tokenType_eq: 'ERC20'. Also, enum does not have caps and it hurts my eye
+            },
+          },
+        }
+      );
+      assert.ok(Array.isArray(tokens), 'Result should be an array');
+      if (tokens.length > 0) {
+        tokens.forEach((token) => {
+          assert.strictEqual(token.tokenType, 'ERC20', 'All tokens should have ERC20 tokenType');
+        });
+      }
+    } catch (error) {
+      assert.fail(`Query with enum filtering failed: ${error.message}`);
+    }
+  });
 
   // // Test OR conditions
   // await t.test('Should query with OR conditions', async () => {

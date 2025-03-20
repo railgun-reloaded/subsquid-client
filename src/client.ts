@@ -184,9 +184,6 @@ export class SubsquidClient {
         return acc;
       }, [])
       .join(', ');
-    
-    console.log('Filter args: ', filterArgs);
-
     // Handle edge case: don't include empty parentheses when args is empty
     const filtersForQuery = filterArgs ? `(${filterArgs})` : '';
 
@@ -205,7 +202,6 @@ export class SubsquidClient {
   ): Promise<QueryOutput<T>> {
     try {
       const entities = Object.entries(input);
-      
       const queryStr = `
         query {
           ${entities
@@ -216,12 +212,8 @@ export class SubsquidClient {
             }).join('\n          ')}
         }
       `;
-
-      console.log('final query: ', queryStr);
-
       const query = gql`${queryStr}`;
-      const response = await this.request<QueryOutput<T>>(query);
-      return response;
+      return this.request<QueryOutput<T>>(query);
     } catch (error) {
       console.error('Error in query', error);
       throw error;
