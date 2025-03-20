@@ -9,7 +9,7 @@ const config: CodegenConfig = {
     // Generate base types
     'src/generated/types.ts': {
       schema: schemaFile,
-      plugins: ['typescript', './custom-plugin.ts'],
+      plugins: ['typescript', './generate-types.ts'],
       config: {
         scalars: {
           BigInt: 'string',
