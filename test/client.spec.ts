@@ -57,7 +57,7 @@ test('Subsquid Client', async (t) => {
             fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
             limit: 5,
             where: {
-              tokenType_eq: TokenType.Erc20, // this works too: tokenType_eq: 'ERC20'. Also, enum does not have caps and it hurts my eye
+              tokenType_eq: TokenType.Erc20
             },
           },
         }
@@ -73,113 +73,114 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // Test OR conditions
-  // await t.test('Should query with OR conditions', async () => {
-  //   try {
-  //     const tokens = await client.query(
-  //       'tokens',
-  //       ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
-  //       {
-  //         OR: [{ tokenType_eq: 'ERC20' }, { tokenType_eq: 'ERC721' }],
-  //       },
-  //       undefined,
-  //       5,
-  //     );
+  // // // Test OR conditions
+  await t.test('Should query with OR conditions', async () => {
+    try {
+      const { tokens } = await client.query(
+        {
+          tokens: {
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            limit: 5,
+            where: {
+              OR: [{ tokenType_eq: TokenType.Erc20 }, { tokenType_eq: TokenType.Erc721 }],
+            },
+          },
+        }
+      );
 
-  //     assert.ok(Array.isArray(tokens), 'Result should be an array');
+      assert.ok(Array.isArray(tokens), 'Result should be an array');
 
-  //     if (tokens.length > 0) {
-  //       // All returned tokens should be either ERC20 or ERC721
-  //       tokens.forEach((token) => {
-  //         assert.ok(
-  //           ['ERC20', 'ERC721'].includes(token.tokenType),
-  //           'All tokens should have either ERC20 or ERC721 tokenType',
-  //         );
-  //       });
-  //     }
-  //   } catch (error) {
-  //     assert.fail(`Query with OR conditions failed: ${error.message}`);
-  //   }
-  // });
+      if (tokens.length > 0) {
+        tokens.forEach((token) => {
+          assert.ok(
+            ['ERC20', 'ERC721'].includes(token.tokenType),
+            'All tokens should have either ERC20 or ERC721 tokenType',
+          );
+        });
+      }
+    } catch (error) {
+      assert.fail(`Query with OR conditions failed: ${error.message}`);
+    }
+  });
 
   // // Test ordering
-  // await t.test('Should query with ordering', async () => {
-  //   try {
-  //     const tokens = await client.query(
-  //       'tokens',
-  //       ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
-  //       undefined,
-  //       ['id_ASC'],
-  //       5,
-  //     );
+  await t.test('Should query with ordering', async () => {
+    try {
+      const { tokens } = await client.query({
+        tokens: {
+          fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+          limit: 5,
+          orderBy: ['id_ASC']
+        }
+      });
 
-  //     assert.ok(Array.isArray(tokens), 'Result should be an array');
+      assert.ok(Array.isArray(tokens), 'Result should be an array');
 
-  //     if (tokens.length > 1) {
-  //       // Check if tokens are ordered by ID in ascending order
-  //       for (let i = 0; i < tokens.length - 1; i++) {
-  //         assert.ok(
-  //           tokens[i].id <= tokens[i + 1].id,
-  //           'Tokens should be ordered by id in ascending order',
-  //         );
-  //       }
-  //     }
-  //   } catch (error) {
-  //     assert.fail(`Query with ordering failed: ${error.message}`);
-  //   }
-  // });
+      if (tokens.length > 1) {
+        // Check if tokens are ordered by ID in ascending order
+        for (let i = 0; i < tokens.length - 1; i++) {
+          assert.ok(
+            tokens[i].id <= tokens[i + 1].id,
+            'Tokens should be ordered by id in ascending order',
+          );
+        }
+      }
+    } catch (error) {
+      assert.fail(`Query with ordering failed: ${error.message}`);
+    }
+  });
 
   // // Test different entity types
-  // await t.test('Should query different entity types', async () => {
-  //   try {
-  //     const transactions = await client.query(
-  //       'transactions',
-  //       ['id', 'blockNumber', 'transactionHash'],
-  //       undefined,
-  //       undefined,
-  //       5,
-  //     );
+  await t.test('Should query different entity types', async () => {
+    try {
+      const { transactions } = await client.query({
+        transactions: {
+          fields: ['id', 'blockNumber', 'transactionHash'],
+          limit: 5,
+        }
+      });
 
-  //     assert.ok(Array.isArray(transactions), 'Result should be an array');
+      assert.ok(Array.isArray(transactions), 'Result should be an array');
 
-  //     if (transactions.length > 0) {
-  //       assert.ok('id' in transactions[0], 'Transaction should have id field');
-  //       assert.ok('blockNumber' in transactions[0], 'Transaction should have blockNumber field');
-  //       assert.ok(
-  //         'transactionHash' in transactions[0],
-  //         'Transaction should have transactionHash field',
-  //       );
-  //     }
-  //   } catch (error) {
-  //     assert.fail(`Query for transactions failed: ${error.message}`);
-  //   }
-  // });
+      if (transactions.length > 0) {
+        assert.ok('id' in transactions[0], 'Transaction should have id field');
+        assert.ok('blockNumber' in transactions[0], 'Transaction should have blockNumber field');
+        assert.ok(
+          'transactionHash' in transactions[0],
+          'Transaction should have transactionHash field',
+        );
+      }
+    } catch (error) {
+      assert.fail(`Query for transactions failed: ${error.message}`);
+    }
+  });
 
   // // Test filtering on other entity types
-  // await t.test('Should query transactions with blockNumber filter', async () => {
-  //   try {
-  //     const blockThreshold = '14760000';
-  //     const transactions = await client.query(
-  //       'transactions',
-  //       ['id', 'blockNumber', 'transactionHash'],
-  //       { blockNumber_gt: blockThreshold },
-  //       undefined,
-  //       5,
-  //     );
+  await t.test('Should query transactions with blockNumber filter', async () => {
+    try {
+      const blockThreshold = '14760000';
+      const { transactions } = await client.query({
+        transactions: {
+          fields: ['id', 'blockNumber', 'transactionHash'],
+          limit: 5,
+          where: {
+            blockNumber_gt: blockThreshold
+          }
+        }
+      });
 
-  //     assert.ok(Array.isArray(transactions), 'Result should be an array');
+      assert.ok(Array.isArray(transactions), 'Result should be an array');
 
-  //     if (transactions.length > 0) {
-  //       // All transactions should have block numbers greater than the threshold
-  //       transactions.forEach((tx) => {
-  //         assert.ok(
-  //           parseInt(tx.blockNumber) > parseInt(blockThreshold),
-  //           `All transactions should have blockNumber > ${blockThreshold}`,
-  //         );
-  //       });
-  //     }
-  //   } catch (error) {
-  //     assert.fail(`Query with blockNumber filter failed: ${error.message}`);
-  //   }
-  // });
+      if (transactions.length > 0) {
+        transactions.forEach((tx) => {
+          assert.ok(
+            parseInt(tx.blockNumber) > parseInt(blockThreshold),
+            `All transactions should have blockNumber > ${blockThreshold}`,
+          );
+        });
+      }
+    } catch (error) {
+      assert.fail(`Query with blockNumber filter failed: ${error.message}`);
+    }
+  });
 });
