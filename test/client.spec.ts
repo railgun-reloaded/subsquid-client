@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert';
 import { SubsquidClient } from '../src/client';
 import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks';
-import { TokenType } from '../src/generated/types';
+import { TokenOrderByInput, TokenType } from '../src/generated/types';
 
 test('Subsquid Client', async (t) => {
   // Client initialization tests
@@ -31,7 +31,7 @@ test('Subsquid Client', async (t) => {
   // Create a client for the query tests
   const client = new SubsquidClient('ethereum');
 
-  // Test basic query functionality
+  // // Test basic query functionality
   await t.test('Should execute basic query without filters', async () => {
     const { tokens } = await client.query({
       tokens: {
@@ -129,8 +129,45 @@ test('Subsquid Client', async (t) => {
       assert.fail(`Query with enum filtering failed: ${error.message}`);
     }
   });
+  
+  await t.test('Should query with complex nested where conditions', async () => {
+    try {
+      const { tokens } = await client.query(
+        {
+          tokens: {
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            limit: 10,
+            where: {
+              AND: [
+                { tokenType_eq: TokenType.Erc20 },
+                { 
+                  OR: [
+                    { tokenAddress_eq: "0x0000000000000000000000000000000000000000" }
+                  ]
+                }
+              ]
+            },
+            orderBy: [TokenOrderByInput.IdAsc]
+          },
+        }
+      );
+      assert.ok(Array.isArray(tokens), 'Result should be an array');
+      if (tokens.length > 0) {
+        tokens.forEach((token) => {
+          assert.strictEqual(token.tokenType, 'ERC20', 'All tokens should have ERC20 tokenType');
+          assert.ok(
+            token.tokenAddress.includes('0x') || token.id > '0', 
+            'Token address should contain 0x or id should be greater than 0'
+          );
+        });
+      }
+    } catch (error) {
+      console.error('Error details:', error);
+      assert.fail(`Query with complex where conditions failed: ${error.message}`);
+    }
+  });
 
-  // // // Test OR conditions
+  // // // // Test OR conditions
   await t.test('Should query with OR conditions', async () => {
     try {
       const { tokens } = await client.query(
@@ -160,7 +197,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // Test ordering
+  // // // Test ordering
   await t.test('Should query with ordering', async () => {
     try {
       const { tokens } = await client.query({
@@ -187,7 +224,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // Test different entity types
+  // // // Test different entity types
   await t.test('Should query different entity types', async () => {
     try {
       const { transactions } = await client.query({
@@ -212,7 +249,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  // // Test filtering on other entity types
+  // // // Test filtering on other entity types
   await t.test('Should query transactions with blockNumber filter', async () => {
     try {
       const blockThreshold = '14760000';
