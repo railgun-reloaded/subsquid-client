@@ -42,7 +42,6 @@
   "dependencies": {
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "graphql": "^16.10.0",
-    "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
     "typescript": "^5.8.2"
   }
