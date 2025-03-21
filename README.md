@@ -25,8 +25,8 @@ When initializing the client, provide one of these network names as a string. If
 
 ### Basic Usage
 
-```ts
-import { SubsquidClient } from './client';
+```typescript
+import { SubsquidClient } from '@railgun-reloaded/subsquid-client';
 
 // Initialize the client with a valid Subsquid Network
 const client = new SubsquidClient('ethereum');
