@@ -6,11 +6,8 @@ import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,Net
 import { TokenOrderByInput, TokenType } from '../src/generated/types';
 
 describe('Subsquid Client', async (t) => {
-  // Client initialization tests
   it('Should initialize with valid config', () => {
-    // This should not throw an error
     const client = new SubsquidClient('ethereum');
-    // Check that client was created successfully
     assert.ok(client instanceof SubsquidClient);
   });
 
@@ -28,10 +25,8 @@ describe('Subsquid Client', async (t) => {
     assert.throws(() => new SubsquidClient(invalid));
   });
 
-  // Create a client for the query tests
   const client = new SubsquidClient('ethereum');
 
-  // Test basic query functionality]
   it('Should execute basic query without filters', async () => {
     const { tokens } = await client.query({
       tokens: {
@@ -167,7 +162,6 @@ describe('Subsquid Client', async (t) => {
     }
   });
 
-  // Test OR conditions
   it('Should query with OR conditions', async () => {
     try {
       const { tokens } = await client.query(
@@ -197,7 +191,6 @@ describe('Subsquid Client', async (t) => {
     }
   });
 
-  // Test ordering
   it('Should query with ordering', async () => {
     try {
       const { tokens } = await client.query({
@@ -211,7 +204,6 @@ describe('Subsquid Client', async (t) => {
       assert.ok(Array.isArray(tokens), 'Result should be an array');
 
       if (tokens.length > 1) {
-        // Check if tokens are ordered by ID in ascending order
         for (let i = 0; i < tokens.length - 1; i++) {
           assert.ok(
             tokens[i].id <= tokens[i + 1].id,
@@ -224,7 +216,6 @@ describe('Subsquid Client', async (t) => {
     }
   });
 
-  // Test different entity types
   it('Should query different entity types', async () => {
     try {
       const { transactions } = await client.query({
@@ -249,7 +240,6 @@ describe('Subsquid Client', async (t) => {
     }
   });
 
-  // Test filtering on other entity types
   it('Should query transactions with blockNumber filter', async () => {
     try {
       const blockThreshold = '14760000';
@@ -278,12 +268,9 @@ describe('Subsquid Client', async (t) => {
     }
   });
 
-  // Test direct GraphQL queries, with .request
 
-  // OR conditions
   it('Should execute direct GraphQL query with OR conditions', async () => {
     try {
-      // Use plain string query with unquoted enum values
       const query = `
         query {
           tokens(limit: 5, where: { OR: [{ tokenType_eq: ERC20 }, { tokenType_eq: ERC721 }] }) {
@@ -298,13 +285,11 @@ describe('Subsquid Client', async (t) => {
       const result = await client.request<{ tokens: any[] }>(query);
 
       assert.ok(result, 'Result should exist');
-      // Add type assertion to fix 'in' operator error
       assert.ok(typeof result === 'object' && result !== null, 'Result should be an object');
       assert.ok('tokens' in (result as object), 'Result should have tokens property');
       assert.ok(Array.isArray(result.tokens), 'tokens should be an array');
 
       if (result.tokens.length > 0) {
-        // Verify all returned tokens are either ERC20 or ERC721
         result.tokens.forEach((token) => {
           assert.ok(
             ['ERC20', 'ERC721'].includes(token.tokenType),
@@ -319,7 +304,6 @@ describe('Subsquid Client', async (t) => {
 
   it('Should query schema for enum values', async () => {
     try {
-      // Use plain string for schema introspection query
       const query = `
         query {
           __type(name: "TokenType") {
@@ -346,7 +330,6 @@ describe('Subsquid Client', async (t) => {
       assert.ok(typeof result === 'object' && result !== null, 'Result should be an object');
       assert.ok('__type' in (result as object), 'Result should have __type property');
 
-      // Type assertion for the __type property
       const typeInfo = result.__type;
       assert.strictEqual(typeInfo.name, 'TokenType', 'Type name should be TokenType');
       assert.strictEqual(typeInfo.kind, 'ENUM', 'Type kind should be ENUM');
@@ -363,7 +346,6 @@ describe('Subsquid Client', async (t) => {
 
   it('Should support mixed conditions with enum and ID', async () => {
     try {
-      // Use valid filter options
       const query = `
         query {
           tokens(limit: 5, where: { tokenType_eq: ERC20, tokenAddress_eq: "0x0000000000000000000000000000000000000000" }) {

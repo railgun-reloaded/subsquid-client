@@ -53,8 +53,7 @@ export class SubsquidClient {
 
   /**
    * Generic query method that can handle any entity type with proper type safety
-   */
-  // async query(input: string): Promise<unknown>  
+   */  
   async query(
     input: string,
   ): Promise<unknown> {

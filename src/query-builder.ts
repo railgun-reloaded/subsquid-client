@@ -11,7 +11,6 @@ export class QueryBuilder {
   jsonToGraphQLArgs(obj: any): string {
     if (!obj) return '';
 
-    // Replace with a completely new implementation
     const processObj = (obj: any): string => {
       if (obj === null || obj === undefined) {
         return 'null';
@@ -75,7 +74,7 @@ export class QueryBuilder {
         }
         return '';
         
-      // All of these are `type number`
+      // All of these are `number`
       case 'limit':
       case 'offset':
       case 'first':

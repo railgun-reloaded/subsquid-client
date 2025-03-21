@@ -1,6 +1,6 @@
 # `@railgun-reloaded/subsquid-client`
 
-> TypeScript client for interacting with Railgun Subsquid GraphQL APIs with enhanced type safety and filtering capabilities.
+> Typescript client for interacting with Railgun Subsquid GraphQL APIs with enhanced type safety and filtering capabilities.
 
 ## Install
 
@@ -25,7 +25,7 @@ When initializing the client, provide one of these network names as a string. If
 
 ### Basic Usage
 
-```typescript
+```ts
 import { SubsquidClient } from '@railgun-reloaded/subsquid-client';
 
 // Initialize the client with a valid Subsquid Network
@@ -102,7 +102,7 @@ console.log(recentTransactions);
 
 ### Direct GraphQL Queries
 
-```typescript
+```ts
 // For more complex queries, you can use direct GraphQL using client.request
 // Note: Enums must be in uppercase
 const query = `

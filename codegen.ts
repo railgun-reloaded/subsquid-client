@@ -1,7 +1,5 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
-// import * as CustomPlugin from './custom-plugin';
 
-// Single schema file for all networks
 const schemaFile = './src/graphql/schema.graphql';
 
 const config: CodegenConfig = {
@@ -15,7 +13,7 @@ const config: CodegenConfig = {
           BigInt: 'string',
           Bytes: 'string',
         },
-        constEnums: true, // Enable const enums
+        constEnums: true,
       },
     },
     // Generate operation types and GraphQL request helpers
