@@ -391,4 +391,48 @@ describe('Subsquid Client', async (t) => {
       assert.fail(`Mixed conditions query failed: ${error.message}`);
     }
   });
+
+  it('Should execute commitments connection query with pagination', async () => {
+    try {
+      const query = `
+        query {
+          commitmentsConnection(orderBy: id_ASC, after: "10", first: 10) {
+            edges {
+              cursor
+              node {
+                batchStartTreePosition
+              }
+            }
+            pageInfo {
+              hasNextPage
+            }
+          }
+        }
+      `;
+
+      const result = await client.request(query);
+      
+      assert.ok(result, 'Connection query should return a result');
+      assert.ok('commitmentsConnection' in result, 'Result should have commitmentsConnection property');
+      
+      const { commitmentsConnection } = result;
+      
+      assert.ok('edges' in commitmentsConnection, 'Connection should have edges property');
+      assert.ok(Array.isArray(commitmentsConnection.edges), 'Edges should be an array');
+      
+      assert.ok('pageInfo' in commitmentsConnection, 'Connection should have pageInfo property');
+      assert.ok('hasNextPage' in commitmentsConnection.pageInfo, 'PageInfo should have hasNextPage property');
+      
+      if (commitmentsConnection.edges.length > 0) {
+        const firstEdge = commitmentsConnection.edges[0];
+        
+        assert.ok('cursor' in firstEdge, 'Edge should have cursor property');
+        assert.ok('node' in firstEdge, 'Edge should have node property');
+        
+        assert.ok('batchStartTreePosition' in firstEdge.node, 'Node should have batchStartTreePosition property');
+      }
+    } catch (error) {
+      assert.fail(`Commitments connection query failed: ${error.message}`);
+    }
+  });
 });
