@@ -100,6 +100,33 @@ const recentTransactions = await client.query(
 console.log(recentTransactions);
 ```
 
+### Direct GraphQL Queries
+
+```typescript
+// For more complex queries, you can use direct GraphQL using client.request
+const query = `
+  query {
+    tokens(
+      limit: 5, 
+      where: { 
+        OR: [
+          {tokenType_eq: ERC20}, 
+          {tokenType_eq: ERC721}
+        ]
+      }
+    ) {
+      id
+      tokenType
+      tokenAddress
+      tokenSubID
+    }
+  }
+`;
+
+const result = await client.request(query);
+console.log(result);
+```
+
 ## License
 
 [MIT](LICENSE)
