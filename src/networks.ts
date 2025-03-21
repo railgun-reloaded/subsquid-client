@@ -6,14 +6,6 @@ const ETHEREUM_SEPOLIA_URL =
   'https://rail-squid.squids.live/squid-railgun-eth-sepolia-v2/graphql';
 const POLYGON_URL = 'https://rail-squid.squids.live/squid-railgun-polygon-v2/graphql';
 
-export const VALID_SUBSQUID_URLS = [
-  ETHEREUM_URL,
-  ARBITRUM_URL,
-  ETHEREUM_SEPOLIA_URL,
-  POLYGON_URL,
-  BSC_URL,
-];
-
 export const NETWORK_CONFIG = {
   arbitrum: ARBITRUM_URL,
   bsc: BSC_URL,
