@@ -1,11 +1,10 @@
 import type { QueryIO, ExtractFields } from './generated/types';
 
-export { QueryIO };
-
 export type QueryInput = {
   [K in keyof QueryIO]?: QueryIO[K]['input'];
 };
 
+// These types are for internal use and shouldn't be exported in index.ts
 export type QueryOutput<T extends QueryInput> = {
   [K in keyof T & keyof QueryIO]: T[K] extends { fields: (keyof QueryIO[K]['entity'])[] }
     ? QueryIO[K]['wrapper'] extends 'array'
@@ -22,4 +21,4 @@ export type FilterValue<K extends keyof QueryIO, F extends keyof QueryIO[K]['inp
   F extends 'after' ? string :
   unknown; 
 
-  export type FieldsArgs<K extends keyof QueryIO> = keyof QueryIO[K]['entity'];
+export type FieldsArgs<K extends keyof QueryIO> = keyof QueryIO[K]['entity'];
