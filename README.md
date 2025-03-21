@@ -104,6 +104,7 @@ console.log(recentTransactions);
 
 ```typescript
 // For more complex queries, you can use direct GraphQL using client.request
+// Note: Enums must be in uppercase
 const query = `
   query {
     tokens(
@@ -123,9 +124,35 @@ const query = `
   }
 `;
 
+
+
 const result = await client.request(query);
 console.log(result);
 ```
+
+```ts
+// For connection queries, we encourage you to use the `request` method with the `connection` property
+// This will return a `Connection` object with the `edges` and `pageInfo` properties
+const query = `
+  query {
+    commitmentsConnection(orderBy: id_ASC, after: "10", first: 10) {
+      edges {
+        cursor
+        node {
+          batchStartTreePosition
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+`;
+
+const result = await client.request(query);
+console.log(result);
+```
+
 
 ## License
 
