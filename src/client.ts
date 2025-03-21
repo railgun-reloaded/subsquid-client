@@ -22,26 +22,33 @@ export class SubsquidClient {
   /**
    * Generic request method for GraphQL queries using fetch with type safety
    */
-  private request = async <T>(query: string): Promise<T> => {
-    const response = await fetch(this.clientUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Network response was not ok: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-
-    if (result.errors) {
-      throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
-    }
-
-    return result.data as T;
+  request = async <T>(query: string): Promise<T> => {
+    try {
+      const requestBody = JSON.stringify({ query });
+      
+      const response = await fetch(this.clientUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: requestBody,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+  
+      const result = await response.json();
+  
+      if (result.errors) {
+        throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
+      }
+  
+      return result.data as T;
+    } catch(error) {
+      console.error('Error in request', error);
+      throw error;
+    };
   };
 
   /**

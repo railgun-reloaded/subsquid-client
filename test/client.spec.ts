@@ -1,24 +1,24 @@
 // @ts-nocheck
-import test from 'node:test';
-import assert from 'node:assert';
+import { it, describe } from 'node:test';
+import assert from 'node:assert/strict';
 import { SubsquidClient } from '../src/client';
 import { ETHEREUM_SEPOLIA_URL, ETHEREUM_URL,BSC_URL,POLYGON_URL,ARBITRUM_URL,NetworkName } from '../src/networks';
 import { TokenOrderByInput, TokenType } from '../src/generated/types';
 
-test('Subsquid Client', async (t) => {
+describe('Subsquid Client', async (t) => {
   // Client initialization tests
-  await t.test('Should initialize with valid config', () => {
+  it('Should initialize with valid config', () => {
     // This should not throw an error
     const client = new SubsquidClient('ethereum');
     // Check that client was created successfully
     assert.ok(client instanceof SubsquidClient);
   });
 
-  await t.test('Should throw with invalid URL', () => {
+  it('Should throw with invalid URL', () => {
     assert.throws(() => new SubsquidClient('invalidNetwork'), Error);
   });
 
-  await t.test('Should check for supported networks', () => {
+  it('Should check for supported networks', () => {
     const invalid = 'invalid';
     assert.ok(() => new SubsquidClient('ethereum'));
     assert.ok(() => new SubsquidClient('ethereumSepolia'));
@@ -31,8 +31,8 @@ test('Subsquid Client', async (t) => {
   // Create a client for the query tests
   const client = new SubsquidClient('ethereum');
 
-  // // Test basic query functionality
-  await t.test('Should execute basic query without filters', async () => {
+  // // Test basic query functionality]
+  it('Should execute basic query without filters', async () => {
     const { tokens } = await client.query({
       tokens: {
         fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
@@ -50,7 +50,7 @@ test('Subsquid Client', async (t) => {
     }
   });
 
-  await t.test('Should execute basic query for several entities', async () => {
+  it('Should execute basic query for several entities', async () => {
     const { tokens, commitments, nullifiers, transactions } = await client.query({
       tokens: {
         fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
@@ -106,7 +106,7 @@ test('Subsquid Client', async (t) => {
 
   });
 
-  await t.test('Should query with enum filtering', async () => {
+  it('Should query with enum filtering', async () => {
     try {
       const { tokens } = await client.query(
         {
@@ -130,7 +130,7 @@ test('Subsquid Client', async (t) => {
     }
   });
   
-  await t.test('Should query with complex nested where conditions', async () => {
+  it('Should query with complex nested where conditions', async () => {
     try {
       const { tokens } = await client.query(
         {
@@ -168,7 +168,7 @@ test('Subsquid Client', async (t) => {
   });
 
   // // // // Test OR conditions
-  await t.test('Should query with OR conditions', async () => {
+  it('Should query with OR conditions', async () => {
     try {
       const { tokens } = await client.query(
         {
@@ -198,7 +198,7 @@ test('Subsquid Client', async (t) => {
   });
 
   // // // Test ordering
-  await t.test('Should query with ordering', async () => {
+  it('Should query with ordering', async () => {
     try {
       const { tokens } = await client.query({
         tokens: {
@@ -225,7 +225,7 @@ test('Subsquid Client', async (t) => {
   });
 
   // // // Test different entity types
-  await t.test('Should query different entity types', async () => {
+  it('Should query different entity types', async () => {
     try {
       const { transactions } = await client.query({
         transactions: {
@@ -250,7 +250,7 @@ test('Subsquid Client', async (t) => {
   });
 
   // // // Test filtering on other entity types
-  await t.test('Should query transactions with blockNumber filter', async () => {
+  it('Should query transactions with blockNumber filter', async () => {
     try {
       const blockThreshold = '14760000';
       const { transactions } = await client.query({
@@ -275,6 +275,120 @@ test('Subsquid Client', async (t) => {
       }
     } catch (error) {
       assert.fail(`Query with blockNumber filter failed: ${error.message}`);
+    }
+  });
+
+  // Test direct GraphQL queries, with .request
+
+  // OR conditions
+  it('Should execute direct GraphQL query with OR conditions', async () => {
+    try {
+      // Use plain string query with unquoted enum values
+      const query = `
+        query {
+          tokens(limit: 5, where: { OR: [{ tokenType_eq: ERC20 }, { tokenType_eq: ERC721 }] }) {
+            id
+            tokenType
+            tokenAddress
+            tokenSubID
+          }
+        }
+      `;
+
+      const result = await client.request<{ tokens: any[] }>(query);
+
+      assert.ok(result, 'Result should exist');
+      // Add type assertion to fix 'in' operator error
+      assert.ok(typeof result === 'object' && result !== null, 'Result should be an object');
+      assert.ok('tokens' in (result as object), 'Result should have tokens property');
+      assert.ok(Array.isArray(result.tokens), 'tokens should be an array');
+
+      if (result.tokens.length > 0) {
+        // Verify all returned tokens are either ERC20 or ERC721
+        result.tokens.forEach((token) => {
+          assert.ok(
+            ['ERC20', 'ERC721'].includes(token.tokenType),
+            'All tokens should have either ERC20 or ERC721 tokenType',
+          );
+        });
+      }
+    } catch (error) {
+      assert.fail(`Direct GraphQL query with OR conditions failed: ${error.message}`);
+    }
+  });
+
+  it('Should query schema for enum values', async () => {
+    try {
+      // Use plain string for schema introspection query
+      const query = `
+        query {
+          __type(name: "TokenType") {
+            name
+            kind
+            enumValues {
+              name
+            }
+          }
+        }
+      `;
+
+      interface SchemaType {
+        __type: {
+          name: string;
+          kind: string;
+          enumValues: { name: string }[];
+        };
+      }
+
+      const result = await client.request<SchemaType>(query);
+
+      assert.ok(result, 'Result should exist');
+      assert.ok(typeof result === 'object' && result !== null, 'Result should be an object');
+      assert.ok('__type' in (result as object), 'Result should have __type property');
+
+      // Type assertion for the __type property
+      const typeInfo = result.__type;
+      assert.strictEqual(typeInfo.name, 'TokenType', 'Type name should be TokenType');
+      assert.strictEqual(typeInfo.kind, 'ENUM', 'Type kind should be ENUM');
+      assert.ok(Array.isArray(typeInfo.enumValues), 'enumValues should be an array');
+
+      const enumValues = typeInfo.enumValues.map((v) => v.name);
+      assert.ok(enumValues.includes('ERC20'), 'TokenType should include ERC20');
+      assert.ok(enumValues.includes('ERC721'), 'TokenType should include ERC721');
+      assert.ok(enumValues.includes('ERC1155'), 'TokenType should include ERC1155');
+    } catch (error) {
+      assert.fail(`Schema introspection query failed: ${error.message}`);
+    }
+  });
+
+  it('Should support mixed conditions with enum and ID', async () => {
+    try {
+      // Use valid filter options
+      const query = `
+        query {
+          tokens(limit: 5, where: { tokenType_eq: ERC20, tokenAddress_eq: "0x0000000000000000000000000000000000000000" }) {
+            id
+            tokenType
+            tokenAddress
+            tokenSubID
+          }
+        }
+      `;
+
+      const result = await client.request(query);
+      assert.ok(result, 'Mixed conditions query succeeded');
+      assert.ok('tokens' in result, 'Result has tokens property');
+      
+      if (result.tokens.length > 0) {
+        assert.strictEqual(result.tokens[0].tokenType, "ERC20", "Returned token has ERC20 type");
+        assert.strictEqual(
+          result.tokens[0].tokenAddress,
+          "0x0000000000000000000000000000000000000000",
+          "Returned token has the requested address"
+        );
+      }
+    } catch (error) {
+      assert.fail(`Mixed conditions query failed: ${error.message}`);
     }
   });
 });
