@@ -1,8 +1,11 @@
-import type { QueryIO, ExtractFields } from './generated/types';
+import { QueryIO } from './generated/types';
+import type { ExtractFields } from './generated/types';
 
 export type QueryInput = {
   [K in keyof QueryIO]?: QueryIO[K]['input'];
 };
+
+export type { QueryIO } from './generated/types';
 
 // These types are for internal use and shouldn't be exported in index.ts
 export type QueryOutput<T extends QueryInput> = {
