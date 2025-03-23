@@ -6,7 +6,9 @@ const ETHEREUM_SEPOLIA_URL =
   'https://rail-squid.squids.live/squid-railgun-eth-sepolia-v2/graphql'
 const POLYGON_URL = 'https://rail-squid.squids.live/squid-railgun-polygon-v2/graphql'
 
-export const NETWORK_CONFIG = {
+type NetworkName = keyof typeof NETWORK_CONFIG
+
+const NETWORK_CONFIG = {
   arbitrum: ARBITRUM_URL,
   bsc: BSC_URL,
   ethereum: ETHEREUM_URL,
@@ -14,6 +16,6 @@ export const NETWORK_CONFIG = {
   polygon: POLYGON_URL,
 } as const
 
-export type NetworkName = keyof typeof NETWORK_CONFIG
+const SUPPORTED_NETWORKS = Object.keys(NETWORK_CONFIG) as NetworkName[]
 
-export const SUPPORTED_NETWORKS = Object.keys(NETWORK_CONFIG) as NetworkName[]
+export { NETWORK_CONFIG, SUPPORTED_NETWORKS, type NetworkName }

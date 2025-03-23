@@ -3,20 +3,20 @@ import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
 import { QueryBuilder } from './query-builder'
 
 /**
- *
+ * Client for interacting with the Subsquid GraphQL API
  */
 export class SubsquidClient {
   /**
-   *
+   * The query builder instance for building GraphQL queries
    */
   private queryBuilder: QueryBuilder
   /**
-   *
+   * The URL endpoint for the Subsquid GraphQL API
    */
   private clientUrl: string
   /**
-   *
-   * @param network
+   * Creates a new SubsquidClient instance
+   * @param network - The blockchain network to connect to
    */
   constructor (network: NetworkName) {
     this.queryBuilder = new QueryBuilder()
@@ -24,8 +24,9 @@ export class SubsquidClient {
   }
 
   /**
-   *
-   * @param network
+   * Gets the Subsquid URL for the specified network
+   * @param network - The blockchain network to get the URL for
+   * @returns The Subsquid URL for the specified network
    */
   private getSubsquidUrlForNetwork = (network: NetworkName): string => {
     const configUrl = NETWORK_CONFIG[network]
@@ -39,7 +40,8 @@ export class SubsquidClient {
 
   /**
    * Generic request method for GraphQL queries using fetch with type safety
-   * @param query
+   * @param query - The GraphQL query to execute
+   * @returns Promise that resolves to the query result
    */
   request = async <T>(query: string): Promise<T> => {
     try {
@@ -72,7 +74,8 @@ export class SubsquidClient {
 
   /**
    * Generic query method that can handle any entity type with proper type safety
-   * @param input
+   * @param input - The query input to build and execute
+   * @returns Promise that resolves to the query result
    */
   async query (
     input: string

@@ -1,26 +1,24 @@
 import type { FieldsArgs, FilterValue, QueryIO, QueryInput } from './types'
 
 /**
- *
+ * Builder class for constructing GraphQL queries
  */
 export class QueryBuilder {
-  /**
-   *
-   */
-  constructor () {}
   /**
    * Converts a JSON object to a GraphQL arguments string
    * Handles enum values correctly (removes quotes from values that appear to be enums)
    *
    * This method is needed for complex nested objects like 'where' filters
-   * @param obj
+   * @param obj - The object to convert to GraphQL arguments
+   * @returns A GraphQL arguments string
    */
   jsonToGraphQLArgs (obj: any): string {
     if (!obj) return ''
 
     /**
-     *
-     * @param obj
+     * Processes an object and converts it to a GraphQL-compatible string
+     * @param obj - The object to process
+     * @returns A GraphQL-compatible string representation of the object
      */
     const processObj = (obj: any): string => {
       if (obj === null || obj === undefined) {
@@ -60,17 +58,10 @@ export class QueryBuilder {
 
   /**
    * Process a filter for a GraphQL query, handling different filter types appropriately
-   * @param entityName - The entity being queried (e.g., 'tokens', 'commitments')
+   * @param _entityName - The entity being queried (e.g., 'tokens', 'commitments')
    * @param filterName - The filter name (e.g., 'where', 'orderBy', 'limit')
    * @param value - The filter value with appropriate type based on FilterValue
    * @returns Formatted GraphQL argument string
-   */
-
-  /**
-   *
-   * @param _entityName
-   * @param filterName
-   * @param value
    */
   processFilter<K extends keyof QueryIO, F extends keyof QueryIO[K]['input']>(
     _entityName: K,
@@ -105,10 +96,9 @@ export class QueryBuilder {
 
   /**
    * Parse a single entity query from the input object
-   * @param entityName.entityName
-   * @param entityName - The entity name (e.g., 'tokens')
-   * @param filters - The filters for the entity (e.g., { fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'], limit: 5 })
-   * @param entityName.filters
+   * @param params - The parameters for parsing the entity query
+   * @param params.entityName - The entity name (e.g., 'tokens')
+   * @param params.filters - The filters for the entity
    * @returns Formatted GraphQL query string
    */
   private parseEntityQuery<K extends keyof QueryIO>(
@@ -146,8 +136,9 @@ export class QueryBuilder {
   }
 
   /**
-   *
-   * @param input
+   * Builds a complete GraphQL query string from the input
+   * @param input - The query input to build
+   * @returns A complete GraphQL query string
    */
   build<T extends QueryInput>(input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): string {
     const entities = Object.entries(input)
