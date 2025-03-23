@@ -1,10 +1,10 @@
-export type Maybe<T> = T | null
-export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never }
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never }
+export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -16,7 +16,7 @@ export type Scalars = {
   BigInt: { input: string; output: string; }
   /** Binary data encoded as a hex string always prefixed with 0x */
   Bytes: { input: string; output: string; }
-}
+};
 
 export type Ciphertext = {
   __typename?: 'Ciphertext';
@@ -24,13 +24,13 @@ export type Ciphertext = {
   id: Scalars['String']['output'];
   iv: Scalars['Bytes']['output'];
   tag: Scalars['Bytes']['output'];
-}
+};
 
 export type CiphertextEdge = {
   __typename?: 'CiphertextEdge';
   cursor: Scalars['String']['output'];
   node: Ciphertext;
-}
+};
 
 export const enum CiphertextOrderByInput {
   IdAsc = 'id_ASC',
@@ -77,14 +77,14 @@ export type CiphertextWhereInput = {
   tag_eq?: InputMaybe<Scalars['Bytes']['input']>;
   tag_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   tag_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-}
+};
 
 export type CiphertextsConnection = {
   __typename?: 'CiphertextsConnection';
   edges: Array<CiphertextEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type Commitment = {
   batchStartTreePosition: Scalars['Int']['output'];
@@ -96,20 +96,20 @@ export type Commitment = {
   transactionHash: Scalars['Bytes']['output'];
   treeNumber: Scalars['Int']['output'];
   treePosition: Scalars['Int']['output'];
-}
+};
 
 export type CommitmentBatchEventNew = {
   __typename?: 'CommitmentBatchEventNew';
   batchStartTreePosition: Scalars['BigInt']['output'];
   id: Scalars['String']['output'];
   treeNumber: Scalars['BigInt']['output'];
-}
+};
 
 export type CommitmentBatchEventNewEdge = {
   __typename?: 'CommitmentBatchEventNewEdge';
   cursor: Scalars['String']['output'];
   node: CommitmentBatchEventNew;
-}
+};
 
 export const enum CommitmentBatchEventNewOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
@@ -164,14 +164,14 @@ export type CommitmentBatchEventNewWhereInput = {
   treeNumber_lte?: InputMaybe<Scalars['BigInt']['input']>;
   treeNumber_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
   treeNumber_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-}
+};
 
 export type CommitmentBatchEventNewsConnection = {
   __typename?: 'CommitmentBatchEventNewsConnection';
   edges: Array<CommitmentBatchEventNewEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type CommitmentCiphertext = {
   __typename?: 'CommitmentCiphertext';
@@ -181,13 +181,13 @@ export type CommitmentCiphertext = {
   ciphertext: Ciphertext;
   id: Scalars['String']['output'];
   memo: Scalars['Bytes']['output'];
-}
+};
 
 export type CommitmentCiphertextEdge = {
   __typename?: 'CommitmentCiphertextEdge';
   cursor: Scalars['String']['output'];
   node: CommitmentCiphertext;
-}
+};
 
 export const enum CommitmentCiphertextOrderByInput {
   AnnotationDataAsc = 'annotationData_ASC',
@@ -258,20 +258,20 @@ export type CommitmentCiphertextWhereInput = {
   memo_eq?: InputMaybe<Scalars['Bytes']['input']>;
   memo_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   memo_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-}
+};
 
 export type CommitmentCiphertextsConnection = {
   __typename?: 'CommitmentCiphertextsConnection';
   edges: Array<CommitmentCiphertextEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type CommitmentEdge = {
   __typename?: 'CommitmentEdge';
   cursor: Scalars['String']['output'];
   node: Commitment;
-}
+};
 
 export const enum CommitmentOrderByInput {
   TypeAsc = '_type_ASC',
@@ -320,13 +320,13 @@ export type CommitmentPreimage = {
   npk: Scalars['Bytes']['output'];
   token: Token;
   value: Scalars['BigInt']['output'];
-}
+};
 
 export type CommitmentPreimageEdge = {
   __typename?: 'CommitmentPreimageEdge';
   cursor: Scalars['String']['output'];
   node: CommitmentPreimage;
-}
+};
 
 export const enum CommitmentPreimageOrderByInput {
   IdAsc = 'id_ASC',
@@ -393,14 +393,14 @@ export type CommitmentPreimageWhereInput = {
   value_lte?: InputMaybe<Scalars['BigInt']['input']>;
   value_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
   value_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-}
+};
 
 export type CommitmentPreimagesConnection = {
   __typename?: 'CommitmentPreimagesConnection';
   edges: Array<CommitmentPreimageEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export const enum CommitmentType {
   LegacyEncryptedCommitment = 'LegacyEncryptedCommitment',
@@ -491,14 +491,14 @@ export type CommitmentWhereInput = {
   treePosition_lte?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_eq?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-}
+};
 
 export type CommitmentsConnection = {
   __typename?: 'CommitmentsConnection';
   edges: Array<CommitmentEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type LegacyCommitmentCiphertext = {
   __typename?: 'LegacyCommitmentCiphertext';
@@ -506,13 +506,13 @@ export type LegacyCommitmentCiphertext = {
   ephemeralKeys: Array<Scalars['Bytes']['output']>;
   id: Scalars['String']['output'];
   memo: Array<Scalars['Bytes']['output']>;
-}
+};
 
 export type LegacyCommitmentCiphertextEdge = {
   __typename?: 'LegacyCommitmentCiphertextEdge';
   cursor: Scalars['String']['output'];
   node: LegacyCommitmentCiphertext;
-}
+};
 
 export const enum LegacyCommitmentCiphertextOrderByInput {
   CiphertextIdAsc = 'ciphertext_id_ASC',
@@ -563,14 +563,14 @@ export type LegacyCommitmentCiphertextWhereInput = {
   memo_containsAny?: InputMaybe<Array<Scalars['Bytes']['input']>>;
   memo_containsNone?: InputMaybe<Array<Scalars['Bytes']['input']>>;
   memo_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-}
+};
 
 export type LegacyCommitmentCiphertextsConnection = {
   __typename?: 'LegacyCommitmentCiphertextsConnection';
   edges: Array<LegacyCommitmentCiphertextEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type LegacyEncryptedCommitment = Commitment & {
   __typename?: 'LegacyEncryptedCommitment';
@@ -584,13 +584,13 @@ export type LegacyEncryptedCommitment = Commitment & {
   transactionHash: Scalars['Bytes']['output'];
   treeNumber: Scalars['Int']['output'];
   treePosition: Scalars['Int']['output'];
-}
+};
 
 export type LegacyEncryptedCommitmentEdge = {
   __typename?: 'LegacyEncryptedCommitmentEdge';
   cursor: Scalars['String']['output'];
   node: LegacyEncryptedCommitment;
-}
+};
 
 export const enum LegacyEncryptedCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
@@ -719,14 +719,14 @@ export type LegacyEncryptedCommitmentWhereInput = {
   treePosition_lte?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_eq?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-}
+};
 
 export type LegacyEncryptedCommitmentsConnection = {
   __typename?: 'LegacyEncryptedCommitmentsConnection';
   edges: Array<LegacyEncryptedCommitmentEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type LegacyGeneratedCommitment = Commitment & {
   __typename?: 'LegacyGeneratedCommitment';
@@ -741,13 +741,13 @@ export type LegacyGeneratedCommitment = Commitment & {
   transactionHash: Scalars['Bytes']['output'];
   treeNumber: Scalars['Int']['output'];
   treePosition: Scalars['Int']['output'];
-}
+};
 
 export type LegacyGeneratedCommitmentEdge = {
   __typename?: 'LegacyGeneratedCommitmentEdge';
   cursor: Scalars['String']['output'];
   node: LegacyGeneratedCommitment;
-}
+};
 
 export const enum LegacyGeneratedCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
@@ -888,14 +888,14 @@ export type LegacyGeneratedCommitmentWhereInput = {
   treePosition_lte?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_eq?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-}
+};
 
 export type LegacyGeneratedCommitmentsConnection = {
   __typename?: 'LegacyGeneratedCommitmentsConnection';
   edges: Array<LegacyGeneratedCommitmentEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type Nullifier = {
   __typename?: 'Nullifier';
@@ -905,13 +905,13 @@ export type Nullifier = {
   nullifier: Scalars['Bytes']['output'];
   transactionHash: Scalars['Bytes']['output'];
   treeNumber: Scalars['Int']['output'];
-}
+};
 
 export type NullifierEdge = {
   __typename?: 'NullifierEdge';
   cursor: Scalars['String']['output'];
   node: Nullifier;
-}
+};
 
 export const enum NullifierOrderByInput {
   BlockNumberAsc = 'blockNumber_ASC',
@@ -993,14 +993,14 @@ export type NullifierWhereInput = {
   treeNumber_lte?: InputMaybe<Scalars['Int']['input']>;
   treeNumber_not_eq?: InputMaybe<Scalars['Int']['input']>;
   treeNumber_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-}
+};
 
 export type NullifiersConnection = {
   __typename?: 'NullifiersConnection';
   edges: Array<NullifierEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -1008,7 +1008,7 @@ export type PageInfo = {
   hasNextPage: Scalars['Boolean']['output'];
   hasPreviousPage: Scalars['Boolean']['output'];
   startCursor: Scalars['String']['output'];
-}
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -1085,329 +1085,387 @@ export type Query = {
   verificationHashByUniqueInput?: Maybe<VerificationHash>;
   verificationHashes: Array<VerificationHash>;
   verificationHashesConnection: VerificationHashesConnection;
-}
+};
+
 
 export type QueryCiphertextByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryCiphertextByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryCiphertextsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CiphertextOrderByInput>>;
   where?: InputMaybe<CiphertextWhereInput>;
-}
+};
+
 
 export type QueryCiphertextsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<CiphertextOrderByInput>;
   where?: InputMaybe<CiphertextWhereInput>;
-}
+};
+
 
 export type QueryCommitmentBatchEventNewByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryCommitmentBatchEventNewByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryCommitmentBatchEventNewsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommitmentBatchEventNewOrderByInput>>;
   where?: InputMaybe<CommitmentBatchEventNewWhereInput>;
-}
+};
+
 
 export type QueryCommitmentBatchEventNewsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<CommitmentBatchEventNewOrderByInput>;
   where?: InputMaybe<CommitmentBatchEventNewWhereInput>;
-}
+};
+
 
 export type QueryCommitmentCiphertextByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryCommitmentCiphertextByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryCommitmentCiphertextsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommitmentCiphertextOrderByInput>>;
   where?: InputMaybe<CommitmentCiphertextWhereInput>;
-}
+};
+
 
 export type QueryCommitmentCiphertextsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<CommitmentCiphertextOrderByInput>;
   where?: InputMaybe<CommitmentCiphertextWhereInput>;
-}
+};
+
 
 export type QueryCommitmentPreimageByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryCommitmentPreimageByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryCommitmentPreimagesArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommitmentPreimageOrderByInput>>;
   where?: InputMaybe<CommitmentPreimageWhereInput>;
-}
+};
+
 
 export type QueryCommitmentPreimagesConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<CommitmentPreimageOrderByInput>;
   where?: InputMaybe<CommitmentPreimageWhereInput>;
-}
+};
+
 
 export type QueryCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CommitmentOrderByInput>>;
   where?: InputMaybe<CommitmentWhereInput>;
-}
+};
+
 
 export type QueryCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<CommitmentOrderByInput>;
   where?: InputMaybe<CommitmentWhereInput>;
-}
+};
+
 
 export type QueryLegacyCommitmentCiphertextByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryLegacyCommitmentCiphertextByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryLegacyCommitmentCiphertextsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LegacyCommitmentCiphertextOrderByInput>>;
   where?: InputMaybe<LegacyCommitmentCiphertextWhereInput>;
-}
+};
+
 
 export type QueryLegacyCommitmentCiphertextsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<LegacyCommitmentCiphertextOrderByInput>;
   where?: InputMaybe<LegacyCommitmentCiphertextWhereInput>;
-}
+};
+
 
 export type QueryLegacyEncryptedCommitmentByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryLegacyEncryptedCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryLegacyEncryptedCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LegacyEncryptedCommitmentOrderByInput>>;
   where?: InputMaybe<LegacyEncryptedCommitmentWhereInput>;
-}
+};
+
 
 export type QueryLegacyEncryptedCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<LegacyEncryptedCommitmentOrderByInput>;
   where?: InputMaybe<LegacyEncryptedCommitmentWhereInput>;
-}
+};
+
 
 export type QueryLegacyGeneratedCommitmentByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryLegacyGeneratedCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryLegacyGeneratedCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LegacyGeneratedCommitmentOrderByInput>>;
   where?: InputMaybe<LegacyGeneratedCommitmentWhereInput>;
-}
+};
+
 
 export type QueryLegacyGeneratedCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<LegacyGeneratedCommitmentOrderByInput>;
   where?: InputMaybe<LegacyGeneratedCommitmentWhereInput>;
-}
+};
+
 
 export type QueryNullifierByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryNullifierByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryNullifiersArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<NullifierOrderByInput>>;
   where?: InputMaybe<NullifierWhereInput>;
-}
+};
+
 
 export type QueryNullifiersConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<NullifierOrderByInput>;
   where?: InputMaybe<NullifierWhereInput>;
-}
+};
+
 
 export type QueryShieldCommitmentByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryShieldCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryShieldCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ShieldCommitmentOrderByInput>>;
   where?: InputMaybe<ShieldCommitmentWhereInput>;
-}
+};
+
 
 export type QueryShieldCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<ShieldCommitmentOrderByInput>;
   where?: InputMaybe<ShieldCommitmentWhereInput>;
-}
+};
+
 
 export type QueryTokenByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryTokenByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryTokensArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TokenOrderByInput>>;
   where?: InputMaybe<TokenWhereInput>;
-}
+};
+
 
 export type QueryTokensConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<TokenOrderByInput>;
   where?: InputMaybe<TokenWhereInput>;
-}
+};
+
 
 export type QueryTransactCommitmentByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryTransactCommitmentByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryTransactCommitmentsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TransactCommitmentOrderByInput>>;
   where?: InputMaybe<TransactCommitmentWhereInput>;
-}
+};
+
 
 export type QueryTransactCommitmentsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<TransactCommitmentOrderByInput>;
   where?: InputMaybe<TransactCommitmentWhereInput>;
-}
+};
+
 
 export type QueryTransactionByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryTransactionByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryTransactionsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TransactionOrderByInput>>;
   where?: InputMaybe<TransactionWhereInput>;
-}
+};
+
 
 export type QueryTransactionsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<TransactionOrderByInput>;
   where?: InputMaybe<TransactionWhereInput>;
-}
+};
+
 
 export type QueryUnshieldByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryUnshieldByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryUnshieldsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<UnshieldOrderByInput>>;
   where?: InputMaybe<UnshieldWhereInput>;
-}
+};
+
 
 export type QueryUnshieldsConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<UnshieldOrderByInput>;
   where?: InputMaybe<UnshieldWhereInput>;
-}
+};
+
 
 export type QueryVerificationHashByIdArgs = {
   id: Scalars['String']['input'];
-}
+};
+
 
 export type QueryVerificationHashByUniqueInputArgs = {
   where: WhereIdInput;
-}
+};
+
 
 export type QueryVerificationHashesArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<VerificationHashOrderByInput>>;
   where?: InputMaybe<VerificationHashWhereInput>;
-}
+};
+
 
 export type QueryVerificationHashesConnectionArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<VerificationHashOrderByInput>;
   where?: InputMaybe<VerificationHashWhereInput>;
-}
+};
 
 export type ShieldCommitment = Commitment & {
   __typename?: 'ShieldCommitment';
@@ -1424,13 +1482,13 @@ export type ShieldCommitment = Commitment & {
   transactionHash: Scalars['Bytes']['output'];
   treeNumber: Scalars['Int']['output'];
   treePosition: Scalars['Int']['output'];
-}
+};
 
 export type ShieldCommitmentEdge = {
   __typename?: 'ShieldCommitmentEdge';
   cursor: Scalars['String']['output'];
   node: ShieldCommitment;
-}
+};
 
 export const enum ShieldCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
@@ -1591,20 +1649,20 @@ export type ShieldCommitmentWhereInput = {
   treePosition_lte?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_eq?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-}
+};
 
 export type ShieldCommitmentsConnection = {
   __typename?: 'ShieldCommitmentsConnection';
   edges: Array<ShieldCommitmentEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type SquidStatus = {
   __typename?: 'SquidStatus';
   /** The height of the processed part of the chain */
   height?: Maybe<Scalars['Int']['output']>;
-}
+};
 
 export type Token = {
   __typename?: 'Token';
@@ -1612,13 +1670,13 @@ export type Token = {
   tokenAddress: Scalars['Bytes']['output'];
   tokenSubID: Scalars['String']['output'];
   tokenType: TokenType;
-}
+};
 
 export type TokenEdge = {
   __typename?: 'TokenEdge';
   cursor: Scalars['String']['output'];
   node: Token;
-}
+};
 
 export const enum TokenOrderByInput {
   IdAsc = 'id_ASC',
@@ -1690,14 +1748,14 @@ export type TokenWhereInput = {
   tokenType_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   tokenType_not_eq?: InputMaybe<TokenType>;
   tokenType_not_in?: InputMaybe<Array<TokenType>>;
-}
+};
 
 export type TokensConnection = {
   __typename?: 'TokensConnection';
   edges: Array<TokenEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type TransactCommitment = Commitment & {
   __typename?: 'TransactCommitment';
@@ -1711,13 +1769,13 @@ export type TransactCommitment = Commitment & {
   transactionHash: Scalars['Bytes']['output'];
   treeNumber: Scalars['Int']['output'];
   treePosition: Scalars['Int']['output'];
-}
+};
 
 export type TransactCommitmentEdge = {
   __typename?: 'TransactCommitmentEdge';
   cursor: Scalars['String']['output'];
   node: TransactCommitment;
-}
+};
 
 export const enum TransactCommitmentOrderByInput {
   BatchStartTreePositionAsc = 'batchStartTreePosition_ASC',
@@ -1862,14 +1920,14 @@ export type TransactCommitmentWhereInput = {
   treePosition_lte?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_eq?: InputMaybe<Scalars['Int']['input']>;
   treePosition_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-}
+};
 
 export type TransactCommitmentsConnection = {
   __typename?: 'TransactCommitmentsConnection';
   edges: Array<TransactCommitmentEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type Transaction = TransactionInterface & {
   __typename?: 'Transaction';
@@ -1889,13 +1947,13 @@ export type Transaction = TransactionInterface & {
   utxoTreeIn: Scalars['BigInt']['output'];
   utxoTreeOut: Scalars['BigInt']['output'];
   verificationHash: Scalars['Bytes']['output'];
-}
+};
 
 export type TransactionEdge = {
   __typename?: 'TransactionEdge';
   cursor: Scalars['String']['output'];
   node: Transaction;
-}
+};
 
 export type TransactionInterface = {
   blockNumber: Scalars['BigInt']['output'];
@@ -1914,7 +1972,7 @@ export type TransactionInterface = {
   utxoTreeIn: Scalars['BigInt']['output'];
   utxoTreeOut: Scalars['BigInt']['output'];
   verificationHash: Scalars['Bytes']['output'];
-}
+};
 
 export const enum TransactionOrderByInput {
   BlockNumberAsc = 'blockNumber_ASC',
@@ -2089,14 +2147,14 @@ export type TransactionWhereInput = {
   verificationHash_eq?: InputMaybe<Scalars['Bytes']['input']>;
   verificationHash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   verificationHash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-}
+};
 
 export type TransactionsConnection = {
   __typename?: 'TransactionsConnection';
   edges: Array<TransactionEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type Unshield = {
   __typename?: 'Unshield';
@@ -2109,13 +2167,13 @@ export type Unshield = {
   to: Scalars['Bytes']['output'];
   token: Token;
   transactionHash: Scalars['Bytes']['output'];
-}
+};
 
 export type UnshieldEdge = {
   __typename?: 'UnshieldEdge';
   cursor: Scalars['String']['output'];
   node: Unshield;
-}
+};
 
 export const enum UnshieldOrderByInput {
   AmountAsc = 'amount_ASC',
@@ -2241,26 +2299,26 @@ export type UnshieldWhereInput = {
   transactionHash_eq?: InputMaybe<Scalars['Bytes']['input']>;
   transactionHash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   transactionHash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-}
+};
 
 export type UnshieldsConnection = {
   __typename?: 'UnshieldsConnection';
   edges: Array<UnshieldEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type VerificationHash = {
   __typename?: 'VerificationHash';
   id: Scalars['String']['output'];
   verificationHash: Scalars['Bytes']['output'];
-}
+};
 
 export type VerificationHashEdge = {
   __typename?: 'VerificationHashEdge';
   cursor: Scalars['String']['output'];
   node: VerificationHash;
-}
+};
 
 export const enum VerificationHashOrderByInput {
   IdAsc = 'id_ASC',
@@ -2296,34 +2354,34 @@ export type VerificationHashWhereInput = {
   verificationHash_eq?: InputMaybe<Scalars['Bytes']['input']>;
   verificationHash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   verificationHash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
-}
+};
 
 export type VerificationHashesConnection = {
   __typename?: 'VerificationHashesConnection';
   edges: Array<VerificationHashEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
-}
+};
 
 export type WhereIdInput = {
   id: Scalars['String']['input'];
-}
+};
 
 export type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
   ? Pick<T, F[number]>
-  : T
+  : T;
 
 type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
 
 type GenerateIO<
-  Key extends keyof Query,
+  Key extends keyof Query, 
   QueryArgs,
   Field = Query[Key],
   Entity = Field extends Array<infer IT1>
     ? IT1
     : Field extends Maybe<infer IT2>
       ? NonNullable<IT2>
-      : Field,
+      : Field,            
   Wrapper = Field extends Array<infer _>
     ? 'array'
     : Field extends Maybe<infer _>
