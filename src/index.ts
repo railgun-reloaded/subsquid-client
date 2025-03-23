@@ -1,7 +1,7 @@
-export { SubsquidClient } from './client';
+export { SubsquidClient } from './client'
 
-export type { QueryInput } from './types';
+export type { QueryInput } from './types'
 
-export { NETWORK_CONFIG as networks } from './networks';
+export { NETWORK_CONFIG as networks } from './networks'
 
-export * from './generated/types';
+export * from './generated/types'
