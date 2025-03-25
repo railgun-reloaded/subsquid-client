@@ -39,7 +39,6 @@ const { tokens } = await client.query({
     limit: 5
   }
 });
-console.log(tokens);
 ```
 
 ### Querying Multiple Entities
@@ -75,7 +74,6 @@ const { tokens } = await client.query({
     }
   }
 });
-console.log(tokens);
 ```
 
 ### Using OR Conditions
@@ -91,7 +89,6 @@ const { tokens } = await client.query({
     }
   }
 });
-console.log(tokens);
 ```
 
 ### Complex Nested Conditions
@@ -128,7 +125,6 @@ const { tokens } = await client.query({
     orderBy: ['id_ASC']
   }
 });
-console.log(tokens);
 ```
 
 ### Filtering Other Entity Types
@@ -144,7 +140,6 @@ const { transactions } = await client.query({
     }
   }
 });
-console.log(transactions);
 ```
 
 ### Direct GraphQL Queries
@@ -173,7 +168,6 @@ const query = `
 `;
 
 const result = await client.request(query);
-console.log(result);
 ```
 
 ### Connection Queries for Pagination
@@ -197,7 +191,6 @@ const query = `
 `;
 
 const result = await client.request(query);
-console.log(result);
 ```
 
 ## License
