@@ -149,7 +149,7 @@ console.log(transactions);
 
 ### Direct GraphQL Queries
 
-For more complex queries, you can use direct GraphQL using client.request:
+For more complex/custom queries, you can use direct GraphQL using client.request:
 
 ```ts
 // Note: Enums must be in uppercase in raw GraphQL queries
@@ -199,7 +199,6 @@ const query = `
 const result = await client.request(query);
 console.log(result);
 ```
-
 
 ## License
 
