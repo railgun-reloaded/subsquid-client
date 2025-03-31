@@ -57,7 +57,7 @@ export class SubsquidClient {
    * @param query - The GraphQL query to execute
    * @returns Promise that resolves to the query result
    */
-  async request <T>(query: string): Promise<T> {
+  async request<T>(query: string): Promise<T> {
     const requestBody = JSON.stringify({ query })
     const response = await fetch(this.clientUrl, {
       method: 'POST',
@@ -67,7 +67,12 @@ export class SubsquidClient {
       body: requestBody,
     })
 
-    return (await response.json()).data as T
+    if (!response.ok) {
+      throw new Error(`Network request failed: ${response.status} ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    return result.data as T
   }
 
   /**
