@@ -2368,34 +2368,34 @@ export type WhereIdInput = {
 };
 
 export type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
-  ? Pick<T, F[number]>
-  : T;
+          ? Pick<T, F[number]>
+          : T;
 
 type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
 
 type GenerateIO<
-  Key extends keyof Query, 
-  QueryArgs,
-  Field = Query[Key],
-  Entity = Field extends Array<infer IT1>
-    ? IT1
-    : Field extends Maybe<infer IT2>
-      ? NonNullable<IT2>
-      : Field,            
-  Wrapper = Field extends Array<infer _>
-    ? 'array'
-    : Field extends Maybe<infer _>
-      ? 'maybe'
-      : 'simple'
-> = {
-  entity: Entity;
-  input: AddFields<QueryArgs, Entity>;
-  output: Field;
-  wrapper: Wrapper;
-}
+          Key extends keyof Query, 
+          QueryArgs,
+          Field = Query[Key],
+          Entity = Field extends Array<infer IT1>
+            ? IT1
+            : Field extends Maybe<infer IT2>
+              ? NonNullable<IT2>
+              : Field,            
+          Wrapper = Field extends Array<infer _>
+            ? 'array'
+            : Field extends Maybe<infer _>
+              ? 'maybe'
+              : 'simple'
+        > = {
+          entity: Entity;
+          input: AddFields<QueryArgs, Entity>;
+          output: Field;
+          wrapper: Wrapper;
+        }
 
 export type QueryIO = {
-  ciphertextById: GenerateIO<'ciphertextById', QueryCiphertextByIdArgs>
+        ciphertextById: GenerateIO<'ciphertextById', QueryCiphertextByIdArgs>
   ciphertextByUniqueInput: GenerateIO<'ciphertextByUniqueInput', QueryCiphertextByUniqueInputArgs>
   ciphertexts: GenerateIO<'ciphertexts', QueryCiphertextsArgs>
   ciphertextsConnection: GenerateIO<'ciphertextsConnection', QueryCiphertextsConnectionArgs>
@@ -2454,4 +2454,4 @@ export type QueryIO = {
   verificationHashByUniqueInput: GenerateIO<'verificationHashByUniqueInput', QueryVerificationHashByUniqueInputArgs>
   verificationHashes: GenerateIO<'verificationHashes', QueryVerificationHashesArgs>
   verificationHashesConnection: GenerateIO<'verificationHashesConnection', QueryVerificationHashesConnectionArgs>
-}
+      }
