@@ -6,8 +6,6 @@ const ETHEREUM_SEPOLIA_URL =
   'https://rail-squid.squids.live/squid-railgun-eth-sepolia-v2/graphql'
 const POLYGON_URL = 'https://rail-squid.squids.live/squid-railgun-polygon-v2/graphql'
 
-type NetworkName = keyof typeof NETWORK_CONFIG
-
 const NETWORK_CONFIG = {
   arbitrum: ARBITRUM_URL,
   bsc: BSC_URL,
@@ -16,6 +14,16 @@ const NETWORK_CONFIG = {
   polygon: POLYGON_URL,
 } as const
 
+type NetworkName = keyof typeof NETWORK_CONFIG
+
+/**
+ * Configuration options for initializing the SubsquidClient
+ */
+type SubsquidClientOptions = {
+  customSubsquidUrl?: string;
+  network?: string;
+}
+
 const SUPPORTED_NETWORKS = Object.keys(NETWORK_CONFIG) as NetworkName[]
 
-export { NETWORK_CONFIG, SUPPORTED_NETWORKS, type NetworkName }
+export { NETWORK_CONFIG, SUPPORTED_NETWORKS, type NetworkName, type SubsquidClientOptions }

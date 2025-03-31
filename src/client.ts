@@ -1,4 +1,4 @@
-import type { NetworkName } from './networks'
+import type { SubsquidClientOptions } from './networks'
 import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
 import { queryBuilder } from './query-builder'
 
@@ -10,27 +10,37 @@ export class SubsquidClient {
    * The URL endpoint for the Subsquid GraphQL API
    */
   private clientUrl: string
+
   /**
    * Creates a new SubsquidClient instance
-   * @param network - The blockchain network to connect to
+   * @param options - Configuration options for the client
    */
-  constructor (network: NetworkName) {
-    this.clientUrl = this.getSubsquidUrlForNetwork(network)
+  constructor (options: SubsquidClientOptions) {
+    this.clientUrl = this.getSubsquidUrl(options)
   }
 
   /**
-   * Gets the Subsquid URL for the specified network
-   * @param network - The blockchain network to get the URL for
-   * @returns The Subsquid URL for the specified network
+   * Gets the Subsquid URL from the provided options
+   * @param options - Configuration options for the client
+   * @returns The Subsquid URL to use
    */
-  private getSubsquidUrlForNetwork = (network: NetworkName): string => {
-    const configUrl = NETWORK_CONFIG[network]
-    if (!configUrl) {
-      throw new Error(
-        `Unsupported network: ${network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
-      )
+  private getSubsquidUrl = (options: SubsquidClientOptions): string => {
+    if (!(options.network) && !(options.customSubsquidUrl)) {
+      throw new Error('Either network or customSubsquidUrl must be provided')
     }
-    return configUrl
+
+    if (options.network) {
+      const networkUrl = NETWORK_CONFIG[options.network as keyof typeof NETWORK_CONFIG]
+      if (!networkUrl) {
+        throw new Error(
+          `Unsupported network: ${options.network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
+        )
+      }
+      return networkUrl
+    } else {
+      const { customSubsquidUrl } = options
+      return new URL(customSubsquidUrl!).toString()
+    }
   }
 
   /**
@@ -38,7 +48,7 @@ export class SubsquidClient {
    * @param query - The GraphQL query to execute
    * @returns Promise that resolves to the query result
    */
-  request = async <T>(query: string): Promise<T> => {
+  async request <T>(query: string): Promise<T> {
     try {
       const requestBody = JSON.stringify({ query })
 
