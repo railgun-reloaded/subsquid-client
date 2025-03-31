@@ -25,11 +25,7 @@ export class SubsquidClient {
    * @returns The Subsquid URL to use
    */
   private getSubsquidUrl = (options: SubsquidClientOptions): string => {
-    if (!(options.network) && !(options.customSubsquidUrl)) {
-      throw new Error('Either network or customSubsquidUrl must be provided')
-    }
-
-    if (options.network) {
+    if ('network' in options) {
       const networkUrl = NETWORK_CONFIG[options.network as keyof typeof NETWORK_CONFIG]
       if (!networkUrl) {
         throw new Error(
@@ -37,10 +33,23 @@ export class SubsquidClient {
         )
       }
       return networkUrl
-    } else {
-      const { customSubsquidUrl } = options
-      return new URL(customSubsquidUrl!).toString()
     }
+    if ('customSubsquidUrl' in options) {
+      const { customSubsquidUrl } = options
+      if (!customSubsquidUrl || customSubsquidUrl.trim() === '') {
+        throw new Error('customSubsquidUrl cannot be empty')
+      }
+
+      try {
+        const url = new URL(customSubsquidUrl)
+        return url.toString()
+      } catch (error) {
+        throw new Error(`Invalid URL format: ${customSubsquidUrl}`)
+      }
+    }
+    throw new Error(
+      'Invalid configuration. Provide either { network } or { customSubsquidUrl }.'
+    )
   }
 
   /**
