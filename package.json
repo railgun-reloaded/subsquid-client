@@ -23,8 +23,6 @@
     "clean": "tsc --build --clean",
     "lint": "eslint --ext .ts,.js src/ *.js",
     "lint:fix": "eslint --ext .ts,.js src/ *.js --fix",
-    "format": "prettier --write \"src/**/*.{ts,js}\" \"*.{js,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,js}\" \"*.{js,json}\"",
     "generate": "graphql-codegen",
     "prepare": "npm run generate && npm run build"
   },
@@ -48,7 +46,6 @@
     "@railgun-reloaded/eslint-config": "^1.0.0",
     "@railgun-reloaded/tsconfig": "^1.0.0",
     "@types/node": "^22.13.10",
-    "eslint": "^9.22.0",
-    "prettier": "^3.5.3"
+    "eslint": "^9.22.0"
   }
 }
