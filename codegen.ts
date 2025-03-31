@@ -1,13 +1,14 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
+import path from 'path';
 
-const schemaFile = './src/graphql/schema.graphql';
+const schemaFile = path.join(__dirname, 'src/graphql/schema.graphql');
 
 const config: CodegenConfig = {
   generates: {
     // Generate base types
-    'src/generated/types.ts': {
+    [path.join(__dirname, 'src/generated/types.ts')]: {
       schema: schemaFile,
-      plugins: ['typescript', './generate-types.ts'],
+      plugins: ['typescript', path.join(__dirname, 'src/generate-types.ts')],
       config: {
         scalars: {
           BigInt: 'string',
@@ -17,7 +18,7 @@ const config: CodegenConfig = {
       },
     },
     // Generate operation types and GraphQL request helpers
-    'src/generated/operations.ts': {
+    [path.join(__dirname, 'src/generated/operations.ts')]: {
       schema: schemaFile,
       plugins: ['typescript-operations', 'typescript-graphql-request'],
       config: {
