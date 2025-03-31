@@ -1,15 +1,11 @@
 import type { NetworkName } from './networks'
 import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
-import { QueryBuilder } from './query-builder'
+import { queryBuilder } from './query-builder'
 
 /**
  * Client for interacting with the Subsquid GraphQL API
  */
 export class SubsquidClient {
-  /**
-   * The query builder instance for building GraphQL queries
-   */
-  private queryBuilder: QueryBuilder
   /**
    * The URL endpoint for the Subsquid GraphQL API
    */
@@ -19,7 +15,6 @@ export class SubsquidClient {
    * @param network - The blockchain network to connect to
    */
   constructor (network: NetworkName) {
-    this.queryBuilder = new QueryBuilder()
     this.clientUrl = this.getSubsquidUrlForNetwork(network)
   }
 
@@ -81,7 +76,7 @@ export class SubsquidClient {
     input: string
   ): Promise<unknown> {
     try {
-      const queryStr = this.queryBuilder.build(input)
+      const queryStr = queryBuilder.build(input)
       return this.request(queryStr)
     } catch (error) {
       console.error('Error in query', error)
