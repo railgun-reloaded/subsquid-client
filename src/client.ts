@@ -49,32 +49,16 @@ export class SubsquidClient {
    * @returns Promise that resolves to the query result
    */
   async request <T>(query: string): Promise<T> {
-    try {
-      const requestBody = JSON.stringify({ query })
+    const requestBody = JSON.stringify({ query })
+    const response = await fetch(this.clientUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: requestBody,
+    })
 
-      const response = await fetch(this.clientUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: requestBody,
-      })
-
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.statusText}`)
-      }
-
-      const result = await response.json()
-
-      if (result.errors) {
-        throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`)
-      }
-
-      return result.data as T
-    } catch (error) {
-      console.error('Error in request', error)
-      throw error
-    };
+    return (await response.json()).data as T
   }
 
   /**
