@@ -78,14 +78,14 @@ module.exports = {
     }
 
     /**
-     * Generates the TypeScript type definition for QueryIO.
-     * @returns A string containing the TypeScript type definition for QueryIO.
+     * Generates the TypeScript type definition for EntityQueryMap.
+     * @returns A string containing the TypeScript type definition for EntityQueryMap.
      */
-    function printQueryIO () {
+    function printEntityQueryMap () {
       const queryType = schema.getQueryType()
       const queryFields = queryType.getFields()
       const queryFieldsNames = Object.keys(queryFields)
-      return `export type QueryIO = {
+      return `export type EntityQueryMap = {
         ${queryFieldsNames.map(generateTypeKV).join('\n  ')}
       }`
     }
@@ -93,6 +93,6 @@ module.exports = {
     // Note: Return like this with the weird indentation is to match the indentation of the original file
     return `${printPreloadTypes()}
 
-${printQueryIO()}`
+${printEntityQueryMap()}`
   }
 }

@@ -2394,7 +2394,7 @@ type GenerateIO<
           wrapper: Wrapper;
         }
 
-export type QueryIO = {
+export type EntityQueryMap = {
         ciphertextById: GenerateIO<'ciphertextById', QueryCiphertextByIdArgs>
   ciphertextByUniqueInput: GenerateIO<'ciphertextByUniqueInput', QueryCiphertextByUniqueInputArgs>
   ciphertexts: GenerateIO<'ciphertexts', QueryCiphertextsArgs>
