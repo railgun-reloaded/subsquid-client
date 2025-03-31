@@ -83,12 +83,7 @@ export class SubsquidClient {
   async query (
     input: string
   ): Promise<unknown> {
-    try {
-      const queryStr = queryBuilder.build(input)
-      return this.request(queryStr)
-    } catch (error) {
-      console.error('Error in query', error)
-      throw error
-    }
+    const queryStr = queryBuilder.build(input)
+    return this.request(queryStr)
   }
 }
