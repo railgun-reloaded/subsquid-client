@@ -156,7 +156,5 @@ const build = <T extends QueryInput>(input: T & Record<Exclude<keyof T, keyof Qu
 }
 
 export const queryBuilder = {
-  build,
-  jsonToGraphQLArgs,
-  processFilter
+  build
 }
