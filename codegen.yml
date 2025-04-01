@@ -1,0 +1,14 @@
+overwrite: true
+
+generates:
+  # Generate base types
+  ./src/generated/types.ts:
+    schema: ./src/graphql/schema.graphql
+    plugins:
+      - typescript
+      - ./src/generate-types.ts
+    config:
+      scalars:
+        BigInt: string
+        Bytes: string
+      constEnums: true
