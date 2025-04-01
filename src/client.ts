@@ -1,7 +1,7 @@
 import type { SubsquidClientOptions } from './networks'
 import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
 import { queryBuilder } from './query-builder'
-import type { QueryInput, QueryOutput, EntityQueryMap } from './types'
+import type { EntityQueryMap, QueryInput, QueryOutput } from './types'
 
 /**
  * Client for interacting with the Subsquid GraphQL API

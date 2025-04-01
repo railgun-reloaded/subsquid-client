@@ -2367,10 +2367,6 @@ export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
-export type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
-          ? Pick<T, F[number]>
-          : T;
-
 type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
 
 type GenerateIO<
