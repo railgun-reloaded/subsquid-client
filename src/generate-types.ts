@@ -1,4 +1,4 @@
-import type { CodegenPlugin } from '@graphql-codegen/plugin-helpers'
+import type { CodegenPlugin } = require('@graphql-codegen/plugin-helpers');
 
 module.exports = <CodegenPlugin> {
   /**
@@ -27,11 +27,6 @@ module.exports = <CodegenPlugin> {
      * @returns A string containing the TypeScript type definitions for preload operations.
      */
     function printPreloadTypes () {
-      const extractFieldsType =
-        `export type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
-          ? Pick<T, F[number]>
-          : T;`
-
       const addFieldsType =
         'type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }'
 

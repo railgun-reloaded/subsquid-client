@@ -1,8 +1,12 @@
-import type { EntityQueryMap, ExtractFields } from './generated/types'
+import type { EntityQueryMap } from './generated/types'
 
 type QueryInput = {
   [K in keyof EntityQueryMap]?: EntityQueryMap[K]['input'];
 }
+
+type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
+  ? Pick<T, F[number]>
+  : T
 
 // These types are for internal use and shouldn't be exported in index.ts
 type QueryOutput<T extends QueryInput> = {
