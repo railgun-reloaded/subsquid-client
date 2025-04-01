@@ -1,5 +1,6 @@
-// @ts-nocheck
-module.exports = {
+import type { CodegenPlugin } from '@graphql-codegen/plugin-helpers'
+
+module.exports = <CodegenPlugin> {
   /**
    * Generates TypeScript types based on the provided GraphQL schema.
    * @param schema - The GraphQL schema object to generate types from.
@@ -69,7 +70,7 @@ module.exports = {
      * @param fieldName - The name of the field to generate the key-value pair for.
      * @returns A string representing the key-value pair for the QueryIO type.
      */
-    function generateTypeKV (fieldName) {
+    function generateTypeKV (fieldName: string) {
       // Since there's no Query Args type for squidStatus, we don't need to handle the GenerateIO type for it
       if (fieldName === 'squidStatus') {
         return `${fieldName}: GenerateIO<'${fieldName}', {}>`
@@ -83,7 +84,7 @@ module.exports = {
      */
     function printEntityQueryMap () {
       const queryType = schema.getQueryType()
-      const queryFields = queryType.getFields()
+      const queryFields = queryType!.getFields()
       const queryFieldsNames = Object.keys(queryFields)
       return `export type EntityQueryMap = {
         ${queryFieldsNames.map(generateTypeKV).join('\n  ')}
