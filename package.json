@@ -21,8 +21,8 @@
     "build": "tsc --build",
     "test": "npm run build && node --test ./test/*.spec.js",
     "clean": "tsc --build --clean",
-    "lint": "eslint --ext .ts,.js src/ *.js",
-    "lint:fix": "eslint --ext .ts,.js src/ *.js --fix",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "generate": "graphql-codegen",
     "prepare": "npm run generate && npm run build"
   },
