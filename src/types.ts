@@ -1,4 +1,4 @@
-import type { ExtractFields, EntityQueryMap } from './generated/types'
+import type { EntityQueryMap, ExtractFields } from './generated/types'
 
 type QueryInput = {
   [K in keyof EntityQueryMap]?: EntityQueryMap[K]['input'];
