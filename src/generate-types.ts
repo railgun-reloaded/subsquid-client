@@ -1,4 +1,4 @@
-import type { CodegenPlugin } = require('@graphql-codegen/plugin-helpers');
+import type { CodegenPlugin } from '@graphql-codegen/plugin-helpers';
 
 module.exports = <CodegenPlugin> {
   /**
@@ -18,7 +18,7 @@ module.exports = <CodegenPlugin> {
      * @param str - The string to capitalize.
      * @returns The input string with the first letter converted to uppercase.
      */
-    function capitalize (str) {
+    function capitalize (str: string) {
       return str.charAt(0).toUpperCase() + str.slice(1)
     }
 
@@ -52,8 +52,6 @@ module.exports = <CodegenPlugin> {
           wrapper: Wrapper;
         }`
       return [
-        extractFieldsType,
-        '',
         addFieldsType,
         '',
         generateIOType
