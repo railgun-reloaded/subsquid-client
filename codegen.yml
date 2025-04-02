@@ -1,7 +1,6 @@
 overwrite: true
 
 generates:
-  # Generate base types
   ./src/generated/types.ts:
     schema: ./src/graphql/schema.graphql
     plugins:
