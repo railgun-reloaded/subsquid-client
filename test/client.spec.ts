@@ -4,29 +4,37 @@ import { describe, it } from 'node:test'
 
 import { SubsquidClient } from '../src/client'
 import { TokenOrderByInput, TokenType } from '../src/generated/types'
-import { ARBITRUM_URL, BSC_URL, ETHEREUM_SEPOLIA_URL, ETHEREUM_URL, NetworkName, POLYGON_URL } from '../src/networks'
 
 describe('Subsquid Client', async (t) => {
-  it('Should initialize with valid config', () => {
-    const client = new SubsquidClient('ethereum')
+  it('Should initialize with valid network config', () => {
+    const client = new SubsquidClient({ network: 'ethereum' })
     assert.ok(client instanceof SubsquidClient)
   })
 
+  it('Should initialize with custom URL', () => {
+    const client = new SubsquidClient({ customSubsquidUrl: 'https://example.com/graphql' })
+    assert.ok(client instanceof SubsquidClient)
+  })
+
+  it('Should throw with invalid network', () => {
+    assert.throws(() => new SubsquidClient({ network: 'invalidNetwork' as any }), Error)
+  })
+
   it('Should throw with invalid URL', () => {
-    assert.throws(() => new SubsquidClient('invalidNetwork'), Error)
+    assert.throws(() => new SubsquidClient({ customSubsquidUrl: 'not-a-url' }), Error)
   })
 
   it('Should check for supported networks', () => {
     const invalid = 'invalid'
-    assert.ok(() => new SubsquidClient('ethereum'))
-    assert.ok(() => new SubsquidClient('ethereumSepolia'))
-    assert.ok(() => new SubsquidClient('bnb'))
-    assert.ok(() => new SubsquidClient('polygon'))
-    assert.ok(() => new SubsquidClient('arbitrum'))
-    assert.throws(() => new SubsquidClient(invalid))
+    assert.ok(() => new SubsquidClient({ network: 'ethereum' }))
+    assert.ok(() => new SubsquidClient({ network: 'ethereumSepolia' }))
+    assert.ok(() => new SubsquidClient({ network: 'bsc' }))
+    assert.ok(() => new SubsquidClient({ network: 'polygon' }))
+    assert.ok(() => new SubsquidClient({ network: 'arbitrum' }))
+    assert.throws(() => new SubsquidClient({ network: invalid as any }))
   })
 
-  const client = new SubsquidClient('ethereum')
+  const client = new SubsquidClient({ network: 'ethereum' })
 
   it('Should execute basic query without filters', async () => {
     const { tokens } = await client.query({

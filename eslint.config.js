@@ -1,8 +1,9 @@
 module.exports = [
+  ...require('@railgun-reloaded/eslint-config')(),
   {
     ignores: [
-      '**/src/generated/**/*.ts',
+      './src/generated/**/*',
+      'eslint.config.js'
     ]
   },
-  ...require('@railgun-reloaded/eslint-config')(),
 ]

@@ -21,11 +21,10 @@
     "build": "tsc --build",
     "test": "npm run build && node --test ./test/*.spec.js",
     "clean": "tsc --build --clean",
-    "lint": "eslint --ext .ts,.js src/ *.js",
-    "lint:fix": "eslint --ext .ts,.js src/ *.js --fix",
-    "format": "prettier --write \"src/**/*.{ts,js}\" \"*.{js,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,js}\" \"*.{js,json}\"",
-    "generate": "graphql-codegen",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "pregenerate": "tsc --outDir src/ src/generate-types.ts",
+    "generate": "graphql-codegen --config codegen.yml",
     "prepare": "npm run generate && npm run build"
   },
   "keywords": [
@@ -35,20 +34,16 @@
     "railgun-reloaded"
   ],
   "dependencies": {
-    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
+    "@graphql-codegen/plugin-helpers": "^5.1.0",
     "graphql": "^16.10.0",
     "typescript": "^5.8.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.5",
-    "@graphql-codegen/graphql-modules-preset": "^4.0.15",
-    "@graphql-codegen/typescript": "^4.1.5",
-    "@graphql-codegen/typescript-operations": "^4.5.1",
-    "@graphql-codegen/typescript-resolvers": "^4.4.4",
+    "@graphql-codegen/typescript": "^4.1.6",
     "@railgun-reloaded/eslint-config": "^1.0.0",
-    "@railgun-reloaded/tsconfig": "^1.0.0",
+    "@railgun-reloaded/tsconfig": "^1.1.0",
     "@types/node": "^22.13.10",
-    "eslint": "^9.22.0",
-    "prettier": "^3.5.3"
+    "eslint": "^9.22.0"
   }
 }

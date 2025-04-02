@@ -1,41 +1,56 @@
-import type { NetworkName } from './networks'
+import type { SubsquidClientOptions } from './networks'
 import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
-import { QueryBuilder } from './query-builder'
+import { queryBuilder } from './query-builder'
+import type { EntityQueryMap, QueryInput, QueryOutput } from './types'
 
 /**
  * Client for interacting with the Subsquid GraphQL API
  */
 export class SubsquidClient {
   /**
-   * The query builder instance for building GraphQL queries
-   */
-  private queryBuilder: QueryBuilder
-  /**
    * The URL endpoint for the Subsquid GraphQL API
    */
   private clientUrl: string
+
   /**
    * Creates a new SubsquidClient instance
-   * @param network - The blockchain network to connect to
+   * @param options - Configuration options for the client
    */
-  constructor (network: NetworkName) {
-    this.queryBuilder = new QueryBuilder()
-    this.clientUrl = this.getSubsquidUrlForNetwork(network)
+  constructor (options: SubsquidClientOptions) {
+    this.clientUrl = this.getSubsquidUrl(options)
   }
 
   /**
-   * Gets the Subsquid URL for the specified network
-   * @param network - The blockchain network to get the URL for
-   * @returns The Subsquid URL for the specified network
+   * Gets the Subsquid URL from the provided options
+   * @param options - Configuration options for the client
+   * @returns The Subsquid URL to use
    */
-  private getSubsquidUrlForNetwork = (network: NetworkName): string => {
-    const configUrl = NETWORK_CONFIG[network]
-    if (!configUrl) {
-      throw new Error(
-        `Unsupported network: ${network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
-      )
+  private getSubsquidUrl = (options: SubsquidClientOptions): string => {
+    if ('network' in options) {
+      const networkUrl = NETWORK_CONFIG[options.network as keyof typeof NETWORK_CONFIG]
+      if (!networkUrl) {
+        throw new Error(
+          `Unsupported network: ${options.network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
+        )
+      }
+      return networkUrl
     }
-    return configUrl
+    if ('customSubsquidUrl' in options) {
+      const { customSubsquidUrl } = options
+      if (!customSubsquidUrl || customSubsquidUrl.trim() === '') {
+        throw new Error('customSubsquidUrl cannot be empty')
+      }
+
+      try {
+        const url = new URL(customSubsquidUrl)
+        return url.toString()
+      } catch (error) {
+        throw new Error(`Invalid URL format: ${customSubsquidUrl}`)
+      }
+    }
+    throw new Error(
+      'Invalid configuration. Provide either { network } or { customSubsquidUrl }.'
+    )
   }
 
   /**
@@ -43,33 +58,22 @@ export class SubsquidClient {
    * @param query - The GraphQL query to execute
    * @returns Promise that resolves to the query result
    */
-  request = async <T>(query: string): Promise<T> => {
-    try {
-      const requestBody = JSON.stringify({ query })
+  async request<T>(query: string): Promise<T> {
+    const requestBody = JSON.stringify({ query })
+    const response = await fetch(this.clientUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: requestBody,
+    })
 
-      const response = await fetch(this.clientUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: requestBody,
-      })
+    if (!response.ok) {
+      throw new Error(`Network request failed: ${response.status} ${response.statusText}`)
+    }
 
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.statusText}`)
-      }
-
-      const result = await response.json()
-
-      if (result.errors) {
-        throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`)
-      }
-
-      return result.data as T
-    } catch (error) {
-      console.error('Error in request', error)
-      throw error
-    };
+    const result = await response.json()
+    return result.data as T
   }
 
   /**
@@ -77,15 +81,10 @@ export class SubsquidClient {
    * @param input - The query input to build and execute
    * @returns Promise that resolves to the query result
    */
-  async query (
-    input: string
-  ): Promise<unknown> {
-    try {
-      const queryStr = this.queryBuilder.build(input)
-      return this.request(queryStr)
-    } catch (error) {
-      console.error('Error in query', error)
-      throw error
-    }
+  async query<T extends QueryInput> (
+    input: T & Record<Exclude<keyof T, keyof EntityQueryMap>, never>
+  ): Promise<QueryOutput<T>> {
+    const queryStr = queryBuilder.build(input)
+    return this.request<QueryOutput<T>>(queryStr)
   }
 }
