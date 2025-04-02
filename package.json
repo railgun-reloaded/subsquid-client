@@ -23,6 +23,7 @@
     "clean": "tsc --build --clean",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
+    "pregenerate": "tsc --outDir src/ src/generate-types.ts",
     "generate": "graphql-codegen --config codegen.yml",
     "prepare": "npm run generate && npm run build"
   },

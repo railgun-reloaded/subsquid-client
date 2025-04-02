@@ -5,7 +5,7 @@ generates:
     schema: ./src/graphql/schema.graphql
     plugins:
       - typescript
-      - ./src/generate-types.ts
+      - ./src/generate-types.js
     config:
       scalars:
         BigInt: string
