@@ -1,7 +1,7 @@
 import type { SubsquidClientOptions } from './networks'
 import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
 import { queryBuilder } from './query-builder'
-import type { EntityQueryMap, QueryInput, QueryOutput } from './types'
+import type { QueryInput, QueryOutput, StrictQueryInput } from './types'
 
 /**
  * Client for interacting with the Subsquid GraphQL API
@@ -82,7 +82,7 @@ export class SubsquidClient {
    * @returns Promise that resolves to the query result
    */
   async query<T extends QueryInput> (
-    input: T & Record<Exclude<keyof T, keyof EntityQueryMap>, never>
+    input: StrictQueryInput<T>
   ): Promise<QueryOutput<T>> {
     const queryStr = queryBuilder.build(input)
     return this.request<QueryOutput<T>>(queryStr)

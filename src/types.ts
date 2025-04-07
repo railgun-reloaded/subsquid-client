@@ -8,6 +8,8 @@ type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
   ? Pick<T, F[number]>
   : T
 
+type StrictQueryInput<T extends QueryInput> = T & Record<Exclude<keyof T, keyof EntityQueryMap>, never>
+
 // These types are for internal use and shouldn't be exported in index.ts
 type QueryOutput<T extends QueryInput> = {
   [K in keyof T & keyof EntityQueryMap]: T[K] extends { fields: (keyof EntityQueryMap[K]['entity'])[] }
@@ -32,5 +34,6 @@ export {
   type QueryOutput,
   type FilterValue,
   type FieldsArgs,
-  type EntityQueryMap
+  type EntityQueryMap,
+  type StrictQueryInput
 }
