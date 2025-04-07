@@ -8,7 +8,7 @@ import type { EntityQueryMap, FieldsArgs, FilterValue, QueryInput } from './type
  * @param obj - The object to convert to GraphQL arguments
  * @returns A GraphQL arguments string
  */
-const jsonToGraphQLArgs = (obj: any): string => {
+function jsonToGraphQLArgs (obj: any): string {
   if (!obj) return ''
 
   /**
@@ -16,7 +16,7 @@ const jsonToGraphQLArgs = (obj: any): string => {
    * @param obj - The object to process
    * @returns A GraphQL-compatible string representation of the object
    */
-  const processObj = (obj: any): string => {
+  function processObj(obj: any): string {
     if (obj === null || obj === undefined) {
       return 'null'
     }
@@ -59,11 +59,11 @@ const jsonToGraphQLArgs = (obj: any): string => {
  * @param value - The filter value with appropriate type based on FilterValue
  * @returns Formatted GraphQL argument string
  */
-const processFilter = <K extends keyof EntityQueryMap, F extends keyof EntityQueryMap[K]['input']>(
+function processFilter<K extends keyof EntityQueryMap, F extends keyof EntityQueryMap[K]['input']> (
   _entityName: K,
   filterName: F,
   value: FilterValue<K, F>
-): string => {
+): string {
   switch (filterName) {
     case 'where':
       return value ? `where: ${jsonToGraphQLArgs(value)}` : ''
@@ -97,9 +97,9 @@ const processFilter = <K extends keyof EntityQueryMap, F extends keyof EntityQue
  * @param params.filters - The filters for the entity
  * @returns Formatted GraphQL query string
  */
-const parseEntityQuery = <K extends keyof EntityQueryMap>(
+function parseEntityQuery <K extends keyof EntityQueryMap>(
   { entityName, filters }: { entityName: K, filters: EntityQueryMap[K]['input'] }
-): string => {
+): string {
   // We know entity name is a key of EntityQueryMap, force a cast type over it
   const typedEntityName = entityName as keyof EntityQueryMap
   const fields = filters.fields as (FieldsArgs<typeof typedEntityName>)[]
@@ -136,7 +136,7 @@ const parseEntityQuery = <K extends keyof EntityQueryMap>(
  * @param input - The query input to build
  * @returns A complete GraphQL query string
  */
-const build = <T extends QueryInput>(input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): string => {
+function build <T extends QueryInput> (input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): string {
   const entities = Object.entries(input)
   const queryStr = `
     query {
