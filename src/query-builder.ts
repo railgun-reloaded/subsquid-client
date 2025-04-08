@@ -16,7 +16,7 @@ function jsonToGraphQLArgs (obj: any): string {
    * @param obj - The object to process
    * @returns A GraphQL-compatible string representation of the object
    */
-  function processObj(obj: any): string {
+  function processObj (obj: any): string {
     if (obj === null || obj === undefined) {
       return 'null'
     }
@@ -97,7 +97,7 @@ function processFilter<K extends keyof EntityQueryMap, F extends keyof EntityQue
  * @param params.filters - The filters for the entity
  * @returns Formatted GraphQL query string
  */
-function parseEntityQuery <K extends keyof EntityQueryMap>(
+function parseEntityQuery <K extends keyof EntityQueryMap> (
   { entityName, filters }: { entityName: K, filters: EntityQueryMap[K]['input'] }
 ): string {
   // We know entity name is a key of EntityQueryMap, force a cast type over it

@@ -25,7 +25,7 @@ export class SubsquidClient {
    * @param options - Configuration options for the client
    * @returns The Subsquid URL to use
    */
-  private getSubsquidUrl(options: SubsquidClientOptions): string {
+  private getSubsquidUrl (options: SubsquidClientOptions): string {
     if ('network' in options) {
       const networkUrl = NETWORK_CONFIG[options.network as keyof typeof NETWORK_CONFIG]
       if (!networkUrl) {
