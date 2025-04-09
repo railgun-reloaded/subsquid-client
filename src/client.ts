@@ -68,11 +68,23 @@ export class SubsquidClient {
       body: requestBody,
     })
 
+    const result = await response.json()
+
+    // Check for gql errors first
+    if (result.errors) {
+      const errorMessage = result.errors.map((e: { message: string }) => e.message).join('; ')
+      throw new Error(`GraphQL error: ${errorMessage}`)
+    }
+
+    // Check for fetch errors
     if (!response.ok) {
       throw new Error(`Network request failed: ${response.status} ${response.statusText}`)
     }
 
-    const result = await response.json()
+    if (!result.data) {
+      throw new Error('GraphQL response contains no data')
+    }
+
     return result.data as T
   }
 

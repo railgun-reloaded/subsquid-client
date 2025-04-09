@@ -36,6 +36,40 @@ describe('Subsquid Client', async (t) => {
 
   const client = new SubsquidClient({ network: 'ethereum' })
 
+  it('Should throw an error when GraphQL response contains errors from invalid syntax', async () => {
+    const invalidQuery = `
+      query {
+      }
+    `
+    await assert.rejects(
+      async () => await client.request(invalidQuery),
+      (error) => {
+        assert.ok(error instanceof Error)
+        assert.ok(error.message.includes('GraphQL error'))
+        assert.ok(error.message.includes('Syntax Error'))
+        return true
+      },
+      'Should throw an error when GraphQL response contains errors from invalid syntax'
+    )
+  })
+
+  it('Should throw an error when GraphQL response contains errors from invalid query', async () => {
+    const invalidQueryString = 'foo'
+    const invalidQuery = `
+      query { ${invalidQueryString} }
+    `
+    await assert.rejects(
+      async () => await client.request(invalidQuery),
+      (error) => {
+        assert.ok(error instanceof Error)
+        assert.ok(error.message.includes('GraphQL error'))
+        assert.ok(error.message.includes(`Cannot query field "${invalidQueryString}"`))
+        return true
+      },
+      'Should throw an error when GraphQL response contains errors from invalid query'
+    )
+  })
+
   it('Should execute basic query without filters', async () => {
     const { tokens } = await client.query({
       tokens: {
