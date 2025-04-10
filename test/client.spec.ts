@@ -42,11 +42,11 @@ describe('Subsquid Client', async (t) => {
       }
     `
     await assert.rejects(
-      async () => await client.request(invalidQuery),
+      async () => await client.request({ query: invalidQuery }),
       (error) => {
+        console.log(error.cause)
         assert.ok(error instanceof Error)
-        assert.ok(error.message.includes('GraphQL error'))
-        assert.ok(error.message.includes('Syntax Error'))
+        assert.ok(error.cause[0].message.includes('Syntax Error'))
         return true
       },
       'Should throw an error when GraphQL response contains errors from invalid syntax'
@@ -59,11 +59,10 @@ describe('Subsquid Client', async (t) => {
       query { ${invalidQueryString} }
     `
     await assert.rejects(
-      async () => await client.request(invalidQuery),
+      async () => await client.request({ query: invalidQuery }),
       (error) => {
         assert.ok(error instanceof Error)
-        assert.ok(error.message.includes('GraphQL error'))
-        assert.ok(error.message.includes(`Cannot query field "${invalidQueryString}"`))
+        assert.ok(error.cause[0].message.includes(`Cannot query field "${invalidQueryString}"`))
         return true
       },
       'Should throw an error when GraphQL response contains errors from invalid query'
@@ -323,7 +322,7 @@ describe('Subsquid Client', async (t) => {
         }
       `
 
-      const result = await client.request<{ tokens: any[] }>(query)
+      const result = await client.request({ query }) as { tokens: any[] }
 
       assert.ok(result, 'Result should exist')
       assert.ok(typeof result === 'object' && result !== null, 'Result should be an object')
@@ -365,7 +364,7 @@ describe('Subsquid Client', async (t) => {
         };
       }
 
-      const result = await client.request<SchemaType>(query)
+      const result = await client.request({ query }) as SchemaType
 
       assert.ok(result, 'Result should exist')
       assert.ok(typeof result === 'object' && result !== null, 'Result should be an object')
@@ -398,7 +397,7 @@ describe('Subsquid Client', async (t) => {
         }
       `
 
-      const result = await client.request(query)
+      const result = await client.request({ query })
       assert.ok(result, 'Mixed conditions query succeeded')
       assert.ok('tokens' in result, 'Result has tokens property')
 
@@ -433,7 +432,7 @@ describe('Subsquid Client', async (t) => {
         }
       `
 
-      const result = await client.request(query)
+      const result = await client.request({ query })
 
       assert.ok(result, 'Connection query should return a result')
       assert.ok('commitmentsConnection' in result, 'Result should have commitmentsConnection property')

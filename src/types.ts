@@ -29,11 +29,19 @@ type FilterValue<K extends keyof EntityQueryMap, F extends keyof EntityQueryMap[
 
 type FieldsArgs<K extends keyof EntityQueryMap> = keyof EntityQueryMap[K]['entity']
 
+type RequestOptions = {
+  query: string;
+  operationName?: string;
+  variables?: Record<string, any>;
+  extensions?: Record<string, any>;
+}
+
 export {
   type QueryInput,
   type QueryOutput,
   type FilterValue,
   type FieldsArgs,
   type EntityQueryMap,
-  type StrictQueryInput
+  type StrictQueryInput,
+  type RequestOptions,
 }
