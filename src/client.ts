@@ -1,7 +1,7 @@
 import type { SubsquidClientOptions } from './networks'
 import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
 import { queryBuilder } from './query-builder'
-import type { QueryInput, QueryOutput, StrictQueryInput } from './types'
+import type { QueryInput, QueryOutput, RequestOptions, StrictQueryInput } from './types'
 
 /**
  * Client for interacting with the Subsquid GraphQL API
@@ -55,11 +55,26 @@ export class SubsquidClient {
 
   /**
    * Generic request method for GraphQL queries using fetch with type safety
-   * @param query - The GraphQL query to execute
+   * @param query - The GraphQL query options
+   * @param query.query - The GraphQL query string to execute
+   * @param query.operationName - Optional name of the GraphQL operation
+   * @param query.variables - Optional variables to pass to the query
+   * @param query.extensions - Optional extensions to pass to the query
    * @returns Promise that resolves to the query result
    */
-  async request<T>(query: string): Promise<T> {
-    const requestBody = JSON.stringify({ query })
+  async request ({
+    query,
+    operationName,
+    variables,
+    extensions
+  }: RequestOptions): Promise<unknown> {
+    const requestBody = JSON.stringify({
+      query,
+      ...(operationName && { operationName }),
+      ...(variables && { variables }),
+      ...(extensions && { extensions })
+    })
+
     const response = await fetch(this.clientUrl, {
       method: 'POST',
       headers: {
@@ -70,22 +85,15 @@ export class SubsquidClient {
 
     const result = await response.json()
 
-    // Check for gql errors first
+    if (!response.ok && !result.errors) {
+      throw new Error(`Subsquid Request Error: ${response.status} ${response.statusText}`)
+    }
+
     if (result.errors) {
-      const errorMessage = result.errors.map((e: { message: string }) => e.message).join('; ')
-      throw new Error(`GraphQL error: ${errorMessage}`)
+      throw new Error('Subsquid GraphQL Error', { cause: result.errors })
     }
 
-    // Check for fetch errors
-    if (!response.ok) {
-      throw new Error(`Network request failed: ${response.status} ${response.statusText}`)
-    }
-
-    if (!result.data) {
-      throw new Error('GraphQL response contains no data')
-    }
-
-    return result.data as T
+    return result.data
   }
 
   /**
@@ -97,6 +105,7 @@ export class SubsquidClient {
     input: StrictQueryInput<T>
   ): Promise<QueryOutput<T>> {
     const queryStr = queryBuilder.build(input)
-    return this.request<QueryOutput<T>>(queryStr)
+    const result = await this.request({ query: queryStr })
+    return result as QueryOutput<T>
   }
 }
