@@ -12,25 +12,27 @@ npm install @railgun-reloaded/subsquid-client
 
 ### Supported Networks
 
-The SubsquidClient supports a predefined set of networks. To see the list of supported networks, use the SUPPORTED_NETWORKS static property:
+The SubsquidClient supports a predefined set of networks. To see the list of supported networks, use the SUPPORTED_NETWORKS export:
 
 ```ts
-import { SubsquidClient } from '@railgun-reloaded/subsquid-client';
+import { SUPPORTED_NETWORKS } from '@railgun-reloaded/subsquid-client';
 
-console.log(SubsquidClient.SUPPORTED_NETWORKS);
-// example output: ['ethereum', 'ethereumSepolia', 'bnbChain', 'polygon', 'arbitrum']
+console.log(SUPPORTED_NETWORKS);
+// example output: ['ethereum', 'ethereumSepolia', 'bsc', 'polygon', 'arbitrum']
 ```
 
-When initializing the client, provide one of these network names as a string. If an unsupported network is provided, an error will be thrown with the list of valid options.
+When initializing the client, you can either use a predefined network or provide a custom Subsquid URL.
 
 ### Basic Usage
 
 ```ts
-import { SubsquidClient } from '@railgun-reloaded/subsquid-client';
-import { TokenType } from '@railgun-reloaded/subsquid-client';
+import { SubsquidClient, TokenType } from '@railgun-reloaded/subsquid-client';
 
-// Initialize the client with a valid Subsquid Network
-const client = new SubsquidClient('ethereum');
+// Initialize the client with a predefined network
+const client = new SubsquidClient({ network: 'ethereum' });
+
+// Or initialize with a custom Subsquid URL
+const customClient = new SubsquidClient({ customSubsquidUrl: 'https://my-subsquid-api.example.com/graphql' });
 
 // Simple query for tokens with type-safety
 const { tokens } = await client.query({

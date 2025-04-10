@@ -1,5 +1,3 @@
 {
-  "extends": ["@railgun-reloaded/tsconfig/tsconfig"],
-  "include": ["src/**/*", "test/**/*.ts"],
-  "exclude": ["src/generated/**/*", "src/**/*.js", "test/**/*.js", "node_modules"]
+  "extends": ["@railgun-reloaded/tsconfig/tsconfig"]
 }

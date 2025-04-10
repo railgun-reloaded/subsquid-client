@@ -1,3 +1,2 @@
-src/
-*.ts
-!dist/*.d.ts
+!*.js
+
