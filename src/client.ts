@@ -70,9 +70,9 @@ export class SubsquidClient {
   }: RequestOptions): Promise<unknown> {
     const requestBody = JSON.stringify({
       query,
-      ...(operationName && { operationName }),
-      ...(variables && { variables }),
-      ...(extensions && { extensions })
+      operationName,
+      variables,
+      extensions
     })
 
     const response = await fetch(this.clientUrl, {
