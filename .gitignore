@@ -1,12 +1,4 @@
-# npm installed local dependencies
 node_modules
-src/**/*.js
-test/**/*.js
+*.js
 
-
-
-# Build files
 tsconfig.tsbuildinfo
-**/*.js
-
-**/*.d.ts
