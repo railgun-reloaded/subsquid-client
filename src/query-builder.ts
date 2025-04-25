@@ -91,6 +91,52 @@ function processFilter<K extends keyof EntityQueryMap, F extends keyof EntityQue
 }
 
 /**
+ * Processes a field for GraphQL query, handling nested objects
+ * @param key - The field to relate the subfields to
+ * @param subfields - The fields that come nested from the object, that are related to the `key`
+ * @returns Formatted GraphQL field string
+ */
+function processSubfields(key: string, subfields: string[]): string {
+  const processedSubfields = subfields.map(processField).join('\n          ')
+  return `${key} {\n          ${processedSubfields}\n        }`
+}
+
+/**
+ * Processes a field for GraphQL query, handling nested objects
+ * @param field - The field to process (string or object)
+ * @returns Formatted GraphQL field string
+ */
+function processField (field: string | Record<string, string[]>): string {
+  if (typeof field === 'string') {
+    return field
+  }
+
+  // If field is an object, it represents a nested selection
+  if (typeof field === 'object' && field !== null && !Array.isArray(field)) {
+    const entries = Object.entries(field)
+
+    console.log('Entries: ', entries)
+
+    if (entries.length === 0 || !entries[0]) {
+      return ''
+    }
+
+    const entry = entries[0]
+    const [key, subfields] = entry
+
+    if (Array.isArray(subfields)) {
+      console.log('subfields: ', subfields)
+      return processSubfields(key, subfields)
+    }
+
+    console.log('returning key: ', key)
+    return key
+  }
+
+  return String(field)
+}
+
+/**
  * Parse a single entity query from the input object
  * @param params - The parameters for parsing the entity query
  * @param params.entityName - The entity name (e.g., 'tokens')
@@ -103,6 +149,8 @@ function parseEntityQuery <K extends keyof EntityQueryMap> (
   // We know entity name is a key of EntityQueryMap, force a cast type over it
   const typedEntityName = entityName as keyof EntityQueryMap
   const fields = filters.fields as (FieldsArgs<typeof typedEntityName>)[]
+
+  console.log('parseEntityQuery fields: ', fields)
 
   // Check that query has actually some fields requested data, if not is not a valid gql query
   if (!fields || !Array.isArray(fields) || fields.length === 0) {
@@ -124,8 +172,13 @@ function parseEntityQuery <K extends keyof EntityQueryMap> (
   // Handle edge case: don't include empty parentheses when args is empty
   const filtersForQuery = filterArgs ? `(${filterArgs})` : ''
 
+  // Process fields, handling nested fields properly
+  const processedFields = fields.map(processField).join('\n    ')
+
+  console.log('parseEntityQuery processed fields; ', processedFields)
+
   const queryForEntity = `${String(entityName)}${filtersForQuery} {
-    ${fields.join('\n                ')}
+    ${processedFields}
   }`
 
   return queryForEntity
@@ -150,7 +203,7 @@ function build <T extends QueryInput> (input: T & Record<Exclude<keyof T, keyof 
           })
           return parsedQuery
         }).join('\n          ')}
-    }  
+    }
     `
   return queryStr
 }

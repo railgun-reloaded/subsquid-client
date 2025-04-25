@@ -19,15 +19,20 @@ type QueryOutput<T extends QueryInput> = {
     : EntityQueryMap[K]['output'];
 }
 
+// Define a recursive nested field type to support nested object selection
+type NestedField<K extends keyof EntityQueryMap> =
+  | keyof EntityQueryMap[K]['entity']
+  | { [P in keyof EntityQueryMap[K]['entity']]?: string[] }
+
 type FilterValue<K extends keyof EntityQueryMap, F extends keyof EntityQueryMap[K]['input']> =
-  F extends 'fields' ? (keyof EntityQueryMap[K]['entity'])[] :
+  F extends 'fields' ? NestedField<K>[] :
     F extends 'where' ? EntityQueryMap[K]['input'] extends { where?: infer W } ? W : Record<string, any> :
       F extends 'orderBy' ? EntityQueryMap[K]['input'] extends { orderBy?: infer O } ? O : string[] :
         F extends 'limit' | 'offset' | 'first' ? number :
           F extends 'after' ? string :
             unknown
 
-type FieldsArgs<K extends keyof EntityQueryMap> = keyof EntityQueryMap[K]['entity']
+type FieldsArgs<K extends keyof EntityQueryMap> = NestedField<K>
 
 type RequestOptions = {
   query: string;
