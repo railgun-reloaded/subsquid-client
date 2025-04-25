@@ -27,19 +27,22 @@ module.exports = <CodegenPlugin> {
      * @returns A string containing the TypeScript type definitions for preload operations.
      */
     function printPreloadTypes () {
+      const nestedFieldType = 'export type NestedField = string | { [fieldName: string]: NestedField[]; }'
+
+
       const addFieldsType =
-        'type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }'
+        'type AddFields<Args> = Args & { fields: NestedField[] }'
 
       const generateIOType =
         `type GenerateIO<
-          Key extends keyof Query, 
+          Key extends keyof Query,
           QueryArgs,
           Field = Query[Key],
           Entity = Field extends Array<infer IT1>
             ? IT1
             : Field extends Maybe<infer IT2>
               ? NonNullable<IT2>
-              : Field,            
+              : Field,
           Wrapper = Field extends Array<infer _>
             ? 'array'
             : Field extends Maybe<infer _>
@@ -47,11 +50,13 @@ module.exports = <CodegenPlugin> {
               : 'simple'
         > = {
           entity: Entity;
-          input: AddFields<QueryArgs, Entity>;
+          input: AddFields<QueryArgs>;
           output: Field;
           wrapper: Wrapper;
         }`
       return [
+        nestedFieldType,
+        '',
         addFieldsType,
         '',
         generateIOType

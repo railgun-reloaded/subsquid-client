@@ -2367,17 +2367,19 @@ export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
-type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
+export type NestedField = string | { [fieldName: string]: NestedField[]; }
+
+type AddFields<Args> = Args & { fields: NestedField[] }
 
 type GenerateIO<
-          Key extends keyof Query, 
+          Key extends keyof Query,
           QueryArgs,
           Field = Query[Key],
           Entity = Field extends Array<infer IT1>
             ? IT1
             : Field extends Maybe<infer IT2>
               ? NonNullable<IT2>
-              : Field,            
+              : Field,
           Wrapper = Field extends Array<infer _>
             ? 'array'
             : Field extends Maybe<infer _>
@@ -2385,7 +2387,7 @@ type GenerateIO<
               : 'simple'
         > = {
           entity: Entity;
-          input: AddFields<QueryArgs, Entity>;
+          input: AddFields<QueryArgs>;
           output: Field;
           wrapper: Wrapper;
         }

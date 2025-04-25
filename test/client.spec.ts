@@ -203,6 +203,43 @@ describe('Subsquid Client', async (t) => {
     }
   })
 
+
+  it('Should query with nested objects inside fields', async () => {
+    const client = new SubsquidClient({ network: 'ethereum' })
+    assert.ok(client instanceof SubsquidClient)
+
+    const { unshields } = await client.query({
+      unshields: {
+        fields: [
+          'id',
+          { token: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] },
+          'amount',
+          'blockNumber'
+        ],
+        limit: 5,
+      }
+    })
+
+    assert.ok(Array.isArray(unshields), 'unshields should be an array')
+
+    if (unshields.length > 0) {
+      const firstUnshield = unshields[0]
+      assert.ok(firstUnshield !== null && typeof firstUnshield === 'object', 'Each item in unshields should be an object')
+      assert.ok('id' in firstUnshield, 'Unshield object should have id field')
+      assert.ok('amount' in firstUnshield, 'Unshield object should have amount field')
+      assert.ok('blockNumber' in firstUnshield, 'Unshield object should have blockNumber field')
+
+      assert.ok('token' in firstUnshield, 'Unshield object should have token field')
+      assert.ok(firstUnshield.token !== null && typeof firstUnshield.token === 'object', 'token field should be an object')
+
+      const token = firstUnshield.token
+      assert.ok('id' in token, 'Token object should have id field')
+      assert.ok('tokenType' in token, 'Token object should have tokenType field')
+      assert.ok('tokenAddress' in token, 'Token object should have tokenAddress field')
+      assert.ok('tokenSubID' in token, 'Token object should have tokenSubID field')
+    }
+  })
+
   it('Should query with OR conditions', async () => {
     try {
       const { tokens } = await client.query(

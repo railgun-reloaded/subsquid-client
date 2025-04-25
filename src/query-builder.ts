@@ -1,4 +1,4 @@
-import type { EntityQueryMap, FieldsArgs, FilterValue, QueryInput } from './types'
+import type { EntityQueryMap, FilterValue, NestedField, QueryInput } from './types'
 
 /**
  * Converts a JSON object to a GraphQL arguments string
@@ -92,21 +92,10 @@ function processFilter<K extends keyof EntityQueryMap, F extends keyof EntityQue
 
 /**
  * Processes a field for GraphQL query, handling nested objects
- * @param key - The field to relate the subfields to
- * @param subfields - The fields that come nested from the object, that are related to the `key`
- * @returns Formatted GraphQL field string
- */
-function processSubfields(key: string, subfields: string[]): string {
-  const processedSubfields = subfields.map(processField).join('\n          ')
-  return `${key} {\n          ${processedSubfields}\n        }`
-}
-
-/**
- * Processes a field for GraphQL query, handling nested objects
  * @param field - The field to process (string or object)
  * @returns Formatted GraphQL field string
  */
-function processField (field: string | Record<string, string[]>): string {
+function processField (field: NestedField): string {
   if (typeof field === 'string') {
     return field
   }
@@ -117,22 +106,23 @@ function processField (field: string | Record<string, string[]>): string {
 
     console.log('Entries: ', entries)
 
-    if (entries.length === 0 || !entries[0]) {
+    if (entries.length !== 1) {
+      console.warn('Unexpected object structure in fields array - expected single key:', field)
       return ''
     }
 
-    const entry = entries[0]
-    const [key, subfields] = entry
-
-    if (Array.isArray(subfields)) {
-      console.log('subfields: ', subfields)
-      return processSubfields(key, subfields)
+    const [fieldName, subfieldsArray] = entries[0] as [string, NestedField[]]
+    if (!Array.isArray(subfieldsArray)) {
+      console.warn('Subfields value must be an array for nested field:', subfieldsArray)
+      return ''
     }
 
-    console.log('returning key: ', key)
-    return key
+    const processedSubfields = subfieldsArray.map(processField).join('\n          ') // Recursive call
+
+    return `${fieldName} {\n          ${processedSubfields}\n        }`
   }
 
+  console.warn('Unexpected field type in fields array - expected string or nested object:', field)
   return String(field)
 }
 
@@ -146,22 +136,22 @@ function processField (field: string | Record<string, string[]>): string {
 function parseEntityQuery <K extends keyof EntityQueryMap> (
   { entityName, filters }: { entityName: K, filters: EntityQueryMap[K]['input'] }
 ): string {
-  // We know entity name is a key of EntityQueryMap, force a cast type over it
   const typedEntityName = entityName as keyof EntityQueryMap
-  const fields = filters.fields as (FieldsArgs<typeof typedEntityName>)[]
+  const fields = filters.fields
 
   console.log('parseEntityQuery fields: ', fields)
 
-  // Check that query has actually some fields requested data, if not is not a valid gql query
   if (!fields || !Array.isArray(fields) || fields.length === 0) {
     throw new Error(`Query can't have empty return data for entity ${String(typedEntityName)}`)
   }
 
   const filterArgs = Object.entries(filters)
-    .filter(([name, _value]) => name !== 'fields') // Fields is handled separately from the rest
+    .filter(([name, _value]) => name !== 'fields')
     .reduce((acc: string[], [name, value]) => {
-      const argName = name as keyof EntityQueryMap[typeof typedEntityName]['input'] // type the argument name, some queries do not allow doing where or other filters, so we need to type it
-      const argValues = value as FilterValue<typeof typedEntityName, keyof EntityQueryMap[typeof typedEntityName]['input']>
+      const argName = name as keyof EntityQueryMap[typeof typedEntityName]['input']
+      // Ensure correct type for FilterValue, though this wasn't the source of the error
+      const argValues = value as FilterValue<typeof typedEntityName, typeof argName>
+
 
       const processed = processFilter(typedEntityName, argName, argValues)
       if (processed) acc.push(processed)
@@ -169,13 +159,12 @@ function parseEntityQuery <K extends keyof EntityQueryMap> (
       return acc
     }, [])
     .join(', ')
-  // Handle edge case: don't include empty parentheses when args is empty
+
   const filtersForQuery = filterArgs ? `(${filterArgs})` : ''
 
-  // Process fields, handling nested fields properly
   const processedFields = fields.map(processField).join('\n    ')
 
-  console.log('parseEntityQuery processed fields; ', processedFields)
+  console.log('parseEntityQuery processed fields: ', processedFields)
 
   const queryForEntity = `${String(entityName)}${filtersForQuery} {
     ${processedFields}
