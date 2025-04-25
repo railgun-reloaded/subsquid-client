@@ -47,7 +47,7 @@ describe('nested query scenario', async () => {
     }
   })
 
-  it('should do a correct query for more than one nested field inside a query,' async () => {
+  it('should do a correct query for more than one nested field inside a query', async () => {
     const client = new SubsquidClient({ network: 'ethereum' })
     assert.ok(client instanceof SubsquidClient)
 
@@ -61,7 +61,8 @@ describe('nested query scenario', async () => {
           'blockNumber'
         ],
         limit: 5,
-      },
+      }
     })
-  });
+  })
+
 })
