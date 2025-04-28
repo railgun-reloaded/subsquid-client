@@ -1,4 +1,4 @@
-import type { EntityQueryMap, FilterValue, NestedField, QueryInput } from './types'
+import type { EntityQueryMap, FilterValue, QueryInput } from './types'
 
 /**
  * Converts a JSON object to a GraphQL arguments string
@@ -95,7 +95,7 @@ function processFilter<K extends keyof EntityQueryMap, F extends keyof EntityQue
  * @param field - The field to process (string or object)
  * @returns Formatted GraphQL field string
  */
-function processField (field: NestedField): string {
+function processField (field): string {
   if (typeof field === 'string') {
     return field
   }
@@ -111,7 +111,7 @@ function processField (field: NestedField): string {
       return ''
     }
 
-    const [fieldName, subfieldsArray] = entries[0] as [string, NestedField[]]
+    const [fieldName, subfieldsArray] = entries[0]
     if (!Array.isArray(subfieldsArray)) {
       console.warn('Subfields value must be an array for nested field:', subfieldsArray)
       return ''

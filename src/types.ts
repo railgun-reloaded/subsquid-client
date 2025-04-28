@@ -1,13 +1,4 @@
-import type { EntityQueryMap, NestedField } from './generated/types'
-
-type Primitive =
-    | null
-    | undefined
-    | string
-    | number
-    | boolean
-    | symbol
-    | bigint
+import type { EntityQueryMap } from './generated/types'
 
 type QueryInput = {
   [K in keyof EntityQueryMap]?: EntityQueryMap[K]['input'];
@@ -18,8 +9,6 @@ type ExtractFields<T, F extends (keyof T)[] | undefined> = F extends (keyof T)[]
   : T
 
 type StrictQueryInput<T extends QueryInput> = T & Record<Exclude<keyof T, keyof EntityQueryMap>, never>
-
-type FieldsArgs = NestedField
 
 // These types are for internal use and shouldn't be exported in index.ts
 type QueryOutput<T extends QueryInput> = {
@@ -50,9 +39,7 @@ export {
   type QueryInput,
   type QueryOutput, // @@ TODO: Fix this, its still using old types
   type FilterValue,
-  type FieldsArgs,
   type EntityQueryMap,
   type StrictQueryInput,
-  type RequestOptions,
-  type NestedField,
+  type RequestOptions
 }
