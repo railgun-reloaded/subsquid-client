@@ -2367,9 +2367,23 @@ export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
-export type NestedField = string | { [fieldName: string]: NestedField[]; }
 
-type AddFields<Args> = Args & { fields: NestedField[] }
+        type Primitive =
+            | null
+            | undefined
+            | string
+            | number
+            | boolean
+            | symbol
+            | bigint
+
+type FieldSelector<Entity> = {
+        [Key in keyof Entity]: Entity[Key] extends Primitive
+          ? Key
+          : { [NestedEentityKey in Key]: FieldSelector<Entity[Key]>[] }
+      }[keyof Entity]
+
+type AddFields<Args, TypeFields> = Args & { fields: FieldSelector<TypeFields>[] }
 
 type GenerateIO<
           Key extends keyof Query,

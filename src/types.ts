@@ -1,5 +1,14 @@
 import type { EntityQueryMap, NestedField } from './generated/types'
 
+type Primitive =
+    | null
+    | undefined
+    | string
+    | number
+    | boolean
+    | symbol
+    | bigint
+
 type QueryInput = {
   [K in keyof EntityQueryMap]?: EntityQueryMap[K]['input'];
 }
