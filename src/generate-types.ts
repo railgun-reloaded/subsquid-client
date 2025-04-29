@@ -36,17 +36,16 @@ module.exports = <CodegenPlugin> {
             | boolean
             | symbol
             | bigint`
-      const fieldSelectorType = `type FieldSelector<Entity> = {
-              [Key in keyof Entity]-?:
-                Entity[Key] extends (infer ItemType)[]
-                  ? ItemType extends Primitive
-                    ? Key
-                    : { [P in Key]: FieldSelector<ItemType>[] }
-                  : Entity[Key] extends Primitive
-                    ? Key
-                    : { [P in Key]:
-            }[keyof Entity];
-            ` // End of corrected FieldSelector type string
+      const fieldSelectorType = `export type FieldSelector<Entity> = {
+                   [Key in keyof Entity]-?:
+                     Entity[Key] extends (infer ItemType)[]
+                       ? ItemType extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<ItemType>[] }
+                       : Entity[Key] extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<Entity[Key]>[] }
+                 } [keyof Entity];`
       const addFieldsType =
         'type AddFields<Args, TypeFields> = Args & { fields: FieldSelector<TypeFields>[] }'
 

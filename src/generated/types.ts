@@ -2377,17 +2377,16 @@ export type WhereIdInput = {
             | symbol
             | bigint
 
-type FieldSelector<Entity> = {
-              [Key in keyof Entity]-?:
-                Entity[Key] extends (infer ItemType)[]
-                  ? ItemType extends Primitive
-                    ? Key
-                    : { [P in Key]: FieldSelector<ItemType>[] }
-                  : Entity[Key] extends Primitive
-                    ? Key
-                    : { [P in Key]:
-            }[keyof Entity];
-            
+export type FieldSelector<Entity> = {
+                   [Key in keyof Entity]-?:
+                     Entity[Key] extends (infer ItemType)[]
+                       ? ItemType extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<ItemType>[] }
+                       : Entity[Key] extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<Entity[Key]>[] }
+                 } [keyof Entity];
 
 type AddFields<Args, TypeFields> = Args & { fields: FieldSelector<TypeFields>[] }
 

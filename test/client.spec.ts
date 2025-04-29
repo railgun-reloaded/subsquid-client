@@ -203,7 +203,6 @@ describe('Subsquid Client', async (t) => {
     }
   })
 
-
   it('Should query with nested objects inside fields', async () => {
     const client = new SubsquidClient({ network: 'ethereum' })
     assert.ok(client instanceof SubsquidClient)

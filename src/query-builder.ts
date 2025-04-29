@@ -1,3 +1,4 @@
+import type { FieldSelector } from './generated/types'
 import type { EntityQueryMap, FilterValue, QueryInput } from './types'
 
 /**
@@ -92,10 +93,10 @@ function processFilter<K extends keyof EntityQueryMap, F extends keyof EntityQue
 
 /**
  * Processes a field for GraphQL query, handling nested objects
- * @param field - The field to process (string or object)
+ * @param field - The field to process (string or object, matching FieldSelector structure)
  * @returns Formatted GraphQL field string
  */
-function processField (field): string {
+function processField (field: FieldSelector<any>): string {
   if (typeof field === 'string') {
     return field
   }
@@ -104,54 +105,68 @@ function processField (field): string {
   if (typeof field === 'object' && field !== null && !Array.isArray(field)) {
     const entries = Object.entries(field)
 
-    console.log('Entries: ', entries)
+    // Check if there is exactly one entry AND that entry exists.
+    // This combined check helps TypeScript understand the structure.
+    if (entries.length === 1 && entries[0] !== undefined) { // <-- Check entries[0] !== undefined explicitly
+      const [fieldName, subfieldsValue] = entries[0] // Destructuring is now safe
 
-    if (entries.length !== 1) {
+      // Ensure the value for the nested field is an array of sub-selectors
+      // This aligns with the structure of FieldSelector for nested fields: { [Key]: FieldSelector<...>[] }
+      if (Array.isArray(subfieldsValue)) {
+        // Process the subfields recursively
+        // Cast subfieldsValue to Array<FieldSelector<any>> for processField's argument type
+        const processedSubfields = (subfieldsValue as FieldSelector<any>[]).map(processField).join('\n          ') // Recursive call
+
+        return `${fieldName} {\n          ${processedSubfields}\n        }`
+      } else {
+        // This case indicates an object key exists, but its value isn't an array as expected by FieldSelector for nested fields
+        console.warn(`Subfields value for nested field "${fieldName}" must be an array:`, subfieldsValue)
+        return '' // Return empty string or throw an error for invalid structure
+      }
+    } else {
+      // Handles cases where the object is empty, has multiple keys, or entries[0] was undefined somehow
       console.warn('Unexpected object structure in fields array - expected single key:', field)
-      return ''
+      return '' // Return empty string or throw an error for invalid structure
     }
-
-    const [fieldName, subfieldsArray] = entries[0]
-    if (!Array.isArray(subfieldsArray)) {
-      console.warn('Subfields value must be an array for nested field:', subfieldsArray)
-      return ''
-    }
-
-    const processedSubfields = subfieldsArray.map(processField).join('\n          ') // Recursive call
-
-    return `${fieldName} {\n          ${processedSubfields}\n        }`
   }
 
+  // This warning indicates an input that doesn't match the expected FieldSelector structure (string or simple object).
   console.warn('Unexpected field type in fields array - expected string or nested object:', field)
-  return String(field)
+  return String(field) // Fallback, though strong typing should ideally prevent this path
 }
 
 /**
  * Parse a single entity query from the input object
  * @param params - The parameters for parsing the entity query
  * @param params.entityName - The entity name (e.g., 'tokens')
- * @param params.filters - The filters for the entity
+ * @param params.filters - The filters for the entity. Note: filters.fields is the raw input, which can be FieldSelector<Entity>[] or readonly FieldSelector<Entity>[] (when 'as const' is used). The builder only needs the general array type for processing.
  * @returns Formatted GraphQL query string
  */
 function parseEntityQuery <K extends keyof EntityQueryMap> (
   { entityName, filters }: { entityName: K, filters: EntityQueryMap[K]['input'] }
 ): string {
   const typedEntityName = entityName as keyof EntityQueryMap
-  const fields = filters.fields
 
-  console.log('parseEntityQuery fields: ', fields)
+  // Ensure filters and fields exist and are an array.
+  // Cast filters.fields to the general FieldSelector<any>[] array type expected by processField.
+  const fields = filters?.fields as FieldSelector<any>[]
+
+  // console.log('parseEntityQuery fields: ', fields) // Keep or remove console logs
 
   if (!fields || !Array.isArray(fields) || fields.length === 0) {
-    throw new Error(`Query can't have empty return data for entity ${String(typedEntityName)}`)
+    // Update error message for clarity
+    throw new Error(`Query for entity "${String(typedEntityName)}" must specify at least one field in the 'fields' array.`)
   }
 
-  const filterArgs = Object.entries(filters)
+  const filterArgs = Object.entries(filters || {}) // Use filters || {} to safely iterate if filters is null/undefined
+    // Filter out the 'fields' property as it's handled separately
     .filter(([name, _value]) => name !== 'fields')
     .reduce((acc: string[], [name, value]) => {
+      // Cast name to the expected keyof type for FilterValue
       const argName = name as keyof EntityQueryMap[typeof typedEntityName]['input']
-      // Ensure correct type for FilterValue, though this wasn't the source of the error
-      const argValues = value as FilterValue<typeof typedEntityName, typeof argName>
 
+      // Pass value as FilterValue type for processFilter
+      const argValues = value as FilterValue<typeof typedEntityName, typeof argName>
 
       const processed = processFilter(typedEntityName, argName, argValues)
       if (processed) acc.push(processed)
@@ -164,7 +179,7 @@ function parseEntityQuery <K extends keyof EntityQueryMap> (
 
   const processedFields = fields.map(processField).join('\n    ')
 
-  console.log('parseEntityQuery processed fields: ', processedFields)
+  // console.log('parseEntityQuery processed fields: ', processedFields) // Keep or remove console logs
 
   const queryForEntity = `${String(entityName)}${filtersForQuery} {
     ${processedFields}
@@ -174,21 +189,41 @@ function parseEntityQuery <K extends keyof EntityQueryMap> (
 }
 
 /**
- * Builds a complete GraphQL query string from the input
- * @param input - The query input to build
- * @returns A complete GraphQL query string
+ * Builds a complete GraphQL query string from the input object containing one or more entity queries.
+ * @param input - The query input object. Should have keys that are valid EntityQueryMap keys.
+ * @returns A complete GraphQL query string.
  */
 function build <T extends QueryInput> (input: T & Record<Exclude<keyof T, keyof QueryInput>, never>): string {
-  const entities = Object.entries(input)
+  // Get the entries and assert their type for safety
+  const entities = Object.entries(input) as Array<[keyof T & keyof EntityQueryMap, T[keyof T & keyof EntityQueryMap]]>
+
+  if (entities.length === 0) {
+    throw new Error('Query input must contain at least one entity query.')
+  }
+
   const queryStr = `
     query {
       ${entities
         .map(([entity, filtersForQuery]) => {
+          // These casts are redundant after the Array<[keyof T & keyof EntityQueryMap, ...]> assertion,
+          // but keep for clarity on what these variables represent.
           const entityName = entity as keyof EntityQueryMap
           const filters = filtersForQuery as EntityQueryMap[typeof entityName]['input']
+
+          // The parseEntityQuery function expects `filters` to be non-null/undefined.
+          // The QueryInput type allows the value to be undefined, although typically it would be an object.
+          // We should ideally ensure filtersForQuery is an object before passing, or
+          // update parseEntityQuery to handle filters being undefined (less likely based on usage).
+          // Given the QueryInput definition `{ [K]?: EntityQueryMap[K]['input'] }`, filtersForQuery can be undefined.
+          // Let's adjust parseEntityQuery signature slightly or add a check here.
+          // Adjusting parseEntityQuery seems better. Let's make its input type allow undefined filters.
+           if (!filters) {
+                throw new Error(`Filters object is missing or undefined for entity "${String(entityName)}". Did you forget to provide the query object { fields: [...], ... }?`)
+           }
+
           const parsedQuery = parseEntityQuery({
             entityName,
-            filters
+            filters // Now we know filters is defined here
           })
           return parsedQuery
         }).join('\n          ')}
