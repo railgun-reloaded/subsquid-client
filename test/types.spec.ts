@@ -3,7 +3,7 @@ import { describe, it } from 'node:test'
 
 import { SubsquidClient } from '../src/client'
 
-describe('Subsquid Client', async (t) => {
+describe('Subsquid Client', async (_t) => {
   it('Should initialize with valid network config', async () => {
     const client = new SubsquidClient({ network: 'ethereum' })
     assert.ok(client instanceof SubsquidClient)
@@ -17,15 +17,9 @@ describe('Subsquid Client', async (t) => {
         ] as const
       }
     })
-
-
-
-
-
-
-
-
-    const { unshields } = response;
-
+    const expectedLength = 34396
+    const { unshields } = response
+    console.log('response: ', unshields.length)
+    assert.ok(unshields.length >= expectedLength)
   })
 })
