@@ -2403,7 +2403,7 @@ type GenerateIO<
             ? 'array'
             : Field extends Maybe<infer _>
               ? 'maybe'
-              : 'simple'
+            : 'simple'
         > = {
           entity: Entity;
           input: AddFields<QueryArgs, Entity>;
@@ -2472,3 +2472,284 @@ export type EntityQueryMap = {
   verificationHashes: GenerateIO<'verificationHashes', QueryVerificationHashesArgs>
   verificationHashesConnection: GenerateIO<'verificationHashesConnection', QueryVerificationHashesConnectionArgs>
       }
+
+export type TypeNameToType = {
+  'BigInt': BigInt;
+  'Boolean': Boolean;
+  'Bytes': Bytes;
+  'Ciphertext': Ciphertext;
+  'CiphertextEdge': CiphertextEdge;
+  'CiphertextOrderByInput': CiphertextOrderByInput;
+  'CiphertextWhereInput': CiphertextWhereInput;
+  'CiphertextsConnection': CiphertextsConnection;
+  'Commitment': Commitment;
+  'CommitmentBatchEventNew': CommitmentBatchEventNew;
+  'CommitmentBatchEventNewEdge': CommitmentBatchEventNewEdge;
+  'CommitmentBatchEventNewOrderByInput': CommitmentBatchEventNewOrderByInput;
+  'CommitmentBatchEventNewWhereInput': CommitmentBatchEventNewWhereInput;
+  'CommitmentBatchEventNewsConnection': CommitmentBatchEventNewsConnection;
+  'CommitmentCiphertext': CommitmentCiphertext;
+  'CommitmentCiphertextEdge': CommitmentCiphertextEdge;
+  'CommitmentCiphertextOrderByInput': CommitmentCiphertextOrderByInput;
+  'CommitmentCiphertextWhereInput': CommitmentCiphertextWhereInput;
+  'CommitmentCiphertextsConnection': CommitmentCiphertextsConnection;
+  'CommitmentEdge': CommitmentEdge;
+  'CommitmentOrderByInput': CommitmentOrderByInput;
+  'CommitmentPreimage': CommitmentPreimage;
+  'CommitmentPreimageEdge': CommitmentPreimageEdge;
+  'CommitmentPreimageOrderByInput': CommitmentPreimageOrderByInput;
+  'CommitmentPreimageWhereInput': CommitmentPreimageWhereInput;
+  'CommitmentPreimagesConnection': CommitmentPreimagesConnection;
+  'CommitmentType': CommitmentType;
+  'CommitmentWhereInput': CommitmentWhereInput;
+  'CommitmentsConnection': CommitmentsConnection;
+  'Int': Int;
+  'LegacyCommitmentCiphertext': LegacyCommitmentCiphertext;
+  'LegacyCommitmentCiphertextEdge': LegacyCommitmentCiphertextEdge;
+  'LegacyCommitmentCiphertextOrderByInput': LegacyCommitmentCiphertextOrderByInput;
+  'LegacyCommitmentCiphertextWhereInput': LegacyCommitmentCiphertextWhereInput;
+  'LegacyCommitmentCiphertextsConnection': LegacyCommitmentCiphertextsConnection;
+  'LegacyEncryptedCommitment': LegacyEncryptedCommitment;
+  'LegacyEncryptedCommitmentEdge': LegacyEncryptedCommitmentEdge;
+  'LegacyEncryptedCommitmentOrderByInput': LegacyEncryptedCommitmentOrderByInput;
+  'LegacyEncryptedCommitmentWhereInput': LegacyEncryptedCommitmentWhereInput;
+  'LegacyEncryptedCommitmentsConnection': LegacyEncryptedCommitmentsConnection;
+  'LegacyGeneratedCommitment': LegacyGeneratedCommitment;
+  'LegacyGeneratedCommitmentEdge': LegacyGeneratedCommitmentEdge;
+  'LegacyGeneratedCommitmentOrderByInput': LegacyGeneratedCommitmentOrderByInput;
+  'LegacyGeneratedCommitmentWhereInput': LegacyGeneratedCommitmentWhereInput;
+  'LegacyGeneratedCommitmentsConnection': LegacyGeneratedCommitmentsConnection;
+  'Nullifier': Nullifier;
+  'NullifierEdge': NullifierEdge;
+  'NullifierOrderByInput': NullifierOrderByInput;
+  'NullifierWhereInput': NullifierWhereInput;
+  'NullifiersConnection': NullifiersConnection;
+  'PageInfo': PageInfo;
+  'Query': Query;
+  'ShieldCommitment': ShieldCommitment;
+  'ShieldCommitmentEdge': ShieldCommitmentEdge;
+  'ShieldCommitmentOrderByInput': ShieldCommitmentOrderByInput;
+  'ShieldCommitmentWhereInput': ShieldCommitmentWhereInput;
+  'ShieldCommitmentsConnection': ShieldCommitmentsConnection;
+  'SquidStatus': SquidStatus;
+  'String': String;
+  'Token': Token;
+  'TokenEdge': TokenEdge;
+  'TokenOrderByInput': TokenOrderByInput;
+  'TokenType': TokenType;
+  'TokenWhereInput': TokenWhereInput;
+  'TokensConnection': TokensConnection;
+  'TransactCommitment': TransactCommitment;
+  'TransactCommitmentEdge': TransactCommitmentEdge;
+  'TransactCommitmentOrderByInput': TransactCommitmentOrderByInput;
+  'TransactCommitmentWhereInput': TransactCommitmentWhereInput;
+  'TransactCommitmentsConnection': TransactCommitmentsConnection;
+  'Transaction': Transaction;
+  'TransactionEdge': TransactionEdge;
+  'TransactionInterface': TransactionInterface;
+  'TransactionOrderByInput': TransactionOrderByInput;
+  'TransactionWhereInput': TransactionWhereInput;
+  'TransactionsConnection': TransactionsConnection;
+  'Unshield': Unshield;
+  'UnshieldEdge': UnshieldEdge;
+  'UnshieldOrderByInput': UnshieldOrderByInput;
+  'UnshieldWhereInput': UnshieldWhereInput;
+  'UnshieldsConnection': UnshieldsConnection;
+  'VerificationHash': VerificationHash;
+  'VerificationHashEdge': VerificationHashEdge;
+  'VerificationHashOrderByInput': VerificationHashOrderByInput;
+  'VerificationHashWhereInput': VerificationHashWhereInput;
+  'VerificationHashesConnection': VerificationHashesConnection;
+  'WhereIdInput': WhereIdInput;
+};
+
+export type InterfaceImplementorsMap = {
+  'Commitment': 'LegacyEncryptedCommitment' | 'LegacyGeneratedCommitment' | 'ShieldCommitment' | 'TransactCommitment';
+  'TransactionInterface': 'Transaction';
+};
+
+type FragmentKeyToType = {
+  `... on LegacyEncryptedCommitment`: 'LegacyEncryptedCommitment';
+  `... on LegacyGeneratedCommitment`: 'LegacyGeneratedCommitment';
+  `... on ShieldCommitment`: 'ShieldCommitment';
+  `... on TransactCommitment`: 'TransactCommitment';
+  `... on Transaction`: 'Transaction';
+};
+
+export type CommitmentFragmentsInput = { readonly `... on LegacyEncryptedCommitment`: readonly FieldSelector<TypeNameToType['LegacyEncryptedCommitment']>[] }
+  | { readonly `... on LegacyGeneratedCommitment`: readonly FieldSelector<TypeNameToType['LegacyGeneratedCommitment']>[] }
+  | { readonly `... on ShieldCommitment`: readonly FieldSelector<TypeNameToType['ShieldCommitment']>[] }
+  | { readonly `... on TransactCommitment`: readonly FieldSelector<TypeNameToType['TransactCommitment']>[] };
+
+export type TransactionInterfaceFragmentsInput = { readonly `... on Transaction`: readonly FieldSelector<TypeNameToType['Transaction']>[] };
+
+
+type ProcessSingleSelection<
+  Item extends FieldSelector<any>,
+  TargetEntity
+> =
+  Item extends string
+    ? Item extends keyof TargetEntity
+      ? Pick<TargetEntity, Item>
+      : never
+    : Item extends object
+      ? keyof Item extends infer Key extends string
+        ? Item[Key] extends readonly infer Subitems extends readonly FieldSelector<any>[]
+          ? Key extends keyof FragmentKeyToType
+            ? FragmentKeyToType[Key] extends infer FragmentTargetEntityName extends keyof TypeNameToType
+              ? TargetEntity extends TypeNameToType[FragmentTargetEntityName]
+                ? BuildSelectedShape<Subitems, TargetEntity>
+                : never
+              : never
+            : Key extends keyof TargetEntity
+              ? TargetEntity[Key] extends (infer NestedItemType)[]
+                ? { readonly [P in Key]: readonly BuildSelectedShape<Subitems, NestedItemType>[] }
+                : { readonly [P in Key]: BuildSelectedShape<TargetEntity[Key], Subitems> }
+              : never
+          : never
+        : never
+      : never;
+
+type BuildSelectedShape<
+  Selections extends readonly FieldSelector<any>[],
+  TargetEntity
+> =
+  Selections extends readonly [infer Head extends FieldSelector<any>, ...infer Tail extends readonly FieldSelector<any>[]]
+    ? ProcessSingleSelection<Head, TargetEntity> & (Tail extends readonly FieldSelector<any>[] ? BuildSelectedShape<Tail, TargetEntity> : {})
+    : {};
+
+
+
+type BuildDiscriminatedUnionOutput<
+  InterfaceName extends keyof InterfaceImplementorsMap,
+  Selections extends readonly FieldSelector<any>[]
+> = InterfaceImplementorsMap[InterfaceName] extends infer ImplementorName extends keyof TypeNameToType
+    ? TypeNameToType[ImplementorName] extends infer ImplementorType
+      ? BuildSelectedShape<Selections, ImplementorType> & { readonly __typename: ImplementorName }
+      : never
+    : never;
+
+
+export type QueryFieldsInputMap = {
+  'ciphertextById': readonly FieldSelector<TypeNameToType['Ciphertext']>[],
+  'ciphertextByUniqueInput': readonly FieldSelector<TypeNameToType['Ciphertext']>[],
+  'ciphertexts': readonly FieldSelector<TypeNameToType['Ciphertext']>[],
+  'ciphertextsConnection': readonly FieldSelector<TypeNameToType['CiphertextsConnection']>[],
+  'commitmentBatchEventNewById': readonly FieldSelector<TypeNameToType['CommitmentBatchEventNew']>[],
+  'commitmentBatchEventNewByUniqueInput': readonly FieldSelector<TypeNameToType['CommitmentBatchEventNew']>[],
+  'commitmentBatchEventNews': readonly FieldSelector<TypeNameToType['CommitmentBatchEventNew']>[],
+  'commitmentBatchEventNewsConnection': readonly FieldSelector<TypeNameToType['CommitmentBatchEventNewsConnection']>[],
+  'commitmentCiphertextById': readonly FieldSelector<TypeNameToType['CommitmentCiphertext']>[],
+  'commitmentCiphertextByUniqueInput': readonly FieldSelector<TypeNameToType['CommitmentCiphertext']>[],
+  'commitmentCiphertexts': readonly FieldSelector<TypeNameToType['CommitmentCiphertext']>[],
+  'commitmentCiphertextsConnection': readonly FieldSelector<TypeNameToType['CommitmentCiphertextsConnection']>[],
+  'commitmentPreimageById': readonly FieldSelector<TypeNameToType['CommitmentPreimage']>[],
+  'commitmentPreimageByUniqueInput': readonly FieldSelector<TypeNameToType['CommitmentPreimage']>[],
+  'commitmentPreimages': readonly FieldSelector<TypeNameToType['CommitmentPreimage']>[],
+  'commitmentPreimagesConnection': readonly FieldSelector<TypeNameToType['CommitmentPreimagesConnection']>[],
+  'commitments': readonly (FieldSelector<TypeNameToType['Commitment']> | CommitmentFragmentsInput)[],
+  'commitmentsConnection': readonly FieldSelector<TypeNameToType['CommitmentsConnection']>[],
+  'legacyCommitmentCiphertextById': readonly FieldSelector<TypeNameToType['LegacyCommitmentCiphertext']>[],
+  'legacyCommitmentCiphertextByUniqueInput': readonly FieldSelector<TypeNameToType['LegacyCommitmentCiphertext']>[],
+  'legacyCommitmentCiphertexts': readonly FieldSelector<TypeNameToType['LegacyCommitmentCiphertext']>[],
+  'legacyCommitmentCiphertextsConnection': readonly FieldSelector<TypeNameToType['LegacyCommitmentCiphertextsConnection']>[],
+  'legacyEncryptedCommitmentById': readonly FieldSelector<TypeNameToType['LegacyEncryptedCommitment']>[],
+  'legacyEncryptedCommitmentByUniqueInput': readonly FieldSelector<TypeNameToType['LegacyEncryptedCommitment']>[],
+  'legacyEncryptedCommitments': readonly FieldSelector<TypeNameToType['LegacyEncryptedCommitment']>[],
+  'legacyEncryptedCommitmentsConnection': readonly FieldSelector<TypeNameToType['LegacyEncryptedCommitmentsConnection']>[],
+  'legacyGeneratedCommitmentById': readonly FieldSelector<TypeNameToType['LegacyGeneratedCommitment']>[],
+  'legacyGeneratedCommitmentByUniqueInput': readonly FieldSelector<TypeNameToType['LegacyGeneratedCommitment']>[],
+  'legacyGeneratedCommitments': readonly FieldSelector<TypeNameToType['LegacyGeneratedCommitment']>[],
+  'legacyGeneratedCommitmentsConnection': readonly FieldSelector<TypeNameToType['LegacyGeneratedCommitmentsConnection']>[],
+  'nullifierById': readonly FieldSelector<TypeNameToType['Nullifier']>[],
+  'nullifierByUniqueInput': readonly FieldSelector<TypeNameToType['Nullifier']>[],
+  'nullifiers': readonly FieldSelector<TypeNameToType['Nullifier']>[],
+  'nullifiersConnection': readonly FieldSelector<TypeNameToType['NullifiersConnection']>[],
+  'shieldCommitmentById': readonly FieldSelector<TypeNameToType['ShieldCommitment']>[],
+  'shieldCommitmentByUniqueInput': readonly FieldSelector<TypeNameToType['ShieldCommitment']>[],
+  'shieldCommitments': readonly FieldSelector<TypeNameToType['ShieldCommitment']>[],
+  'shieldCommitmentsConnection': readonly FieldSelector<TypeNameToType['ShieldCommitmentsConnection']>[],
+  'squidStatus': readonly FieldSelector<TypeNameToType['SquidStatus']>[],
+  'tokenById': readonly FieldSelector<TypeNameToType['Token']>[],
+  'tokenByUniqueInput': readonly FieldSelector<TypeNameToType['Token']>[],
+  'tokens': readonly FieldSelector<TypeNameToType['Token']>[],
+  'tokensConnection': readonly FieldSelector<TypeNameToType['TokensConnection']>[],
+  'transactCommitmentById': readonly FieldSelector<TypeNameToType['TransactCommitment']>[],
+  'transactCommitmentByUniqueInput': readonly FieldSelector<TypeNameToType['TransactCommitment']>[],
+  'transactCommitments': readonly FieldSelector<TypeNameToType['TransactCommitment']>[],
+  'transactCommitmentsConnection': readonly FieldSelector<TypeNameToType['TransactCommitmentsConnection']>[],
+  'transactionById': readonly FieldSelector<TypeNameToType['Transaction']>[],
+  'transactionByUniqueInput': readonly FieldSelector<TypeNameToType['Transaction']>[],
+  'transactions': readonly FieldSelector<TypeNameToType['Transaction']>[],
+  'transactionsConnection': readonly FieldSelector<TypeNameToType['TransactionsConnection']>[],
+  'unshieldById': readonly FieldSelector<TypeNameToType['Unshield']>[],
+  'unshieldByUniqueInput': readonly FieldSelector<TypeNameToType['Unshield']>[],
+  'unshields': readonly FieldSelector<TypeNameToType['Unshield']>[],
+  'unshieldsConnection': readonly FieldSelector<TypeNameToType['UnshieldsConnection']>[],
+  'verificationHashById': readonly FieldSelector<TypeNameToType['VerificationHash']>[],
+  'verificationHashByUniqueInput': readonly FieldSelector<TypeNameToType['VerificationHash']>[],
+  'verificationHashes': readonly FieldSelector<TypeNameToType['VerificationHash']>[],
+  'verificationHashesConnection': readonly FieldSelector<TypeNameToType['VerificationHashesConnection']>[],
+};
+
+export type QueryOutputMap = {
+  'ciphertextById': Maybe<BuildSelectedShape<FieldSelector<Ciphertext>, TypeNameToType['Ciphertext']>>,
+  'ciphertextByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<Ciphertext>, TypeNameToType['Ciphertext']>>,
+  'ciphertexts': BuildSelectedShape<FieldSelector<Ciphertext>, TypeNameToType['Ciphertext']>,
+  'ciphertextsConnection': BuildSelectedShape<FieldSelector<CiphertextsConnection>, TypeNameToType['CiphertextsConnection']>,
+  'commitmentBatchEventNewById': Maybe<BuildSelectedShape<FieldSelector<CommitmentBatchEventNew>, TypeNameToType['CommitmentBatchEventNew']>>,
+  'commitmentBatchEventNewByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<CommitmentBatchEventNew>, TypeNameToType['CommitmentBatchEventNew']>>,
+  'commitmentBatchEventNews': BuildSelectedShape<FieldSelector<CommitmentBatchEventNew>, TypeNameToType['CommitmentBatchEventNew']>,
+  'commitmentBatchEventNewsConnection': BuildSelectedShape<FieldSelector<CommitmentBatchEventNewsConnection>, TypeNameToType['CommitmentBatchEventNewsConnection']>,
+  'commitmentCiphertextById': Maybe<BuildSelectedShape<FieldSelector<CommitmentCiphertext>, TypeNameToType['CommitmentCiphertext']>>,
+  'commitmentCiphertextByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<CommitmentCiphertext>, TypeNameToType['CommitmentCiphertext']>>,
+  'commitmentCiphertexts': BuildSelectedShape<FieldSelector<CommitmentCiphertext>, TypeNameToType['CommitmentCiphertext']>,
+  'commitmentCiphertextsConnection': BuildSelectedShape<FieldSelector<CommitmentCiphertextsConnection>, TypeNameToType['CommitmentCiphertextsConnection']>,
+  'commitmentPreimageById': Maybe<BuildSelectedShape<FieldSelector<CommitmentPreimage>, TypeNameToType['CommitmentPreimage']>>,
+  'commitmentPreimageByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<CommitmentPreimage>, TypeNameToType['CommitmentPreimage']>>,
+  'commitmentPreimages': BuildSelectedShape<FieldSelector<CommitmentPreimage>, TypeNameToType['CommitmentPreimage']>,
+  'commitmentPreimagesConnection': BuildSelectedShape<FieldSelector<CommitmentPreimagesConnection>, TypeNameToType['CommitmentPreimagesConnection']>,
+  'commitments': BuildDiscriminatedUnionOutput<'Commitment', FieldSelector<Commitment>>,
+  'commitmentsConnection': BuildSelectedShape<FieldSelector<CommitmentsConnection>, TypeNameToType['CommitmentsConnection']>,
+  'legacyCommitmentCiphertextById': Maybe<BuildSelectedShape<FieldSelector<LegacyCommitmentCiphertext>, TypeNameToType['LegacyCommitmentCiphertext']>>,
+  'legacyCommitmentCiphertextByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<LegacyCommitmentCiphertext>, TypeNameToType['LegacyCommitmentCiphertext']>>,
+  'legacyCommitmentCiphertexts': BuildSelectedShape<FieldSelector<LegacyCommitmentCiphertext>, TypeNameToType['LegacyCommitmentCiphertext']>,
+  'legacyCommitmentCiphertextsConnection': BuildSelectedShape<FieldSelector<LegacyCommitmentCiphertextsConnection>, TypeNameToType['LegacyCommitmentCiphertextsConnection']>,
+  'legacyEncryptedCommitmentById': Maybe<BuildSelectedShape<FieldSelector<LegacyEncryptedCommitment>, TypeNameToType['LegacyEncryptedCommitment']>>,
+  'legacyEncryptedCommitmentByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<LegacyEncryptedCommitment>, TypeNameToType['LegacyEncryptedCommitment']>>,
+  'legacyEncryptedCommitments': BuildSelectedShape<FieldSelector<LegacyEncryptedCommitment>, TypeNameToType['LegacyEncryptedCommitment']>,
+  'legacyEncryptedCommitmentsConnection': BuildSelectedShape<FieldSelector<LegacyEncryptedCommitmentsConnection>, TypeNameToType['LegacyEncryptedCommitmentsConnection']>,
+  'legacyGeneratedCommitmentById': Maybe<BuildSelectedShape<FieldSelector<LegacyGeneratedCommitment>, TypeNameToType['LegacyGeneratedCommitment']>>,
+  'legacyGeneratedCommitmentByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<LegacyGeneratedCommitment>, TypeNameToType['LegacyGeneratedCommitment']>>,
+  'legacyGeneratedCommitments': BuildSelectedShape<FieldSelector<LegacyGeneratedCommitment>, TypeNameToType['LegacyGeneratedCommitment']>,
+  'legacyGeneratedCommitmentsConnection': BuildSelectedShape<FieldSelector<LegacyGeneratedCommitmentsConnection>, TypeNameToType['LegacyGeneratedCommitmentsConnection']>,
+  'nullifierById': Maybe<BuildSelectedShape<FieldSelector<Nullifier>, TypeNameToType['Nullifier']>>,
+  'nullifierByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<Nullifier>, TypeNameToType['Nullifier']>>,
+  'nullifiers': BuildSelectedShape<FieldSelector<Nullifier>, TypeNameToType['Nullifier']>,
+  'nullifiersConnection': BuildSelectedShape<FieldSelector<NullifiersConnection>, TypeNameToType['NullifiersConnection']>,
+  'shieldCommitmentById': Maybe<BuildSelectedShape<FieldSelector<ShieldCommitment>, TypeNameToType['ShieldCommitment']>>,
+  'shieldCommitmentByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<ShieldCommitment>, TypeNameToType['ShieldCommitment']>>,
+  'shieldCommitments': BuildSelectedShape<FieldSelector<ShieldCommitment>, TypeNameToType['ShieldCommitment']>,
+  'shieldCommitmentsConnection': BuildSelectedShape<FieldSelector<ShieldCommitmentsConnection>, TypeNameToType['ShieldCommitmentsConnection']>,
+  'squidStatus': Maybe<BuildSelectedShape<FieldSelector<SquidStatus>, TypeNameToType['SquidStatus']>>,
+  'tokenById': Maybe<BuildSelectedShape<FieldSelector<Token>, TypeNameToType['Token']>>,
+  'tokenByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<Token>, TypeNameToType['Token']>>,
+  'tokens': BuildSelectedShape<FieldSelector<Token>, TypeNameToType['Token']>,
+  'tokensConnection': BuildSelectedShape<FieldSelector<TokensConnection>, TypeNameToType['TokensConnection']>,
+  'transactCommitmentById': Maybe<BuildSelectedShape<FieldSelector<TransactCommitment>, TypeNameToType['TransactCommitment']>>,
+  'transactCommitmentByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<TransactCommitment>, TypeNameToType['TransactCommitment']>>,
+  'transactCommitments': BuildSelectedShape<FieldSelector<TransactCommitment>, TypeNameToType['TransactCommitment']>,
+  'transactCommitmentsConnection': BuildSelectedShape<FieldSelector<TransactCommitmentsConnection>, TypeNameToType['TransactCommitmentsConnection']>,
+  'transactionById': Maybe<BuildSelectedShape<FieldSelector<Transaction>, TypeNameToType['Transaction']>>,
+  'transactionByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<Transaction>, TypeNameToType['Transaction']>>,
+  'transactions': BuildSelectedShape<FieldSelector<Transaction>, TypeNameToType['Transaction']>,
+  'transactionsConnection': BuildSelectedShape<FieldSelector<TransactionsConnection>, TypeNameToType['TransactionsConnection']>,
+  'unshieldById': Maybe<BuildSelectedShape<FieldSelector<Unshield>, TypeNameToType['Unshield']>>,
+  'unshieldByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<Unshield>, TypeNameToType['Unshield']>>,
+  'unshields': BuildSelectedShape<FieldSelector<Unshield>, TypeNameToType['Unshield']>,
+  'unshieldsConnection': BuildSelectedShape<FieldSelector<UnshieldsConnection>, TypeNameToType['UnshieldsConnection']>,
+  'verificationHashById': Maybe<BuildSelectedShape<FieldSelector<VerificationHash>, TypeNameToType['VerificationHash']>>,
+  'verificationHashByUniqueInput': Maybe<BuildSelectedShape<FieldSelector<VerificationHash>, TypeNameToType['VerificationHash']>>,
+  'verificationHashes': BuildSelectedShape<FieldSelector<VerificationHash>, TypeNameToType['VerificationHash']>,
+  'verificationHashesConnection': BuildSelectedShape<FieldSelector<VerificationHashesConnection>, TypeNameToType['VerificationHashesConnection']>,
+};
