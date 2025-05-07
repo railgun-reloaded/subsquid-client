@@ -211,10 +211,10 @@ describe('Subsquid Client', async (t) => {
       unshields: {
         fields: [
           'id',
-          { token: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] },
+          { token: ['', 'tokenType', 'tokenAddress', 'tokenSubID'] } as const,
           'amount',
           'blockNumber'
-        ],
+        ] as const,
         limit: 5,
       }
     })
