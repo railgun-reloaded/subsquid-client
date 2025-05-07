@@ -27,19 +27,38 @@ module.exports = <CodegenPlugin> {
      * @returns A string containing the TypeScript type definitions for preload operations.
      */
     function printPreloadTypes () {
+      const primitiveType = `
+        type Primitive =
+            | null
+            | undefined
+            | string
+            | number
+            | boolean
+            | symbol
+            | bigint`
+      const fieldSelectorType = `export type FieldSelector<Entity> = {
+                   [Key in keyof Entity]-?:
+                     Entity[Key] extends (infer ItemType)[]
+                       ? ItemType extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<ItemType>[] }
+                       : Entity[Key] extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<Entity[Key]>[] }
+                 } [keyof Entity];`
       const addFieldsType =
-        'type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }'
+        'type AddFields<Args, TypeFields> = Args & { fields: FieldSelector<TypeFields>[] }'
 
       const generateIOType =
         `type GenerateIO<
-          Key extends keyof Query, 
+          Key extends keyof Query,
           QueryArgs,
           Field = Query[Key],
           Entity = Field extends Array<infer IT1>
             ? IT1
             : Field extends Maybe<infer IT2>
               ? NonNullable<IT2>
-              : Field,            
+              : Field,
           Wrapper = Field extends Array<infer _>
             ? 'array'
             : Field extends Maybe<infer _>
@@ -52,6 +71,10 @@ module.exports = <CodegenPlugin> {
           wrapper: Wrapper;
         }`
       return [
+        primitiveType,
+        '',
+        fieldSelectorType,
+        '',
         addFieldsType,
         '',
         generateIOType

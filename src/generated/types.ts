@@ -2367,17 +2367,38 @@ export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
 
-type AddFields<Args, TypeFields> = Args & { fields: (keyof TypeFields)[] }
+
+        type Primitive =
+            | null
+            | undefined
+            | string
+            | number
+            | boolean
+            | symbol
+            | bigint
+
+export type FieldSelector<Entity> = {
+                   [Key in keyof Entity]-?:
+                     Entity[Key] extends (infer ItemType)[]
+                       ? ItemType extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<ItemType>[] }
+                       : Entity[Key] extends Primitive
+                         ? Key
+                         : { [P in Key]: FieldSelector<Entity[Key]>[] }
+                 } [keyof Entity];
+
+type AddFields<Args, TypeFields> = Args & { fields: FieldSelector<TypeFields>[] }
 
 type GenerateIO<
-          Key extends keyof Query, 
+          Key extends keyof Query,
           QueryArgs,
           Field = Query[Key],
           Entity = Field extends Array<infer IT1>
             ? IT1
             : Field extends Maybe<infer IT2>
               ? NonNullable<IT2>
-              : Field,            
+              : Field,
           Wrapper = Field extends Array<infer _>
             ? 'array'
             : Field extends Maybe<infer _>
