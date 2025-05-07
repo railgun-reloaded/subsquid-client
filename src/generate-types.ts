@@ -1,18 +1,12 @@
-// src/generate-types.ts (Corrected based on user's preferred structure)
-
 import type { CodegenPlugin } from '@graphql-codegen/plugin-helpers';
-import { buildASTSchema, GraphQLSchema, GraphQLObjectType, GraphQLInterfaceType, GraphQLNamedType, isScalarType, isEnumType } from 'graphql'; // Import necessary GraphQL types
+import { GraphQLSchema, GraphQLObjectType, GraphQLInterfaceType, GraphQLNamedType /* Removed: buildASTSchema, isScalarType, isEnumType */ } from 'graphql'; // Import necessary GraphQL types
 
-// Helper functions (used during plugin execution) - Keep these outside if they were originally
-// If they were intended to be inside `plugin`, move them there.
-// Assuming they were intended to be outside:
 function isInterfaceType(type: GraphQLNamedType): type is GraphQLInterfaceType { return (type as any)?.astNode?.kind === 'InterfaceTypeDefinition' || type instanceof GraphQLInterfaceType; }
 function isObjectType(type: GraphQLNamedType): type is GraphQLObjectType { return (type as any)?.astNode?.kind === 'ObjectTypeDefinition' || type instanceof GraphQLObjectType; }
 function getImplementors(interfaceType: GraphQLInterfaceType, schema: GraphQLSchema): GraphQLObjectType[] {
     return Object.values(schema.getTypeMap())
         .filter(type => isObjectType(type) && type.getInterfaces().some(int => int.name === interfaceType.name)) as GraphQLObjectType[];
 }
-
 
 module.exports = <CodegenPlugin>{
   /**
@@ -21,12 +15,11 @@ module.exports = <CodegenPlugin>{
    * @param schema - The GraphQL schema object.
    * @returns A string containing the generated TypeScript types.
    */
-  plugin: function (schema, _documents, _config) {
-    if (!schema.getQueryType()) {
+  plugin: function (schema: GraphQLSchema, _documents: any, _config: any) {
+    const queryType = schema.getQueryType();
+    if (!queryType) {
       throw new Error('No query type found in schema');
     }
-
-    // --- Local Helper Functions (Original and New) ---
 
     function capitalize(str: string) {
       return str.charAt(0).toUpperCase() + str.slice(1);
@@ -69,7 +62,7 @@ module.exports = <CodegenPlugin>{
             ? 'array'
             : Field extends Maybe<infer _>
               ? 'maybe'
-              : 'simple'
+            : 'simple'
         > = {
           entity: Entity;
           input: AddFields<QueryArgs, Entity>;
@@ -87,7 +80,7 @@ module.exports = <CodegenPlugin>{
       ].join('\n');
     }
 
-    function generateTypeKV(fieldName: string, schema: GraphQLSchema) {
+    function generateTypeKV(fieldName: string) {
       if (fieldName === 'squidStatus') {
         return `${fieldName}: GenerateIO<'${fieldName}', {}>`;
       }
@@ -99,7 +92,7 @@ module.exports = <CodegenPlugin>{
       const queryFields = queryType!.getFields();
       const queryFieldsNames = Object.keys(queryFields);
       return `export type EntityQueryMap = {
-        ${queryFieldsNames.map(fieldName => generateTypeKV(fieldName, schema)).join('\n  ')}
+        ${queryFieldsNames.map(fieldName => generateTypeKV(fieldName)).join('\n  ')}
       }`;
     }
 
@@ -109,7 +102,9 @@ module.exports = <CodegenPlugin>{
       const mapEntries = typeNames
         .map(name => `  '${name}': ${name};`)
         .join('\n');
-      return `export type TypeNameToType = {${mapEntries}};`;
+      return `export type TypeNameToType = {
+${mapEntries}
+};`;
     }
 
     function generateInterfaceImplementorsMap(schema: GraphQLSchema): string {
@@ -124,7 +119,9 @@ module.exports = <CodegenPlugin>{
           mapEntries.push(`  '${interfaceName}': ${implementorNamesUnion};`);
         }
       }
-      return `export type InterfaceImplementorsMap = {${mapEntries.join('\n')}};`;
+      return `export type InterfaceImplementorsMap = {
+${mapEntries.join('\n')}
+};`;
     }
 
     function generateFragmentKeyToTypeMap(schema: GraphQLSchema): string {
@@ -138,7 +135,9 @@ module.exports = <CodegenPlugin>{
           mapEntries.push(`  \`... on ${impl.name}\`: '${impl.name}';`);
         });
       }
-      return `type FragmentKeyToType = {${mapEntries.join('\n')}};`;
+      return `type FragmentKeyToType = {
+${mapEntries.join('\n')}
+};`;
     }
 
     function generateInterfaceFragmentInputTypes(schema: GraphQLSchema): string {
@@ -218,9 +217,9 @@ type BuildDiscriminatedUnionOutput<
 
       for (const queryFieldName of Object.keys(queryFields)) {
           const queryField = queryFields[queryFieldName];
-          const returnType = queryField.type;
-          const baseReturnType = returnType.ofType || returnType;
-          const baseReturnTypeName = baseReturnType?.name;
+          const returnType = queryField!.type;
+          const baseReturnType = (returnType as any).ofType || returnType;
+          const baseReturnTypeName = (baseReturnType as any)?.name;
 
           let allowedFieldsType: string;
 
@@ -234,9 +233,11 @@ type BuildDiscriminatedUnionOutput<
               allowedFieldsType = `readonly any[]`;
           }
 
-          queryFieldsMapEntries.push(`  '${queryFieldName}': ${allowedFieldsType};`);
+          queryFieldsMapEntries.push(`  '${queryFieldName}': ${allowedFieldsType},`);
       }
-      return `export type QueryFieldsInputMap = {${queryFieldsMapEntries.join('\n')}};`;
+      return `export type QueryFieldsInputMap = {
+${queryFieldsMapEntries.join('\n')}
+};`;
     }
 
     function generateQueryOutputMap(schema: GraphQLSchema): string {
@@ -248,26 +249,23 @@ type BuildDiscriminatedUnionOutput<
 
       for (const queryFieldName of Object.keys(queryFields)) {
            const queryField = queryFields[queryFieldName];
-           const returnType = queryField.type;
-           const baseReturnType = returnType.ofType || returnType;
-           const baseReturnTypeName = baseReturnType?.name;
-
-           const isArray = returnType.astNode?.kind === 'ListType';
-           const isNullable = !(returnType.astNode?.kind === 'NonNullType');
+           const returnType = queryField!.type;
+           const baseReturnType = (returnType as any).ofType || returnType;
+           const baseReturnTypeName = (baseReturnType as any)?.name;
+           const isArray = (returnType as any).astNode?.kind === 'ListType';
+           const isNullable = !((returnType as any).astNode?.kind === 'NonNullType');
            let wrapper = isArray ? 'array' : (isNullable ? 'maybe' : 'simple');
 
            const entityName = baseReturnTypeName;
 
            if (!entityName || entityName.startsWith('__')) {
                 console.warn(`Skipping query field "${queryFieldName}" with unexpected return type name: "${entityName}".`);
-                queryOutputMapEntries.push(`  '${queryFieldName}': any;`);
+                queryOutputMapEntries.push(`  '${queryFieldName}': any,`);
                 continue;
            }
 
            let unwrappedOutputShape: string;
-           const interfaceNames = Object.keys(types).filter(name => isInterfaceType(types[entityName] as GraphQLNamedType));
-           const isBaseTypeInterface = interfaceNames.includes(entityName);
-
+           const isBaseTypeInterface = entityName in types && isInterfaceType(types[entityName] as GraphQLNamedType);
 
            if (isBaseTypeInterface) {
                unwrappedOutputShape = `BuildDiscriminatedUnionOutput<'${entityName}', FieldSelector<${entityName}>>`;
@@ -285,35 +283,33 @@ type BuildDiscriminatedUnionOutput<
               finalOutputType = `Maybe<${unwrappedOutputShape}>`;
           }
 
-          queryOutputMapEntries.push(`  '${queryFieldName}': ${finalOutputType};`);
+          queryOutputMapEntries.push(`  '${queryFieldName}': ${finalOutputType},`);
       }
-
-      return `export type QueryOutputMap = {${queryOutputMapEntries.join('\n')}};`;
+      return `export type QueryOutputMap = {
+${queryOutputMapEntries.join('\n')}
+};`;
     }
 
-    // --- Concatenate all outputs ---
     const finalGeneratedContent = [
-        // Original types first
-        printPreloadTypes(), // Primitive, FieldSelector, AddFields, GenerateIO
+        printPreloadTypes(),
         '',
-        printEntityQueryMap(schema), // EntityQueryMap
+        printEntityQueryMap(schema),
         '',
-        // New types added for fragment support and discriminated unions
         generateTypeNameToTypeMap(schema),
         '',
         generateInterfaceImplementorsMap(schema),
         '',
-        generateFragmentKeyToTypeMap(schema), // Internal helper type
+        generateFragmentKeyToTypeMap(schema),
         '',
-        generateInterfaceFragmentInputTypes(schema), // Specific fragment input types
+        generateInterfaceFragmentInputTypes(schema),
         '',
-        generateOutputShapeHelpers(), // Internal output shape helpers
+        generateOutputShapeHelpers(),
         '',
-        generateBuildDiscriminatedUnionOutputHelper(), // Internal build union helper
+        generateBuildDiscriminatedUnionOutputHelper(),
         '',
-        generateQueryFieldsInputMap(schema), // QueryInput fields type definition
+        generateQueryFieldsInputMap(schema),
         '',
-        generateQueryOutputMap(schema), // QueryOutput type definition
+        generateQueryOutputMap(schema),
         '',
     ].join('\n');
 
