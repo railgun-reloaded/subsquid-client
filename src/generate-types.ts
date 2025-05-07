@@ -169,8 +169,55 @@ module.exports = <CodegenPlugin>{
         return `export type QueryFieldsInputMap = {${queryFieldsMapEntries.join('\n')}}`;
       }
 
+      /**
+       * Generates recursive output shape helper types.
+       * These types process the *input* selection structure (using the original FieldSelector)
+       * against a *target schema type* to determine the *output* shape, respecting fragments.
+       */
+      function generateOutputShapeHelpers(): string {
+        return `
+        type ProcessSingleSelection<
+          Item extends FieldSelector<any>,
+          TargetEntity
+        > =
+          Item extends string
+            ? Item extends keyof TargetEntity
+              ? Pick<TargetEntity, Item>
+              : never
+            : Item extends object
+              ? keyof Item extends infer Key extends string
+                ? Item[Key] extends readonly infer Subitems extends readonly FieldSelector<any>[]
+                  ? Key extends keyof FragmentKeyToType
+                    ? FragmentKeyToType[Key] extends infer FragmentTargetEntityName extends keyof TypeNameToType
+                      ?
+                        TargetEntity extends TypeNameToType[FragmentTargetEntityName]
+                        ?
+                          BuildSelectedShape<Subitems, TargetEntity>
+                        : never
+                      : never
+                    :
+                      Key extends keyof TargetEntity
+                        ? TargetEntity[Key] extends (infer NestedItemType)[]
+                          ?
+                            { readonly [P in Key]: readonly BuildSelectedShape<Subitems, NestedItemType>[] }
+                          :
+                            { readonly [P in Key]: BuildSelectedShape<TargetEntity[Key], Subitems> }
+                        : never
+                      : never
+                    : never
+                  : never;
 
-
+        type BuildSelectedShape<
+          Selections extends readonly FieldSelector<any>[],
+          TargetEntity
+          > =
+            Selections extends readonly [infer Head extends FieldSelector<any>, ...infer Tail extends readonly FieldSelector<any>[]]
+              ?
+               ProcessSingleSelection<Head, TargetEntity> & (Tail extends readonly FieldSelector<any>[] ? BuildSelectedShape<Tail, TargetEntity> : {})
+              :
+                {};
+        `;
+      }
 
 
       /**
