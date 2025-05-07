@@ -34,6 +34,143 @@ module.exports = <CodegenPlugin> {
     }
 
     /**
+    * Helper map to resolve schema type names (strings) to their actual generated TypeScript types
+    * Requires generated types like Query, ShieldCommitment, Token etc. to be available.
+    * @param schema - The GraphQL schema object to generate types from.
+    * @returns The generated TypeNameToType type
+    */
+    function generateTypeNameToTypeMap(schema: GraphQLSchema): string {
+        const types = schema.getTypeMap();
+        // Include all non-introspection types, plus the root Query type
+        const typeNames = Object.keys(types).filter(name => !name.startsWith('__')).sort();
+
+        const mapEntries = typeNames
+            .map(name => `  '${name}': ${name};`)
+            .join('\n');
+
+        return `export type TypeNameToType = {${mapEntries}}`;
+    }
+
+    /**
+    * Generates TypeScript InterfaceImplementorsMap map.
+    * Maps interface names (strings) to a union of their implementor *name strings*.
+    * @param schema - The GraphQL schema object to generate types from.
+    * @returns The generated InterfaceImplementorsMap
+    */
+    function generateInterfaceImplementorsMap(schema: GraphQLSchema): string {
+        const types = schema.getTypeMap();
+        const interfaceNames = Object.keys(types).filter(name => isInterfaceType(types[name] as GraphQLNamedType)).sort();
+
+        const mapEntries: string[] = [];
+        for (const interfaceName of interfaceNames) {
+            const interfaceType = types[interfaceName] as GraphQLInterfaceType;
+            const implementors = getImplementors(interfaceType, schema);
+            const implementorNamesUnion = implementors.map(impl => `'${impl.name}'`).join(' | ');
+            if (implementorNamesUnion) {
+                mapEntries.push(`  '${interfaceName}': ${implementorNamesUnion};`);
+            }
+        }
+
+        return `export type InterfaceImplementorsMap = {${mapEntries.join('\n')}}`;
+
+    /**
+    * Generates TypeScript FragmentKeyToType map alias.
+    * Maps fragment key strings (\`'... on Type'\`) to implementor *name strings*.
+    * @param schema - The GraphQL schema object to generate types from.
+    * @returns The generated FragmentKeyToTypeMap
+    */
+    function generateFragmentKeyToTypeMap(schema: GraphQLSchema): string {
+         const types = schema.getTypeMap();
+         const interfaceNames = Object.keys(types).filter(name => isInterfaceType(types[name] as GraphQLNamedType)).sort();
+
+         const mapEntries: string[] = [];
+         for (const interfaceName of interfaceNames) {
+             const interfaceType = types[interfaceName] as GraphQLInterfaceType;
+             const implementors = getImplementors(interfaceType, schema);
+             implementors.forEach(impl => {
+                 // Map fragment key string (`... on Type`) to implementor name string (`Type`)
+                 mapEntries.push(`  \`... on ${impl.name}\`: '${impl.name}';`);
+             });
+         }
+
+         return `type FragmentKeyToType = {${mapEntries.join('\n')}}`;
+     }
+
+     /**
+     * Generates Interface Fragment Input Types (e.g., CommitmentFragmentsInput).
+     * These define the structure of the fragment objects { '... on Type': FieldSelector<Type>[] }
+     * Requires original FieldSelector type and TypeNameToType map.
+     * @param schema - The GraphQL schema object to generate types from.
+     * @returns The generated InterfaceFragmentInputTypes
+     */
+
+     function generateInterfaceFragmentInputTypes(schema: GraphQLSchema): string {
+         const types = schema.getTypeMap();
+         const interfaceNames = Object.keys(types).filter(name => isInterfaceType(types[name] as GraphQLNamedType)).sort();
+         const fragmentTypes: string[] = [];
+
+         for (const interfaceName of interfaceNames) {
+             const interfaceType = types[interfaceName] as GraphQLInterfaceType;
+             const implementors = getImplementors(interfaceType, schema);
+
+             const fragmentUnionMembers = implementors.map(implType => {
+                 // Structure: { readonly '... on TypeName': readonly FieldSelector<TypeName>[] }
+                 // Uses the original generated FieldSelector type
+                 const implSelection = `FieldSelector<TypeNameToType['${implType.name}']>`; // Use TypeNameToType to reference implementor type
+                  return `{ readonly \`... on ${implType.name}\`: readonly ${implSelection}[] }`;
+             }).join('\n  | ');
+
+             const fragmentTypeName = `${interfaceName}FragmentsInput`;
+             fragmentTypes.push(`export type ${fragmentTypeName} = ${fragmentUnionMembers || '{}'};`); // Provide {} for interfaces with no implementors
+         }
+
+         return fragmentTypes.join('\n\n');
+     }
+
+    /**
+    * Generates Query Fields Input Type Map.
+    * Maps query field names to the *correct* type for their 'fields' array input, allowing fragments for interfaces.
+    * Requires EntityQueryMap (from original code), TypeNameToType, InterfaceImplementorsMap, and generated fragment input types.
+    * @param schema - The GraphQL schema object to generate types from.
+    * @returns The generated QueryFieldsInputMap
+    */
+    function generateQueryFieldsInputMap(schema: GraphQLSchema): string {
+        const queryType = schema.getQueryType();
+        const queryFields = queryType!.getFields(); // Assume queryType is not null
+        const types = schema.getTypeMap(); // All schema types
+
+        const queryFieldsMapEntries: string[] = [];
+
+        for (const queryFieldName of Object.keys(queryFields)) {
+            const queryField = queryFields[queryFieldName];
+            const returnType = queryField.type;
+            const baseReturnType = returnType.ofType || returnType; // Unpack non-null/list
+            const baseReturnTypeName = baseReturnType?.name;
+
+            let allowedFieldsType: string;
+
+            if (baseReturnTypeName && baseReturnTypeName in types && isInterfaceType(types[baseReturnTypeName] as GraphQLNamedType)) {
+                // If query returns an interface, allowed fields are base interface fields OR fragments for that interface
+                // Use the original FieldSelector for base fields, applied to the base interface type via TypeNameToType
+                // Use the generated fragment input type for fragments
+                const fragmentTypeName = `${baseReturnTypeName}FragmentsInput`;
+                allowedFieldsType = `readonly (FieldSelector<TypeNameToType['${baseReturnTypeName}']> | ${fragmentTypeName})[]`;
+            } else if (baseReturnTypeName && baseReturnTypeName in types) {
+                 // If query returns a concrete type (object, scalar, enum), only allow standard FieldSelector selection
+                 allowedFieldsType = `readonly FieldSelector<TypeNameToType['${baseReturnTypeName}']>[]`; // Use TypeNameToType
+            } else {
+                 console.warn(`Skipping query field "${queryFieldName}" with unexpected base return type name "${baseReturnTypeName}". Falling back to readonly any[].`);
+                 allowedFieldsType = `readonly any[]`; // Fallback
+            }
+
+            queryFieldsMapEntries.push(`  '${queryFieldName}': ${allowedFieldsType};`);
+        }
+
+        return `export type QueryFieldsInputMap = {${queryFieldsMapEntries.join('\n')}}`;
+    }
+
+
+    /**
      * Generates TypeScript types for preload operations.
      * @returns A string containing the TypeScript type definitions for preload operations.
      */
