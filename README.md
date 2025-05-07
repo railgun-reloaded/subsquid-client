@@ -25,6 +25,8 @@ When initializing the client, you can either use a predefined network or provide
 
 ### Basic Usage
 
+**Important:** When defining field arrays, always use `as const` to ensure proper type inference, especially for nested queries. This preserves the exact types of fields selected and enables complete type safety.
+
 ```ts
 import { SubsquidClient, TokenType } from '@railgun-reloaded/subsquid-client';
 
@@ -37,7 +39,7 @@ const customClient = new SubsquidClient({ customSubsquidUrl: 'https://my-subsqui
 // Simple query for tokens with type-safety
 const { tokens } = await client.query({
   tokens: {
-    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
     limit: 5
   }
 });
@@ -49,15 +51,15 @@ const { tokens } = await client.query({
 // Query multiple entity types in a single request
 const { tokens, commitments, nullifiers } = await client.query({
   tokens: {
-    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
     limit: 5
   },
   commitments: {
-    fields: ['id', 'transactionHash', 'treeNumber', 'batchStartTreePosition'],
+    fields: ['id', 'transactionHash', 'treeNumber', 'batchStartTreePosition'] as const,
     limit: 5
   },
   nullifiers: {
-    fields: ['id', 'nullifier', 'transactionHash', 'treeNumber'],
+    fields: ['id', 'nullifier', 'transactionHash', 'treeNumber'] as const,
     limit: 5
   }
 });
@@ -69,7 +71,7 @@ const { tokens, commitments, nullifiers } = await client.query({
 // Filter tokens by ERC20 type
 const { tokens } = await client.query({
   tokens: {
-    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
     limit: 5,
     where: {
       tokenType_eq: TokenType.Erc20
@@ -84,7 +86,7 @@ const { tokens } = await client.query({
 // Find tokens that are either ERC20 or ERC721
 const { tokens } = await client.query({
   tokens: {
-    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
     limit: 5,
     where: {
       OR: [{ tokenType_eq: TokenType.Erc20 }, { tokenType_eq: TokenType.Erc721 }]
@@ -99,7 +101,7 @@ const { tokens } = await client.query({
 // Complex nested where conditions
 const { tokens } = await client.query({
   tokens: {
-    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
     limit: 10,
     where: {
       AND: [
@@ -116,13 +118,30 @@ const { tokens } = await client.query({
 });
 ```
 
+### Nested Object Queries
+
+```ts
+// Query with nested object fields
+const { unshields } = await client.query({
+  unshields: {
+    fields: [
+      'id',
+      { token: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] } as const,
+      'amount',
+      'blockNumber'
+    ] as const,
+    limit: 5
+  }
+});
+```
+
 ### Ordering Results
 
 ```ts
 // Order tokens by ID ascending
 const { tokens } = await client.query({
   tokens: {
-    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+    fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
     limit: 5,
     orderBy: ['id_ASC']
   }
@@ -135,7 +154,7 @@ const { tokens } = await client.query({
 // Filter transactions by block number
 const { transactions } = await client.query({
   transactions: {
-    fields: ['id', 'blockNumber', 'transactionHash'],
+    fields: ['id', 'blockNumber', 'transactionHash'] as const,
     limit: 5,
     where: {
       blockNumber_gt: '14760000'
@@ -153,10 +172,10 @@ For more complex/custom queries, you can use direct GraphQL using client.request
 const query = `
   query {
     tokens(
-      limit: 5, 
-      where: { 
+      limit: 5,
+      where: {
         OR: [
-          {tokenType_eq: ERC20}, 
+          {tokenType_eq: ERC20},
           {tokenType_eq: ERC721}
         ]
       }
