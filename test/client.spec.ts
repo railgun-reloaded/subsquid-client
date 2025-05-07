@@ -72,7 +72,7 @@ describe('Subsquid Client', async (t) => {
   it('Should execute basic query without filters', async () => {
     const { tokens } = await client.query({
       tokens: {
-        fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+        fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
         limit: 5,
       }
     })
@@ -90,19 +90,19 @@ describe('Subsquid Client', async (t) => {
   it('Should execute basic query for several entities', async () => {
     const { tokens, commitments, nullifiers, transactions } = await client.query({
       tokens: {
-        fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+        fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
         limit: 5,
       },
       commitments: {
-        fields: ['id', 'transactionHash', 'treeNumber', 'batchStartTreePosition'],
+        fields: ['id', 'transactionHash', 'treeNumber', 'batchStartTreePosition'] as const,
         limit: 5,
       },
       nullifiers: {
-        fields: ['id', 'nullifier', 'transactionHash', 'treeNumber'],
+        fields: ['id', 'nullifier', 'transactionHash', 'treeNumber'] as const,
         limit: 5,
       },
       transactions: {
-        fields: ['id', 'blockNumber', 'transactionHash'],
+        fields: ['id', 'blockNumber', 'transactionHash'] as const,
         limit: 5,
       }
     })
@@ -147,7 +147,7 @@ describe('Subsquid Client', async (t) => {
       const { tokens } = await client.query(
         {
           tokens: {
-            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
             limit: 5,
             where: {
               tokenType_eq: TokenType.Erc20
@@ -171,7 +171,7 @@ describe('Subsquid Client', async (t) => {
       const { tokens } = await client.query(
         {
           tokens: {
-            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
             limit: 10,
             where: {
               AND: [
@@ -211,7 +211,7 @@ describe('Subsquid Client', async (t) => {
       unshields: {
         fields: [
           'id',
-          { token: ['', 'tokenType', 'tokenAddress', 'tokenSubID'] } as const,
+          { token: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] } as const,
           'amount',
           'blockNumber'
         ] as const,
@@ -244,7 +244,7 @@ describe('Subsquid Client', async (t) => {
       const { tokens } = await client.query(
         {
           tokens: {
-            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+            fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
             limit: 5,
             where: {
               OR: [{ tokenType_eq: TokenType.Erc20 }, { tokenType_eq: TokenType.Erc721 }],
@@ -272,7 +272,7 @@ describe('Subsquid Client', async (t) => {
     try {
       const { tokens } = await client.query({
         tokens: {
-          fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'],
+          fields: ['id', 'tokenType', 'tokenAddress', 'tokenSubID'] as const,
           limit: 5,
           orderBy: ['id_ASC']
         }
@@ -297,7 +297,7 @@ describe('Subsquid Client', async (t) => {
     try {
       const { transactions } = await client.query({
         transactions: {
-          fields: ['id', 'blockNumber', 'transactionHash'],
+          fields: ['id', 'blockNumber', 'transactionHash'] as const,
           limit: 5,
         }
       })
@@ -322,7 +322,7 @@ describe('Subsquid Client', async (t) => {
       const blockThreshold = '14760000'
       const { transactions } = await client.query({
         transactions: {
-          fields: ['id', 'blockNumber', 'transactionHash'],
+          fields: ['id', 'blockNumber', 'transactionHash'] as const,
           limit: 5,
           where: {
             blockNumber_gt: blockThreshold
