@@ -173,6 +173,8 @@ module.exports = <CodegenPlugin>{
        * Generates recursive output shape helper types.
        * These types process the *input* selection structure (using the original FieldSelector)
        * against a *target schema type* to determine the *output* shape, respecting fragments.
+       * @param ...
+       * @returns The generated OutputShapeHelpers
        */
       function generateOutputShapeHelpers(): string {
         return `
@@ -219,6 +221,70 @@ module.exports = <CodegenPlugin>{
         `;
       }
 
+      /**
+       * Generates QueryOutputMap map type.
+       * Maps query field names (strings) to their final precise output type.
+       * @param schema - The GraphQL schema object to generate types from.
+       * @returns The generated QueryOutputMap
+       */
+      function generateQueryOutputMap(schema: GraphQLSchema): string {
+          const queryType = schema.getQueryType();
+          const queryFields = queryType!.getFields(); // Assume queryType is not null
+          const types = schema.getTypeMap(); // Get all types
+
+          const queryOutputMapEntries: string[] = [];
+
+          for (const queryFieldName of Object.keys(queryFields)) {
+               const queryField = queryFields[queryFieldName];
+               const returnType = queryField.type;
+               const baseReturnType = returnType.ofType || returnType; // Unpack non-null/list
+               const baseReturnTypeName = baseReturnType?.name;
+
+               // Get wrapper type (assuming EntityQueryMap generation is unchanged)
+               // The wrapper type is 'array', 'maybe', or 'simple'. We need the actual string literal.
+               // We can derive this info again from the schema type directly here:
+               const isArray = returnType.astNode?.kind === 'ListType';
+               const isNullable = !(returnType.astNode?.kind === 'NonNullType');
+               let wrapper = isArray ? 'array' : (isNullable ? 'maybe' : 'simple');
+
+               const entityName = baseReturnTypeName; // The name of the base type returned
+
+               if (!entityName || entityName.startsWith('__')) { // Basic check
+                    console.warn(`Skipping query field "${queryFieldName}" with unexpected return type name: "${entityName}"`);
+                    queryOutputMapEntries.push(`  '${queryFieldName}': any;`); // Fallback
+                    continue;
+               }
+
+               // Determine the unwrapped output shape (type of a single item)
+               let unwrappedOutputShape: string;
+               if (baseReturnTypeName in types && isInterfaceType(types[baseReturnTypeName] as GraphQLNamedType)) {
+                   // Query returns an interface: Unwrapped shape is the discriminated union of implementors
+                   // The input fields array for this query is typed as FieldSelector<BaseInterfaceType>[]
+                   unwrappedOutputShape = `BuildDiscriminatedUnionOutput<'${baseReturnTypeName}', FieldSelector<${baseReturnTypeName}>>`; // Pass interface name string and input fields type (FieldSelector<InterfaceType>)
+               } else if (baseReturnTypeName in types) {
+                   // Query returns a concrete type (or scalar/enum): Unwrapped shape is the selected shape of that type
+                   // The input fields array for this query is typed as FieldSelector<BaseConcreteType>[]
+                    unwrappedOutputShape = `BuildSelectedShape<FieldSelector<${baseReturnTypeName}>, TypeNameToType['${baseReturnTypeName}']>`; // Pass input fields type (FieldSelector<ConcreteType>) and actual schema type
+               } else {
+                   // Should ideally not happen if logic is correct and schema is standard
+                    console.warn(`Cannot determine output shape for query field "${queryFieldName}" with base type name "${baseReturnTypeName}". Base type name not found in schema types. Falling back to any.`);
+                    unwrappedOutputShape = `any`; // Fallback
+               }
+
+              // Apply the wrapper based on wrapper string
+              let finalOutputType = unwrappedOutputShape;
+              if (wrapper === 'array') {
+                  finalOutputType = `readonly ${unwrappedOutputShape}[]`; // Wrap in readonly array
+              } else if (wrapper === 'maybe') {
+                  finalOutputType = `Maybe<${unwrappedOutputShape}>`; // Wrap in Maybe
+              }
+              // 'simple' wrapper doesn't modify the shape
+
+              queryOutputMapEntries.push(`  '${queryFieldName}': ${finalOutputType};`);
+          }
+
+          return `export type QueryOutputMap = {${queryOutputMapEntries.join('\n')}};`;
+      }
 
       /**
        * Generates TypeScript types for preload operations.
