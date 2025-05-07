@@ -1,4 +1,15 @@
 import type { CodegenPlugin } from '@graphql-codegen/plugin-helpers'
+import { buildASTSchema, GraphQLSchema, GraphQLObjectType, GraphQLInterfaceType, GraphQLNamedType, isScalarType, isEnumType } from 'graphql'; // Import necessary GraphQL types
+
+function isInterfaceType(type: GraphQLNamedType): type is GraphQLInterfaceType { return (type as any)?.astNode?.kind === 'InterfaceTypeDefinition' || type instanceof GraphQLInterfaceType; }
+
+function isObjectType(type: GraphQLNamedType): type is GraphQLObjectType { return (type as any)?.astNode?.kind === 'ObjectTypeDefinition' || type instanceof GraphQLObjectType; }
+
+function getImplementors(interfaceType: GraphQLInterfaceType, schema: GraphQLSchema): GraphQLObjectType[] {
+    return Object.values(schema.getTypeMap())
+        .filter(type => isObjectType(type) && type.getInterfaces().some(int => int.name === interfaceType.name)) as GraphQLObjectType[];
+}
+
 
 module.exports = <CodegenPlugin> {
   /**
