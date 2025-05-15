@@ -3,25 +3,28 @@ import type { GraphQLNamedType, GraphQLOutputType, GraphQLSchema } from 'graphql
 import { GraphQLInterfaceType, GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql'
 
 /**
- *
- * @param type
+ * Checks if a GraphQL type is an interface type
+ * @param type GraphQL named type to check
+ * @returns True if the type is an interface type
  */
 function isInterfaceType (type: GraphQLNamedType): type is GraphQLInterfaceType {
   return (type as any)?.astNode?.kind === 'InterfaceTypeDefinition' || type instanceof GraphQLInterfaceType
 }
 
 /**
- *
- * @param type
+ * Checks if a GraphQL type is an object type
+ * @param type GraphQL named type to check
+ * @returns True if the type is an object type
  */
 function isObjectType (type: GraphQLNamedType): type is GraphQLObjectType {
   return (type as any)?.astNode?.kind === 'ObjectTypeDefinition' || type instanceof GraphQLObjectType
 }
 
 /**
- *
- * @param interfaceType
- * @param schema
+ * Gets all object types that implement a specific interface
+ * @param interfaceType The interface type to find implementors for
+ * @param schema The GraphQL schema
+ * @returns Array of object types that implement the interface
  */
 function getImplementors (interfaceType: GraphQLInterfaceType, schema: GraphQLSchema): GraphQLObjectType[] {
   return Object.values(schema.getTypeMap())
@@ -29,8 +32,9 @@ function getImplementors (interfaceType: GraphQLInterfaceType, schema: GraphQLSc
 }
 
 /**
- *
- * @param type
+ * Unwraps a GraphQL output type from NonNull and List wrappers
+ * @param type The GraphQL output type to unwrap
+ * @returns The unwrapped named type
  */
 function unwrapType (type: GraphQLOutputType): GraphQLNamedType {
   if (type instanceof GraphQLNonNull || type instanceof GraphQLList) {
@@ -41,10 +45,11 @@ function unwrapType (type: GraphQLOutputType): GraphQLNamedType {
 
 module.exports = <CodegenPlugin>{
   /**
-   *
-   * @param schema
-   * @param _documents
-   * @param _config
+   * Plugin function that generates TypeScript types from GraphQL schema
+   * @param schema The GraphQL schema
+   * @param _documents GraphQL documents (unused)
+   * @param _config Plugin configuration (unused)
+   * @returns Generated TypeScript type definitions
    */
   plugin: function (schema, _documents, _config) {
     if (!schema.getQueryType()) {
@@ -52,16 +57,18 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
-     * @param str
+     * Capitalizes the first letter of a string
+     * @param str String to capitalize
+     * @returns Capitalized string
      */
     function capitalize (str: string) {
       return str.charAt(0).toUpperCase() + str.slice(1)
     }
 
     /**
-     *
-     * @param schema
+     * Generates a TypeScript type mapping GraphQL type names to their corresponding types
+     * @param schema The GraphQL schema
+     * @returns TypeScript type definition as a string
      */
     function generateTypeNameToTypeMap (schema: GraphQLSchema): string {
       const types = schema.getTypeMap()
@@ -75,8 +82,9 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
-     * @param schema
+     * Generates a TypeScript type mapping interface names to their implementor type names
+     * @param schema The GraphQL schema
+     * @returns TypeScript type definition as a string
      */
     function generateInterfaceImplementorsMap (schema: GraphQLSchema): string {
       const types = schema.getTypeMap()
@@ -96,8 +104,9 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
-     * @param schema
+     * Generates a TypeScript type mapping fragment keys to their type names
+     * @param schema The GraphQL schema
+     * @returns TypeScript type definition as a string
      */
     function generateFragmentKeyToTypeMap (schema: GraphQLSchema): string {
       const types = schema.getTypeMap()
@@ -117,8 +126,9 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
-     * @param schema
+     * Generates TypeScript types for interface fragment inputs
+     * @param schema The GraphQL schema
+     * @returns TypeScript type definitions as a string
      */
     function generateInterfaceFragmentInputTypes (schema: GraphQLSchema): string {
       const types = schema.getTypeMap()
@@ -144,8 +154,9 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
-     * @param schema
+     * Generates a TypeScript type mapping query field names to their input types
+     * @param schema The GraphQL schema
+     * @returns TypeScript type definition as a string
      */
     function generateQueryFieldsInputMap (schema: GraphQLSchema): string {
       const queryType = schema.getQueryType()
@@ -188,7 +199,8 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
+     * Generates preload types that are required by the generated code
+     * @returns TypeScript type definitions as a string
      */
     function printPreloadTypes () {
       // First add missing scalar type definitions that might be referenced in the schema
@@ -258,8 +270,9 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
-     * @param fieldName
+     * Generates a key-value pair for the EntityQueryMap type
+     * @param fieldName Name of the query field
+     * @returns TypeScript type mapping as a string
      */
     function generateTypeKV (fieldName: string) {
       // Since there's no Query Args type for squidStatus, we don't need to handle the GenerateIO type for it
@@ -270,7 +283,8 @@ module.exports = <CodegenPlugin>{
     }
 
     /**
-     *
+     * Generates the EntityQueryMap type that maps entity names to their query types
+     * @returns TypeScript type definition as a string
      */
     function printEntityQueryMap () {
       const queryType = schema.getQueryType()
