@@ -34,6 +34,14 @@ describe('Subsquid Client', async (t) => {
     assert.throws(() => new SubsquidClient({ network: invalid as any }))
   })
 
+  it('Should use customSubsquidUrl if both customSubsquidUrl and network are provided', () => {
+    const TEST_URL = 'https://custom.example.com/graphql'
+    const TEST_NETWORK = 'ethereum'
+    const client = new SubsquidClient({ customSubsquidUrl: TEST_URL, network: TEST_NETWORK } as any)
+    // @ts-expect-error: accessing private property for test
+    assert.strictEqual(client.clientUrl, TEST_URL, 'customSubsquidUrl should take precedence over network')
+  })
+
   const client = new SubsquidClient({ network: 'ethereum' })
 
   it('Should throw an error when GraphQL response contains errors from invalid syntax', async () => {

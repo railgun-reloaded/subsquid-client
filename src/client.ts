@@ -26,15 +26,6 @@ export class SubsquidClient {
    * @returns The Subsquid URL to use
    */
   private getSubsquidUrl (options: SubsquidClientOptions): string {
-    if ('network' in options) {
-      const networkUrl = NETWORK_CONFIG[options.network as keyof typeof NETWORK_CONFIG]
-      if (!networkUrl) {
-        throw new Error(
-          `Unsupported network: ${options.network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
-        )
-      }
-      return networkUrl
-    }
     if ('customSubsquidUrl' in options) {
       const { customSubsquidUrl } = options
       if (!customSubsquidUrl || customSubsquidUrl.trim() === '') {
@@ -47,6 +38,15 @@ export class SubsquidClient {
       } catch (error) {
         throw new Error(`Invalid URL format: ${customSubsquidUrl}`)
       }
+    }
+    if ('network' in options) {
+      const networkUrl = NETWORK_CONFIG[options.network as keyof typeof NETWORK_CONFIG]
+      if (!networkUrl) {
+        throw new Error(
+          `Unsupported network: ${options.network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
+        )
+      }
+      return networkUrl
     }
     throw new Error(
       'Invalid configuration. Provide either { network } or { customSubsquidUrl }.'
