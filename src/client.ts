@@ -101,7 +101,7 @@ export class SubsquidClient {
    * @param input - The query input to build and execute
    * @returns Promise that resolves to the query result
    */
-  async query<T extends QueryInput> (
+  async query<const T extends QueryInput> (
     input: StrictQueryInput<T>
   ): Promise<QueryOutput<T>> {
     const queryStr = queryBuilder.build(input)
