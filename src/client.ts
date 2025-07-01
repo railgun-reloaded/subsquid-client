@@ -1,5 +1,3 @@
-import type { SubsquidClientOptions } from './networks'
-import { NETWORK_CONFIG, SUPPORTED_NETWORKS } from './networks'
 import { queryBuilder } from './query-builder'
 import type { QueryInput, QueryOutput, RequestOptions, StrictQueryInput } from './types'
 
@@ -10,47 +8,14 @@ export class SubsquidClient {
   /**
    * The URL endpoint for the Subsquid GraphQL API
    */
-  private clientUrl: string
+  private clientUrl: URL
 
   /**
    * Creates a new SubsquidClient instance
    * @param options - Configuration options for the client
    */
-  constructor (options: SubsquidClientOptions) {
-    this.clientUrl = this.getSubsquidUrl(options)
-  }
-
-  /**
-   * Gets the Subsquid URL from the provided options
-   * @param options - Configuration options for the client
-   * @returns The Subsquid URL to use
-   */
-  private getSubsquidUrl (options: SubsquidClientOptions): string {
-    if ('customSubsquidUrl' in options) {
-      const { customSubsquidUrl } = options
-      if (!customSubsquidUrl || customSubsquidUrl.trim() === '') {
-        throw new Error('customSubsquidUrl cannot be empty')
-      }
-
-      try {
-        const url = new URL(customSubsquidUrl)
-        return url.toString()
-      } catch (error) {
-        throw new Error(`Invalid URL format: ${customSubsquidUrl}`)
-      }
-    }
-    if ('network' in options) {
-      const networkUrl = NETWORK_CONFIG[options.network as keyof typeof NETWORK_CONFIG]
-      if (!networkUrl) {
-        throw new Error(
-          `Unsupported network: ${options.network}. Supported networks are: ${SUPPORTED_NETWORKS.join(', ')}`
-        )
-      }
-      return networkUrl
-    }
-    throw new Error(
-      'Invalid configuration. Provide either { network } or { customSubsquidUrl }.'
-    )
+  constructor (clientUrl: URL | string) {
+    this.clientUrl = new URL(clientUrl)
   }
 
   /**

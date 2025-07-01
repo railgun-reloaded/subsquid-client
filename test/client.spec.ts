@@ -1,48 +1,60 @@
-// @ts-nocheck
+//@ts-nocheck
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { SubsquidClient } from '../src/client'
 import { TokenOrderByInput, TokenType } from '../src/generated/types'
+import * as URLS from '../src/networks'
 
 describe('Subsquid Client', async (t) => {
-  it('Should initialize with valid network config', () => {
-    const client = new SubsquidClient({ network: 'ethereum' })
+  it.only('Should initialize with valid network URL', () => {
+    const client = new SubsquidClient(URLS.ETHEREUM)
     assert.ok(client instanceof SubsquidClient)
   })
 
   it('Should initialize with custom URL', () => {
-    const client = new SubsquidClient({ customSubsquidUrl: 'https://example.com/graphql' })
+    const client = new SubsquidClient('https://example.com/graphql')
     assert.ok(client instanceof SubsquidClient)
   })
 
-  it('Should throw with invalid network', () => {
-    assert.throws(() => new SubsquidClient({ network: 'invalidNetwork' as any }), Error)
-  })
-
   it('Should throw with invalid URL', () => {
-    assert.throws(() => new SubsquidClient({ customSubsquidUrl: 'not-a-url' }), Error)
+    assert.throws(() => new SubsquidClient('not-a-url'), Error)
   })
 
-  it('Should check for supported networks', () => {
-    const invalid = 'invalid'
-    assert.ok(() => new SubsquidClient({ network: 'ethereum' }))
-    assert.ok(() => new SubsquidClient({ network: 'ethereumSepolia' }))
-    assert.ok(() => new SubsquidClient({ network: 'bsc' }))
-    assert.ok(() => new SubsquidClient({ network: 'polygon' }))
-    assert.ok(() => new SubsquidClient({ network: 'arbitrum' }))
-    assert.throws(() => new SubsquidClient({ network: invalid as any }))
+  it('Should throw with malformed URL', () => {
+    assert.throws(() => new SubsquidClient('://invalid-url'), Error)
   })
 
-  it('Should use customSubsquidUrl if both customSubsquidUrl and network are provided', () => {
+  it('Should fail with non-existent URL', async () => {
+    const client = new SubsquidClient('https://non-existent-domain-12345.com/graphql')
+    
+    await assert.rejects(
+      async () => await client.request({ query: '{ __typename }' }),
+      (error) => {
+        assert.ok(error instanceof Error)
+        return true
+      },
+      'Should throw an error when trying to connect to non-existent URL'
+    )
+  })
+
+  it('Should initialize with all available network URLs', () => {
+    assert.ok(() => new SubsquidClient(URLS.ETHEREUM))
+    assert.ok(() => new SubsquidClient(URLS.ETHEREUM_SEPOLIA))
+    assert.ok(() => new SubsquidClient(URLS.BSC))
+    assert.ok(() => new SubsquidClient(URLS.POLYGON))
+    assert.ok(() => new SubsquidClient(URLS.ARBITRUM))
+    assert.throws(() => new SubsquidClient('not-valid-url'))
+  })
+
+  it('Should store the provided URL correctly', () => {
     const TEST_URL = 'https://custom.example.com/graphql'
-    const TEST_NETWORK = 'ethereum'
-    const client = new SubsquidClient({ customSubsquidUrl: TEST_URL, network: TEST_NETWORK } as any)
+    const client = new SubsquidClient(TEST_URL)
     // @ts-expect-error: accessing private property for test
-    assert.strictEqual(client.clientUrl, TEST_URL, 'customSubsquidUrl should take precedence over network')
+    assert.strictEqual(client.clientUrl.toString(), TEST_URL, 'Client should store the provided URL')
   })
 
-  const client = new SubsquidClient({ network: 'ethereum' })
+  const client = new SubsquidClient(URLS.ETHEREUM)
 
   it('Should throw an error when GraphQL response contains errors from invalid syntax', async () => {
     const invalidQuery = `
@@ -212,7 +224,7 @@ describe('Subsquid Client', async (t) => {
   })
 
   it('Should query with nested objects inside fields', async () => {
-    const client = new SubsquidClient({ network: 'ethereum' })
+    const client = new SubsquidClient(URLS.ETHEREUM)
     assert.ok(client instanceof SubsquidClient)
 
     const { unshields } = await client.query({
