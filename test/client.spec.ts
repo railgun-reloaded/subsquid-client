@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
@@ -27,7 +27,6 @@ describe('Subsquid Client', async (t) => {
 
   it('Should fail with non-existent URL', async () => {
     const client = new SubsquidClient('https://non-existent-domain-12345.com/graphql')
-    
     await assert.rejects(
       async () => await client.request({ query: '{ __typename }' }),
       (error) => {

@@ -8,14 +8,15 @@ export class SubsquidClient {
   /**
    * The URL endpoint for the Subsquid GraphQL API
    */
-  private clientUrl: URL
+  #clientUrl: URL
 
   /**
    * Creates a new SubsquidClient instance
    * @param options - Configuration options for the client
+   * @param clientUrl
    */
   constructor (clientUrl: URL | string) {
-    this.clientUrl = new URL(clientUrl)
+    this.#clientUrl = new URL(clientUrl)
   }
 
   /**
@@ -40,7 +41,7 @@ export class SubsquidClient {
       extensions
     })
 
-    const response = await fetch(this.clientUrl, {
+    const response = await fetch(this.#clientUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
