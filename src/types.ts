@@ -1,4 +1,4 @@
-import type { EntityQueryMap, FieldSelector, Maybe } from './generated/types'
+import type { EntityQueryMap, FieldSelector, Maybe } from './generated/types.js'
 
 type QueryInput = {
   [K in keyof EntityQueryMap]?: Omit<EntityQueryMap[K]['input'], 'fields'> & {

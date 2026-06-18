@@ -2,8 +2,8 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { SubsquidClient } from '../src/client'
-import { TokenOrderByInput, TokenType } from '../src/generated/types'
+import { SubsquidClient } from '../src/client.js'
+import { TokenOrderByInput, TokenType } from '../src/generated/types.js'
 
 describe('Subsquid Client', async (t) => {
   it('Should initialize with valid network config', () => {

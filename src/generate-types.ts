@@ -1,6 +1,6 @@
 import type { CodegenPlugin } from '@graphql-codegen/plugin-helpers'
 
-module.exports = <CodegenPlugin> {
+const generateTypesPlugin: CodegenPlugin = {
   /**
    * Generates TypeScript types based on the provided GraphQL schema.
    * @param schema - The GraphQL schema object to generate types from.
@@ -113,3 +113,5 @@ module.exports = <CodegenPlugin> {
 ${printEntityQueryMap()}`
   }
 }
+
+export const { plugin } = generateTypesPlugin

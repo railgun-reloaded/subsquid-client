@@ -1,5 +1,5 @@
-import type { FieldSelector } from './generated/types'
-import type { EntityQueryMap, FilterValue, QueryInput } from './types'
+import type { FieldSelector } from './generated/types.js'
+import type { EntityQueryMap, FilterValue, QueryInput } from './types.js'
 
 /**
  * Converts a JSON object to a GraphQL arguments string
