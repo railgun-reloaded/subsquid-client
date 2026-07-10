@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 
-import { SubsquidClient } from '../src/client'
+import { SubsquidClient } from '../src/client.js'
 
 describe('Subsquid Client', async () => {
   const client = new SubsquidClient({ network: 'ethereum' })
