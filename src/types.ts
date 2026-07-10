@@ -1,9 +1,17 @@
-import type { EntityQueryMap, FieldSelector, Maybe } from './generated/types.js'
+import type { EntityQueryMap, FieldSelector, FragmentKeyToType, Maybe, QueryFieldsInputMap, TypeNameToType } from './generated/types.js'
+
+// `__typename` is selectable on any object/interface in GraphQL; allow it alongside
+// the codegen-produced selector union for every entity.
+type AllowedFieldItem<K extends keyof EntityQueryMap> =
+  (K extends keyof QueryFieldsInputMap
+    ? QueryFieldsInputMap[K] extends readonly (infer Item)[]
+      ? Item
+      : never
+    : FieldSelector<EntityQueryMap[K]['entity']>) | '__typename'
 
 type QueryInput = {
   [K in keyof EntityQueryMap]?: Omit<EntityQueryMap[K]['input'], 'fields'> & {
-    // allow fields to be the general FieldSelector array type OR the readonly tuple
-    fields: EntityQueryMap[K]['input']['fields'] | readonly FieldSelector<EntityQueryMap[K]['entity']>[]
+    fields: readonly AllowedFieldItem<K>[]
   };
 }
 
@@ -22,82 +30,114 @@ type FilterValue<K extends keyof EntityQueryMap, F extends keyof EntityQueryMap[
 type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
-  type BuildTupleSelection<Entity, Fields extends readonly FieldSelector<any>[]> =
-    // If the tuple is empty, the selection is empty, return an empty object
+  // A selector item is a "fragment item" when its only key is the literal "... on TypeName"
+  // form (i.e. matches FragmentKeyToType). We treat those separately from regular field
+  // selectors so the resulting output is a discriminated union per implementor rather
+  // than a single intersected object.
+  type IsFragmentKey<K> = K extends keyof FragmentKeyToType ? true : false
+
+  type FragmentItemEntity<Item> =
+    Item extends { readonly [K in keyof Item]: any }
+      ? keyof Item extends infer FragKey
+        ? FragKey extends keyof FragmentKeyToType
+          ? TypeNameToType[FragmentKeyToType[FragKey]]
+          : never
+        : never
+      : never
+
+  type FragmentItemSubfields<Item> =
+    Item extends Record<string, infer V>
+      ? V extends readonly FieldSelector<any>[]
+        ? V
+        : never
+      : never
+
+  // Splits the fields tuple into base-field items and fragment items
+  type SplitBaseFields<Fields extends readonly any[]> =
+    Fields extends readonly [infer Head, ...infer Tail extends readonly any[]]
+      ? Head extends object
+        ? IsFragmentKey<keyof Head> extends true
+          ? SplitBaseFields<Tail>
+          : readonly [Head, ...SplitBaseFields<Tail>]
+        : readonly [Head, ...SplitBaseFields<Tail>]
+      : readonly []
+
+  type SplitFragmentItems<Fields extends readonly any[]> =
+    Fields extends readonly [infer Head, ...infer Tail extends readonly any[]]
+      ? Head extends object
+        ? IsFragmentKey<keyof Head> extends true
+          ? readonly [Head, ...SplitFragmentItems<Tail>]
+          : SplitFragmentItems<Tail>
+        : SplitFragmentItems<Tail>
+      : readonly []
+
+  // Builds a per-implementor selection: { __typename: 'X' } & <selected fields of X>.
+  // Distributes over the union of fragment items so the result is a union, not an intersection.
+  type BuildFragmentUnion<FragmentItems extends readonly any[]> =
+    FragmentItems extends readonly []
+      ? unknown
+      : FragmentItems[number] extends infer Item
+        ? Item extends object
+          ? FragmentItemEntity<Item> extends infer Entity
+            ? Entity extends object
+              ? { __typename: Entity extends { __typename?: infer N } ? NonNullable<N> : string } &
+                BuildTupleSelection<Entity, FragmentItemSubfields<Item>>
+              : never
+            : never
+          : never
+        : never
+
+  type BuildTupleSelection<Entity, Fields extends readonly any[]> =
+    BuildBaseSelection<Entity, SplitBaseFields<Fields>> &
+    BuildFragmentUnion<SplitFragmentItems<Fields>>
+
+  // Original recursive base-field intersection (no fragment handling — those are split out)
+  type BuildBaseSelection<Entity, Fields extends readonly any[]> =
     Fields extends readonly []
       ? {}
-      : // If the tuple has a head and a tail
-      Fields extends readonly [infer Head extends FieldSelector<any>, ...infer Tail extends readonly FieldSelector<any>[]]
-        ? // Process the head of the tuple, intersect the result with the recursive call on the tail
-          UnionToIntersection<ProcessFieldSelectorItem<Head, Entity>> & BuildTupleSelection<Entity, Tail>
-        : // Fallback for unexpected tuple shape (shouldn't happen with 'as const' and FieldSelector)
-        any
+      : Fields extends readonly [infer Head, ...infer Tail extends readonly any[]]
+        ? UnionToIntersection<ProcessFieldSelectorItem<Head, Entity>> & BuildBaseSelection<Entity, Tail>
+        : any
 
   // Helper type: Processes a single item from the fields tuple against the Entity type
   // This determines the type of a single selected field, including nested fields
-  type ProcessFieldSelectorItem<SelectorItem extends FieldSelector<any>, Entity> =
+  type ProcessFieldSelectorItem<SelectorItem, Entity> =
     // Case 1: SelectorItem is a string (primitive field selection)
     SelectorItem extends string
-      ? // Check if the string is a valid key of the Entity
-      SelectorItem extends keyof Entity
-        ? Pick<Entity, SelectorItem> // Return an object with just that field and its type
-        : // If the string is not a valid key, this selection is invalid
-      // Using `never` here makes the intersection fail, resulting in `never` for the output key.
-      // We could also make the field optional or map to `unknown` depending on desired strictness.
-      // `never` is good for strong compile-time errors.
-        never
+      ? SelectorItem extends keyof Entity
+        ? Pick<Entity, SelectorItem>
+        : SelectorItem extends '__typename'
+          ? { __typename: Entity extends { __typename?: infer N } ? NonNullable<N> : string }
+          : never
       : // Case 2: SelectorItem is an object (nested field selection)
       SelectorItem extends object
-        ? // Get the key name from the object (FieldSelector objects should have exactly one key)
-        keyof SelectorItem extends infer FieldName extends string
-          ? // Check if the field name is a valid key of the Entity
-          FieldName extends keyof Entity
-            ? // Get the sub-selectors tuple from the object value
-            SelectorItem[FieldName] extends infer Subfields extends readonly FieldSelector<any>[]
-              ? // Get the type of the nested field on the Entity
-              Entity[FieldName] extends (infer ItemType)[] // Check if the Entity field is a list
-                ? // If it's a list, recursively build the selection for the ItemType and wrap in an array
-                  { [K in FieldName]: BuildTupleSelection<ItemType, Subfields>[] }
-                : // If it's not a list (assume it's a single object), recursively build the selection for the Entity field type
-                  // Need to handle Maybe<Object> case - BuildTupleSelection should work correctly with Maybe<Item>
-                  { [K in FieldName]: BuildTupleSelection<Entity[FieldName], Subfields> }
-              : // If the subfields aren't a readonly tuple of FieldSelectors (unexpected)
-              never
-            : // If the field name is not a valid key on the Entity
-            never
-          : // If the SelectorItem object doesn't have a single string key (unexpected structure)
-          never
-        : // Case 3: SelectorItem is neither string nor object (unexpected structure)
-        never
+        ? keyof SelectorItem extends infer FieldName extends string
+          ? FieldName extends keyof Entity
+            ? SelectorItem[FieldName & keyof SelectorItem] extends infer Subfields extends readonly any[]
+              ? Entity[FieldName] extends (infer ItemType)[]
+                ? { [K in FieldName]: BuildTupleSelection<ItemType, Subfields>[] }
+                : { [K in FieldName]: BuildTupleSelection<NonNullable<Entity[FieldName]>, Subfields> }
+              : never
+            : never
+          : never
+        : never
 
 // Main type: Maps the QueryInput structure to the QueryOutput data structure
 type QueryOutput<T extends QueryInput> = {
-  // Iterate over the keys present in the input T that are also valid query keys
   [K in keyof T & keyof EntityQueryMap]:
-  // Get the corresponding EntityQueryMap entry for the query K
   EntityQueryMap[K] extends { entity: infer Entity; wrapper: infer Wrapper }
-    ? // Get the 'fields' property type from the input T for key K
-    T[K] extends { fields: infer Fields }
-      ? // Ensure 'fields' is a readonly tuple of FieldSelector items (enforces 'as const')
-      Fields extends readonly FieldSelector<any>[]
-        ? // Build the core selected object type based on the Entity and the Fields tuple
-        BuildTupleSelection<Entity, Fields> extends infer SelectedType
-          ? // Apply the wrapper ('array', 'maybe', 'simple') based on the schema return type
-          Wrapper extends 'array'
-            ? SelectedType[] // If schema returns list, output is array of selected type
+    ? T[K] extends { fields: infer Fields }
+      ? Fields extends readonly any[]
+        ? BuildTupleSelection<Entity, Fields> extends infer SelectedType
+          ? Wrapper extends 'array'
+            ? SelectedType[]
             : Wrapper extends 'maybe'
-              ? Maybe<SelectedType> // If schema returns nullable, output is Maybe<selected type>
-              : SelectedType // If schema returns non-nullable single, output is selected type
-          : // Should not happen
-          never
-        : // If 'fields' was provided but is NOT a readonly tuple (i.e., 'as const' was forgotten)
-      // We can provide a less specific type here, like `any`, or `EntityQueryMap[K]['output']` (which is the full schema type),
-      // or make it `never` to force 'as const'. Let's use EntityQueryMap[K]['output'] as a fallback.
-        EntityQueryMap[K]['output'] // Fallback to the original generated output type
-      : // If 'fields' property is missing for a query in the input (should ideally not happen based on QueryInput type)
-      never // Or handle as an error case
-    : // If K is in T but not a valid key in EntityQueryMap (should be caught by StrictQueryInput/keyof T & keyof EntityQueryMap)
-    never;
+              ? Maybe<SelectedType>
+              : SelectedType
+          : never
+        : EntityQueryMap[K]['output']
+      : never
+    : never;
 }
 
 type RequestOptions = {

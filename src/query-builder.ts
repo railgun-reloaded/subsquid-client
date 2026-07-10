@@ -101,7 +101,7 @@ function processField (field: FieldSelector<any>): string {
     return field
   }
 
-  // If field is an object, it represents a nested selection
+  // If field is an object, it represents a nested selection or an inline fragment
   if (typeof field === 'object' && field !== null && !Array.isArray(field)) {
     const entries = Object.entries(field)
 
@@ -112,11 +112,10 @@ function processField (field: FieldSelector<any>): string {
 
       // Ensure the value for the nested field is an array of sub-selectors
       // This aligns with the structure of FieldSelector for nested fields: { [Key]: FieldSelector<...>[] }
+      // Also handles inline-fragment keys of the form "... on TypeName" — GraphQL accepts
+      // them with the same `key { ... }` shape, since the spread is the selection itself.
       if (Array.isArray(subfieldsValue)) {
-        // Process the subfields recursively
-        // Cast subfieldsValue to Array<FieldSelector<any>> for processField's argument type
-        const processedSubfields = (subfieldsValue as FieldSelector<any>[]).map(processField).join('\n          ') // Recursive call
-
+        const processedSubfields = (subfieldsValue as FieldSelector<any>[]).map(processField).join('\n          ')
         return `${fieldName} {\n          ${processedSubfields}\n        }`
       } else {
         // This case indicates an object key exists, but its value isn't an array as expected by FieldSelector for nested fields
