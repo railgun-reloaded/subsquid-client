@@ -1,14 +1,12 @@
-import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { SubsquidClient } from '../src/client'
 
-describe('Subsquid Client', async (t) => {
+describe('Subsquid Client', async () => {
   const client = new SubsquidClient({ network: 'ethereum' })
 
   it('Should query commitments with fragments and provide discriminated type safety', async () => {
     const limit = 10
-    const fromBlock = '17000000'
     const { commitments } = await client.query({
       commitments: {
         limit,
@@ -57,5 +55,19 @@ describe('Subsquid Client', async (t) => {
         ] as const,
       }
     })
+
+    // Type-level assertion: each commitment is a discriminated union over __typename
+    // and narrowing exposes the implementor-specific fields.
+    for (const c of commitments) {
+      if (c.__typename === 'ShieldCommitment') {
+        const _shieldKey: string = c.shieldKey
+        const _npk: string = c.preimage.npk
+        void _shieldKey; void _npk
+      } else if (c.__typename === 'LegacyEncryptedCommitment') {
+        const _memo: string[] = c.ciphertext.memo
+        const _ephemeralKeys: string[] = c.ciphertext.ephemeralKeys
+        void _memo; void _ephemeralKeys
+      }
+    }
   })
 })
